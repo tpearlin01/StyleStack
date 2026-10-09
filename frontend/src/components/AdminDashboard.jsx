@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { IndianRupee, Package, AlertTriangle, Plus, RefreshCw, LogOut, Image as ImageIcon } from 'lucide-react';
 import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { BrandLogo } from './BrandLogo';
 
 export const AdminDashboard = ({ onProductAdded }) => {
   const { user, logout } = useAuth();
@@ -109,20 +110,10 @@ export const AdminDashboard = ({ onProductAdded }) => {
       <header className="bg-slate-950 text-white border-b border-slate-800 sticky top-0 z-30 shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img
-              src="/logo.png"
-              alt="StyleStack PnR Logo"
-              className="h-8 md:h-10 w-auto object-contain"
-            />
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-sans font-bold text-xl tracking-tight text-[#F3F4F6]">StyleStack</span>
-                <span className="bg-amber-500/20 text-amber-300 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border border-amber-500/30">
-                  Admin Portal
-                </span>
-              </div>
-              <p className="text-xs text-slate-400">Authenticated as {user?.email || 'Administrator'}</p>
-            </div>
+            <BrandLogo size="sm" subtitle="ADMIN PORTAL" />
+            <span className="hidden sm:inline-block text-xs text-slate-400 border-l border-slate-800 pl-3">
+              Authenticated as {user?.email || 'Administrator'}
+            </span>
           </div>
 
           <button

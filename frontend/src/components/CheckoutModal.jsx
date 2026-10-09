@@ -3,6 +3,7 @@ import { X, CheckCircle, Printer, ArrowRight, CreditCard, Banknote, QrCode, MapP
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { apiService } from '../services/api';
+import { BrandLogo } from './BrandLogo';
 
 export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
   const { cartItems, subtotal, gstAmount, shippingFee, totalAmount, clearCart } = useCart();
@@ -91,11 +92,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
         {/* Header Decorator */}
         <div className="bg-slate-950 text-white p-6 relative overflow-hidden flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <img
-              src="/logo.png"
-              alt="StyleStack PnR Logo"
-              className="h-8 md:h-10 w-auto object-contain"
-            />
+            <BrandLogo size="sm" showText={false} />
             <div>
               <h3 className="font-sans font-bold text-xl text-[#F3F4F6]">
                 {step === 1 ? 'Checkout & Shipping' : 'Official Digital Invoice'}
@@ -306,19 +303,10 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
               </span>
             </div>
 
-            {/* Official Header with PnR Logo */}
+            {/* Official Header with PHR Monogram */}
             <div className="flex justify-between items-start border-b border-slate-200 pb-4">
               <div className="flex items-center gap-3">
-                <img
-                  src="/logo.png"
-                  alt="StyleStack PnR Logo"
-                  className="h-10 w-auto object-contain"
-                />
-                <div>
-                  <span className="font-sans font-bold text-xl text-slate-900">StyleStack</span>
-                  <p className="text-xs text-slate-500">Dress &amp; Clothing Hub</p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">support@stylestack.com | GSTIN: 27AAAAA0000A1Z5</p>
-                </div>
+                <BrandLogo size="sm" subtitle="DRESS & CLOTHING HUB" />
               </div>
               <div className="text-right">
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Digital Invoice</p>

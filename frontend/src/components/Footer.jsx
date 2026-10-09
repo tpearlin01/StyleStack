@@ -1,5 +1,6 @@
 import React from 'react';
 import { Heart } from 'lucide-react';
+import { BrandLogo } from './BrandLogo';
 
 export const Footer = () => {
   return (
@@ -8,16 +9,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-slate-800">
           
           <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <img
-                src="/logo.png"
-                alt="StyleStack PnR Logo"
-                className="h-8 w-auto object-contain"
-              />
-              <span className="font-sans font-bold text-xl text-[#F3F4F6] tracking-tight">
-                StyleStack
-              </span>
-            </div>
+            <BrandLogo size="sm" subtitle="DRESS & CLOTHING HUB" />
             <p className="text-slate-400 text-xs leading-relaxed">
               Curated luxury fashion, silk dresses, Italian leather bags, and botanical cosmetics for modern style trendsetters.
             </p>
@@ -56,7 +48,7 @@ export const Footer = () => {
         </div>
 
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500">
-          <p>© {new Date().getFullYear()} StyleStack Inc. Monogram Identity PnR by Princel &amp; Pearlin.</p>
+          <p>© {new Date().getFullYear()} StyleStack. All rights reserved.</p>
           <div className="flex items-center gap-1">
             <span>Crafted with</span>
             <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />

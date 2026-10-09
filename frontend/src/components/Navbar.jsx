@@ -3,6 +3,7 @@ import { ShoppingBag, Search, User, LogOut, Sparkles, X, ChevronDown } from 'luc
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { MOCK_CATEGORIES } from '../services/mockData';
+import { BrandLogo } from './BrandLogo';
 
 export const Navbar = ({ selectedCategory, onSelectCategory, searchQuery, setSearchQuery }) => {
   const { totalItemCount, openCart } = useCart();
@@ -24,22 +25,10 @@ export const Navbar = ({ selectedCategory, onSelectCategory, searchQuery, setSea
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-4">
           
-          {/* Brand Logo & Graphic Identity */}
+          {/* Brand Logo & Monogram */}
           <div className="flex items-center gap-8">
-            <a href="#" className="flex items-center gap-3 group text-left">
-              <img
-                src="/logo.png"
-                alt="StyleStack PnR Logo"
-                className="h-8 md:h-10 w-auto object-contain transition-transform group-hover:scale-105"
-              />
-              <div className="flex flex-col">
-                <span className="font-sans font-bold text-xl md:text-2xl tracking-tight text-[#F3F4F6] group-hover:text-rose-400 transition-colors">
-                  StyleStack
-                </span>
-                <span className="text-[10px] tracking-widest uppercase font-semibold text-slate-400 -mt-1">
-                  Dress &amp; Clothing Hub
-                </span>
-              </div>
+            <a href="#" className="flex items-center group text-left">
+              <BrandLogo size="sm" subtitle="DRESS & CLOTHING HUB" />
             </a>
 
             {/* Category Navigation */}
@@ -112,7 +101,9 @@ export const Navbar = ({ selectedCategory, onSelectCategory, searchQuery, setSea
                   <div className="px-4 py-2 border-b border-slate-800">
                     <p className="text-xs text-slate-400">Logged in as</p>
                     <p className="text-sm font-bold text-white truncate">{user?.email}</p>
-                    <p className="text-[10px] text-slate-400 font-mono mt-0.5">📞 {user?.phone || '9876543210'}</p>
+                    {user?.phone && (
+                      <p className="text-[10px] text-slate-400 font-mono mt-0.5">📞 {user.phone}</p>
+                    )}
                   </div>
                   <div className="px-4 py-2 text-xs text-slate-400 font-medium flex items-center justify-between">
                     <span>Role Session</span>
