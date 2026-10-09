@@ -1,9 +1,7 @@
 import { MOCK_PRODUCTS, MOCK_CATEGORIES, MOCK_USER } from './mockData';
 
-// Helper to simulate asynchronous API delay
-const delay = (ms = 120) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Helper for initial mock orders
 const INITIAL_MOCK_ORDERS = [
   {
     orderId: 'ORD-849201',
@@ -14,32 +12,32 @@ const INITIAL_MOCK_ORDERS = [
       address: '42 Marine Drive, Apartment 5B',
       city: 'Mumbai',
       pincode: '400020',
-      paymentMethod: 'UPI / GPay',
+      paymentMethod: 'Instant UPI / GPay',
     },
     items: [
       {
-        id: 'prod-1',
-        name: 'Silk Wrap Floral Maxi Dress',
-        category: 'Dresses',
-        price: 3499,
+        id: 'prod-w-trad-1',
+        name: 'Embroidered Royal Anarkali Set',
+        category: 'Festive / Traditional',
+        price: 4799,
         selectedSize: 'M',
         quantity: 1,
-        imageUrl: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&q=80&w=800',
+        imageUrl: '/images/women tarditional dress/1183653B-EA4C-4D27-A91A-900C61473B85_600x.webp',
       },
       {
-        id: 'prod-4',
-        name: 'Luminous Matte Velvet Lipstick Set',
-        category: 'Cosmetics',
+        id: 'prod-w-acc-1',
+        name: 'Artisan Gold-Plated Statement Earrings & Choker',
+        category: 'Accessories',
         price: 1499,
-        selectedSize: 'One Size',
+        selectedSize: 'Free Size',
         quantity: 1,
-        imageUrl: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&q=80&w=800',
+        imageUrl: '/images/women accessories/images (1).jpg',
       }
     ],
-    subtotal: 4998,
-    gstAmount: 250,
+    subtotal: 6298,
+    gstAmount: 315,
     shippingFee: 0,
-    totalAmount: 5248,
+    totalAmount: 6613,
     status: 'Delivered',
   },
   {
@@ -55,35 +53,43 @@ const INITIAL_MOCK_ORDERS = [
     },
     items: [
       {
-        id: 'prod-2',
-        name: 'Structured Italian Leather Tote',
-        category: 'Bags',
-        price: 5299,
-        selectedSize: 'One Size',
+        id: 'prod-m-form-1',
+        name: 'Bespoke Slim-Fit Tuxedo Jacket',
+        category: 'Formals',
+        price: 5499,
+        selectedSize: 'L',
         quantity: 1,
-        imageUrl: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=800',
+        imageUrl: '/images/men formal/-473Wx593H-469514972-black-MODEL.avif',
       }
     ],
-    subtotal: 5299,
-    gstAmount: 265,
+    subtotal: 5499,
+    gstAmount: 275,
     shippingFee: 0,
-    totalAmount: 5564,
+    totalAmount: 5774,
     status: 'Dispatched',
   }
 ];
 
 export const apiService = {
-  // Get catalog products (supports dynamic additions)
-  async getProducts({ category = 'all', size = 'all', searchQuery = '', sortBy = 'featured', minPrice = 0, maxPrice = 10000 } = {}) {
+  // Get catalog products with multi-dimensional filtering, search, and sorting
+  async getProducts({
+    category = 'all',
+    quickFilter = 'all',
+    size = 'all',
+    searchQuery = '',
+    sortBy = 'featured',
+    minPrice = 0,
+    maxPrice = 10000,
+  } = {}) {
     await delay();
 
     let catalog = MOCK_PRODUCTS;
     try {
-      const stored = localStorage.getItem('stylestack_catalog');
+      const stored = localStorage.getItem('stylestack_catalog_v2');
       if (stored) {
         catalog = JSON.parse(stored);
       } else {
-        localStorage.setItem('stylestack_catalog', JSON.stringify(MOCK_PRODUCTS));
+        localStorage.setItem('stylestack_catalog_v2', JSON.stringify(MOCK_PRODUCTS));
       }
     } catch (e) {
       console.error('Error reading catalog', e);
@@ -91,32 +97,54 @@ export const apiService = {
 
     let result = [...catalog];
 
-    // Category filter
+    // Filter by Category or Gender
     if (category && category !== 'all') {
-      result = result.filter(
-        (p) => p.category.toLowerCase() === category.toLowerCase()
-      );
+      const catLower = category.toLowerCase();
+      if (catLower === 'men' || catLower === 'women') {
+        result = result.filter((p) => p.gender === catLower);
+      } else {
+        result = result.filter(
+          (p) => p.category.toLowerCase() === catLower
+        );
+      }
     }
 
-    // Size filter
+    // Filter by Quick Filter Chips
+    if (quickFilter && quickFilter !== 'all') {
+      if (quickFilter === 'new-arrivals') {
+        result = result.filter((p) => p.isNewArrival || p.tag === 'New Arrival');
+      } else if (quickFilter === 'festive-offers') {
+        result = result.filter((p) => p.isFestiveOffer || p.tag === 'Festive Offer');
+      } else if (quickFilter === 'on-sale') {
+        result = result.filter((p) => p.isOnSale || p.tag === 'Sale');
+      } else if (quickFilter === 'men') {
+        result = result.filter((p) => p.gender === 'men');
+      } else if (quickFilter === 'women') {
+        result = result.filter((p) => p.gender === 'women');
+      }
+    }
+
+    // Filter by Size
     if (size && size !== 'all') {
       result = result.filter(
-        (p) => p.sizes && (p.sizes.includes(size) || p.sizes.includes('One Size'))
+        (p) => p.sizes && (p.sizes.includes(size) || p.sizes.includes('Free Size') || p.sizes.includes('One Size'))
       );
     }
 
-    // Search query filter
+    // Real-Time Search Query Filter (Title, Category, Gender, Description, Tag)
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       result = result.filter(
         (p) =>
           p.name.toLowerCase().includes(q) ||
           (p.categoryName && p.categoryName.toLowerCase().includes(q)) ||
-          p.description.toLowerCase().includes(q)
+          (p.gender && p.gender.toLowerCase().includes(q)) ||
+          (p.tag && p.tag.toLowerCase().includes(q)) ||
+          (p.description && p.description.toLowerCase().includes(q))
       );
     }
 
-    // Price range filter
+    // Filter by Price
     result = result.filter((p) => p.price >= minPrice && p.price <= maxPrice);
 
     // Sorting
@@ -137,29 +165,34 @@ export const apiService = {
 
   // Add new fashion product (Admin)
   async addProduct(newProductData) {
-    await delay(200);
+    await delay(150);
 
     const newProduct = {
       id: 'prod-' + Date.now(),
       name: newProductData.name,
-      category: newProductData.category.toLowerCase(),
-      categoryName: newProductData.category,
+      gender: newProductData.gender || 'women',
+      category: (newProductData.category || 'casual').toLowerCase(),
+      categoryName: newProductData.categoryName || newProductData.category || 'Casual / Summer',
       price: Number(newProductData.price),
       originalPrice: Math.round(Number(newProductData.price) * 1.3),
       rating: 5.0,
       reviewsCount: 1,
       sizes: newProductData.sizes || ['S', 'M', 'L', 'XL'],
-      imageUrl: newProductData.imageUrl || 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=800',
-      tag: 'New Arrival',
+      imageUrl: newProductData.imageUrl || '/images/women formal/Asymmetrical_Co_ord_Set-Blue-JA0100-010001-2819.webp',
+      tag: newProductData.tag || 'New Arrival',
+      discountPercent: 20,
+      isFestiveOffer: newProductData.tag === 'Festive Offer',
+      isOnSale: newProductData.tag === 'Sale',
+      isNewArrival: true,
       description: newProductData.description || 'Newly added exclusive fashion piece.',
-      inStock: Number(newProductData.inStock || 10),
+      inStock: Number(newProductData.inStock || 15),
     };
 
     try {
-      const stored = localStorage.getItem('stylestack_catalog');
+      const stored = localStorage.getItem('stylestack_catalog_v2');
       const catalog = stored ? JSON.parse(stored) : [...MOCK_PRODUCTS];
       const updatedCatalog = [newProduct, ...catalog];
-      localStorage.setItem('stylestack_catalog', JSON.stringify(updatedCatalog));
+      localStorage.setItem('stylestack_catalog_v2', JSON.stringify(updatedCatalog));
     } catch (e) {
       console.error('Error saving new product', e);
     }
@@ -173,14 +206,14 @@ export const apiService = {
 
   // User Login Simulation
   async loginUser({ email, password, rememberMe = true }) {
-    await delay(200);
+    await delay(150);
     if (!email || !password) {
       return { success: false, message: 'Please provide both email and password.' };
     }
     
     const userSession = {
       id: 'usr-' + Date.now(),
-      name: email.split('@')[0].replace('.', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      name: email.split('@')[0].replace('.', ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
       email,
       avatar: MOCK_USER.avatar,
       rememberMe,
@@ -194,39 +227,17 @@ export const apiService = {
     };
   },
 
-  // User Registration Simulation
-  async registerUser({ fullName, email, password }) {
-    await delay(200);
-    if (!fullName || !email || !password) {
-      return { success: false, message: 'Please fill in all required fields.' };
-    }
-
-    const userSession = {
-      id: 'usr-' + Date.now(),
-      name: fullName,
-      email,
-      avatar: MOCK_USER.avatar,
-      token: 'mock-jwt-token-' + Date.now(),
-    };
-
-    return {
-      success: true,
-      data: userSession,
-      message: 'Account created successfully!',
-    };
-  },
-
-  // Place Order with Customer Form & Invoice breakdown
+  // Place Order
   async placeOrder({ customer, items, subtotal, gstAmount, shippingFee, totalAmount }) {
-    await delay(300);
+    await delay(200);
 
     const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
     const invoice = {
       orderId,
       createdAt: new Date().toISOString(),
       customer: {
-        name: customer.name || 'Guest Fashionista',
-        email: customer.email || 'guest@stylestack.com',
+        name: customer.name || 'Fashion Customer',
+        email: customer.email || 'customer@stylestack.com',
         address: customer.address || 'Standard Delivery Address',
         city: customer.city || 'Mumbai',
         pincode: customer.pincode || '400001',
@@ -261,7 +272,7 @@ export const apiService = {
     };
   },
 
-  // Get all orders (Admin & Customer History)
+  // Get all orders
   async getOrders() {
     await delay(100);
     try {
@@ -276,7 +287,7 @@ export const apiService = {
     }
   },
 
-  // Update order status (Admin interactive toggle)
+  // Update order status
   async updateOrderStatus(orderId, newStatus) {
     await delay(100);
     try {

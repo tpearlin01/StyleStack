@@ -10,14 +10,17 @@ export const AdminDashboard = ({ onProductAdded }) => {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'add-product' | 'orders'
+  const [activeTab, setActiveTab] = useState('overview');
 
   // Add Product Form State
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('Dresses');
+  const [category, setCategory] = useState('traditional');
+  const [categoryName, setCategoryName] = useState('Festive / Traditional');
+  const [gender, setGender] = useState('women');
   const [price, setPrice] = useState('');
   const [stockQuantity, setStockQuantity] = useState('15');
   const [selectedSizes, setSelectedSizes] = useState(['S', 'M', 'L', 'XL']);
+  const [tag, setTag] = useState('New Arrival');
   const [imageUrl, setImageUrl] = useState('');
   const [description, setDescription] = useState('');
   const [formSuccess, setFormSuccess] = useState('');
@@ -56,6 +59,16 @@ export const AdminDashboard = ({ onProductAdded }) => {
     }
   };
 
+  const handleCategoryChange = (e) => {
+    const val = e.target.value;
+    setCategory(val);
+    if (val === 'traditional') setCategoryName('Festive / Traditional');
+    else if (val === 'formal') setCategoryName('Formals');
+    else if (val === 'casual') setCategoryName('Casual / Summer');
+    else if (val === 'winter') setCategoryName('Winter Wear');
+    else if (val === 'accessories') setCategoryName('Accessories');
+  };
+
   const handleAddProductSubmit = async (e) => {
     e.preventDefault();
     setFormSuccess('');
@@ -70,11 +83,14 @@ export const AdminDashboard = ({ onProductAdded }) => {
       const res = await apiService.addProduct({
         name: title,
         category,
+        categoryName,
+        gender,
         price: Number(price),
         sizes: selectedSizes.length > 0 ? selectedSizes : ['M'],
+        tag,
         inStock: Number(stockQuantity),
         imageUrl,
-        description: description || `Handcrafted ${category.toLowerCase()} fashion piece.`,
+        description: description || `Handcrafted ${categoryName.toLowerCase()} fashion piece.`,
       });
 
       if (res.success) {
@@ -197,7 +213,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
             }`}
           >
             <Plus className="w-4 h-4" />
-            <span>Add New Fashion Item</span>
+            <span>Add New Apparel Item</span>
           </button>
           <button
             onClick={() => setActiveTab('orders')}
@@ -211,13 +227,13 @@ export const AdminDashboard = ({ onProductAdded }) => {
           </button>
         </div>
 
-        {/* TAB 1: ADD NEW FASHION ITEM FORM */}
+        {/* TAB 1: ADD NEW APPAREL ITEM FORM */}
         {activeTab === 'add-product' && (
           <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm max-w-3xl mx-auto space-y-6">
             <div className="border-b border-slate-100 pb-4">
-              <h3 className="font-serif-luxury text-2xl font-bold text-slate-900">Add New Fashion Product</h3>
+              <h3 className="font-serif-luxury text-2xl font-bold text-slate-900">Add New Fashion Apparel</h3>
               <p className="text-xs text-slate-500 mt-1">
-                Upload new catalog items with image URLs, available size badges, and inventory levels.
+                Upload new catalog items with local images, collection category, available sizes, and stock.
               </p>
             </div>
 
@@ -245,31 +261,45 @@ export const AdminDashboard = ({ onProductAdded }) => {
                     required
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="e.g. Velvet Corset Evening Gown"
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
+                    placeholder="e.g. Silk Zari Embroidered Kurta"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                    Category *
+                    Collection Category *
                   </label>
                   <select
                     value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 bg-white"
+                    onChange={handleCategoryChange}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 bg-white"
                   >
-                    <option value="Dresses">Dresses</option>
-                    <option value="Footwear">Footwear</option>
-                    <option value="Bags">Bags</option>
-                    <option value="Cosmetics">Cosmetics</option>
-                    <option value="Ethnic">Ethnic Wear</option>
-                    <option value="Western">Western Wear</option>
+                    <option value="traditional">Festive / Traditional</option>
+                    <option value="formal">Formals</option>
+                    <option value="casual">Casual / Summer</option>
+                    <option value="winter">Winter Wear</option>
+                    <option value="accessories">Accessories</option>
                   </select>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                    Gender *
+                  </label>
+                  <select
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 bg-white"
+                  >
+                    <option value="women">Women</option>
+                    <option value="men">Men</option>
+                    <option value="unisex">Unisex</option>
+                  </select>
+                </div>
+
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                     Price (₹) *
@@ -281,23 +311,23 @@ export const AdminDashboard = ({ onProductAdded }) => {
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     placeholder="3999"
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                    Stock Quantity
+                    Badge Highlight
                   </label>
-                  <input
-                    type="number"
-                    required
-                    min="1"
-                    value={stockQuantity}
-                    onChange={(e) => setStockQuantity(e.target.value)}
-                    placeholder="15"
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
-                  />
+                  <select
+                    value={tag}
+                    onChange={(e) => setTag(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 bg-white"
+                  >
+                    <option value="New Arrival">New Arrival</option>
+                    <option value="Festive Offer">Festive Offer</option>
+                    <option value="Sale">Sale</option>
+                  </select>
                 </div>
               </div>
 
@@ -307,13 +337,13 @@ export const AdminDashboard = ({ onProductAdded }) => {
                   Available Sizes
                 </label>
                 <div className="flex items-center gap-3">
-                  {['S', 'M', 'L', 'XL', 'One Size'].map((sz) => (
+                  {['S', 'M', 'L', 'XL', 'Free Size'].map((sz) => (
                     <label key={sz} className="flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-slate-700">
                       <input
                         type="checkbox"
                         checked={selectedSizes.includes(sz)}
                         onChange={() => handleSizeToggle(sz)}
-                        className="w-4 h-4 rounded border-slate-300 text-rose-600 focus:ring-rose-500"
+                        className="w-4 h-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
                       />
                       <span>{sz}</span>
                     </label>
@@ -321,21 +351,46 @@ export const AdminDashboard = ({ onProductAdded }) => {
                 </div>
               </div>
 
-              {/* Image URL */}
+              {/* Image Path */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                  Image URL *
+                  Local Image Path / URL *
                 </label>
                 <div className="relative">
                   <ImageIcon className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
                   <input
-                    type="url"
+                    type="text"
                     required
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
-                    placeholder="https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&q=80&w=800"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
+                    placeholder="/images/women tarditional dress/1183653B-EA4C-4D27-A91A-900C61473B85_600x.webp"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 font-mono"
                   />
+                </div>
+                {/* Presets */}
+                <div className="flex flex-wrap items-center gap-2 mt-2">
+                  <span className="text-[10px] text-slate-400 font-bold uppercase">Quick Local Image Presets:</span>
+                  <button
+                    type="button"
+                    onClick={() => setImageUrl('/images/women tarditional dress/1183653B-EA4C-4D27-A91A-900C61473B85_600x.webp')}
+                    className="text-[10px] bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded text-slate-700 font-medium"
+                  >
+                    Traditional Anarkali
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImageUrl('/images/men formal/-473Wx593H-469514972-black-MODEL.avif')}
+                    className="text-[10px] bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded text-slate-700 font-medium"
+                  >
+                    Men Formal Tuxedo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImageUrl('/images/summer women dress/1_d7ebe92d-271b-4782-9d23-fad006aebe0d.webp')}
+                    className="text-[10px] bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded text-slate-700 font-medium"
+                  >
+                    Summer Wrap Dress
+                  </button>
                 </div>
               </div>
 
@@ -348,8 +403,8 @@ export const AdminDashboard = ({ onProductAdded }) => {
                   rows="3"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Tailored silk gown with embellished accent details..."
-                  className="w-full px-4 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
+                  placeholder="Tailored silk festive attire with embellished craftsmanship..."
+                  className="w-full px-4 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
                 />
               </div>
 
@@ -358,7 +413,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
                 className="w-full py-3.5 px-6 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2"
               >
                 <Plus className="w-4 h-4" />
-                <span>Publish Item to Catalog &amp; Storefront</span>
+                <span>Publish Apparel Item to Catalog &amp; Storefront</span>
               </button>
 
             </form>
@@ -388,9 +443,10 @@ export const AdminDashboard = ({ onProductAdded }) => {
                   <tr>
                     <th className="py-3.5 px-6">Product</th>
                     <th className="py-3.5 px-4">Category</th>
+                    <th className="py-3.5 px-4">Gender</th>
                     <th className="py-3.5 px-4">Price</th>
-                    <th className="py-3.5 px-4">Sizes</th>
-                    <th className="py-3.5 px-4">Stock Level</th>
+                    <th className="py-3.5 px-4">Badge</th>
+                    <th className="py-3.5 px-4">Stock</th>
                     <th className="py-3.5 px-6 text-right">Status</th>
                   </tr>
                 </thead>
@@ -401,34 +457,31 @@ export const AdminDashboard = ({ onProductAdded }) => {
                         <img
                           src={p.imageUrl}
                           alt={p.name}
-                          className="w-10 h-12 rounded-xl object-cover border border-slate-200"
+                          className="w-10 h-12 rounded-xl object-cover object-top border border-slate-200"
                         />
                         <div>
                           <p className="font-bold text-slate-900 text-sm line-clamp-1">{p.name}</p>
-                          <p className="text-[10px] text-slate-400">ID: {p.id}</p>
+                          <p className="text-[10px] text-slate-400 font-mono">ID: {p.id}</p>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4 font-bold text-rose-600">{p.categoryName || p.category}</td>
+                      <td className="py-3.5 px-4 font-bold text-amber-600">{p.categoryName || p.category}</td>
+                      <td className="py-3.5 px-4 uppercase text-[10px] font-bold text-slate-600">{p.gender}</td>
                       <td className="py-3.5 px-4 font-bold font-mono">₹{p.price.toLocaleString('en-IN')}</td>
                       <td className="py-3.5 px-4">
-                        <div className="flex flex-wrap gap-1">
-                          {p.sizes?.map((s) => (
-                            <span key={s} className="bg-slate-100 px-1.5 py-0.5 rounded text-[10px] font-bold text-slate-700">
-                              {s}
-                            </span>
-                          ))}
-                        </div>
+                        <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                          {p.tag || 'Standard'}
+                        </span>
                       </td>
                       <td className="py-3.5 px-4">
                         <span className={`font-bold px-2 py-0.5 rounded-full text-[10px] ${
-                          p.inStock < 10 ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'
+                          p.inStock < 10 ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'
                         }`}>
-                          {p.inStock} units left
+                          {p.inStock} units
                         </span>
                       </td>
                       <td className="py-3.5 px-6 text-right">
                         <span className="bg-slate-900 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
-                          Live Storefront
+                          Live
                         </span>
                       </td>
                     </tr>
@@ -467,7 +520,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
                 <tbody className="divide-y divide-slate-100 font-medium">
                   {orders.map((o) => (
                     <tr key={o.orderId} className="hover:bg-slate-50">
-                      <td className="py-3.5 px-6 font-mono font-bold text-rose-600">
+                      <td className="py-3.5 px-6 font-mono font-bold text-amber-600">
                         {o.orderId}
                       </td>
                       <td className="py-3.5 px-4">

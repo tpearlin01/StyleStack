@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Search, User, LogOut, Sparkles, X, ChevronDown } from 'lucide-react';
+import { ShoppingBag, Search, LogOut, Sparkles, X, ChevronDown } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { MOCK_CATEGORIES } from '../services/mockData';
@@ -16,9 +16,9 @@ export const Navbar = ({ selectedCategory, onSelectCategory, searchQuery, setSea
       {/* Top Announcement Banner */}
       <div className="bg-slate-900 text-slate-200 text-xs py-1.5 px-4 text-center font-medium flex items-center justify-center gap-2 border-b border-slate-800">
         <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-        <span>Festive Fashion Edition — Enjoy FREE Express Shipping on orders above ₹1,999!</span>
-        <span className="hidden sm:inline-block bg-rose-600 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ml-2">
-          Code: STYLE10
+        <span>Festive Fashion Edition — Enjoy 20% OFF on Traditional Wear + Free Shipping &gt; ₹1,999!</span>
+        <span className="hidden sm:inline-block bg-amber-500 text-slate-950 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ml-2">
+          Code: FESTIVE20
         </span>
       </div>
 
@@ -26,22 +26,22 @@ export const Navbar = ({ selectedCategory, onSelectCategory, searchQuery, setSea
         <div className="flex items-center justify-between h-20 gap-4">
           
           {/* Brand Logo & Monogram */}
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-6">
             <a href="#" className="flex items-center group text-left">
               <BrandLogo size="sm" subtitle="DRESS & CLOTHING HUB" />
             </a>
 
             {/* Category Navigation */}
             <nav className="hidden lg:flex items-center gap-1">
-              {MOCK_CATEGORIES.slice(0, 5).map((cat) => {
+              {MOCK_CATEGORIES.slice(0, 6).map((cat) => {
                 const isActive = selectedCategory === cat.id;
                 return (
                   <button
                     key={cat.id}
                     onClick={() => onSelectCategory(cat.id)}
-                    className={`px-3.5 py-2 rounded-full text-sm font-semibold transition-all ${
+                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
                       isActive
-                        ? 'bg-rose-600 text-white shadow-sm'
+                        ? 'bg-amber-500 text-slate-950 shadow-sm'
                         : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
                     }`}
                   >
@@ -52,9 +52,9 @@ export const Navbar = ({ selectedCategory, onSelectCategory, searchQuery, setSea
             </nav>
           </div>
 
-          {/* Search Bar */}
+          {/* Real-Time Search Bar */}
           <div className="flex-1 max-w-md mx-2">
-            <div className={`relative flex items-center transition-all ${isSearchFocused ? 'ring-2 ring-rose-500/30' : ''}`}>
+            <div className={`relative flex items-center transition-all ${isSearchFocused ? 'ring-2 ring-amber-400/40' : ''}`}>
               <Search className="absolute left-3.5 w-4 h-4 text-slate-400 pointer-events-none" />
               <input
                 type="text"
@@ -62,13 +62,14 @@ export const Navbar = ({ selectedCategory, onSelectCategory, searchQuery, setSea
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
-                placeholder="Search dresses, bags, cosmetics..."
-                className="w-full pl-10 pr-9 py-2 rounded-full bg-slate-900 border border-slate-800 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:bg-slate-900 focus:border-rose-500 transition-all"
+                placeholder="Search Kurta, Lehenga, Blazer, Dress, T-shirt..."
+                className="w-full pl-10 pr-9 py-2.5 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:bg-slate-900 focus:border-amber-500 transition-all"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
                   className="absolute right-3 p-1 rounded-full text-slate-400 hover:text-white hover:bg-slate-800"
+                  title="Clear Search"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -88,7 +89,7 @@ export const Navbar = ({ selectedCategory, onSelectCategory, searchQuery, setSea
                 <img
                   src={user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200'}
                   alt={user?.name || 'User'}
-                  className="w-8 h-8 rounded-full object-cover ring-2 ring-rose-500/40"
+                  className="w-8 h-8 rounded-full object-cover ring-2 ring-amber-500/40"
                 />
                 <span className="hidden sm:inline-block text-xs font-bold text-slate-200 max-w-[100px] truncate">
                   {user?.name || 'Customer'}
@@ -107,7 +108,7 @@ export const Navbar = ({ selectedCategory, onSelectCategory, searchQuery, setSea
                   </div>
                   <div className="px-4 py-2 text-xs text-slate-400 font-medium flex items-center justify-between">
                     <span>Role Session</span>
-                    <span className="bg-rose-500/20 text-rose-300 font-bold text-[10px] px-2 py-0.5 rounded-full uppercase border border-rose-500/30">
+                    <span className="bg-amber-500/20 text-amber-300 font-bold text-[10px] px-2 py-0.5 rounded-full uppercase border border-amber-500/30">
                       {role || 'Customer'}
                     </span>
                   </div>
@@ -130,12 +131,12 @@ export const Navbar = ({ selectedCategory, onSelectCategory, searchQuery, setSea
             {/* Shopping Cart Button */}
             <button
               onClick={openCart}
-              className="relative flex items-center justify-center p-2.5 rounded-full bg-rose-600 text-white hover:bg-rose-500 transition-colors shadow-md shadow-rose-600/20 group"
+              className="relative flex items-center justify-center p-2.5 rounded-full bg-amber-500 text-slate-950 hover:bg-amber-400 transition-colors shadow-md shadow-amber-500/20 group font-bold"
               aria-label="Shopping Cart"
             >
               <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform" />
               {totalItemCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-white text-rose-600 text-[11px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center ring-2 ring-slate-950 animate-pulse">
+                <span className="absolute -top-1.5 -right-1.5 bg-rose-600 text-white text-[11px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center ring-2 ring-slate-950 animate-pulse">
                   {totalItemCount}
                 </span>
               )}
