@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const BrandMonogram = ({ className = 'h-12 w-auto', color = 'currentColor' }) => {
+export const BrandMonogram = ({ className = 'h-12 w-auto' }) => {
   return (
     <svg
       viewBox="0 0 520 420"
@@ -12,16 +12,16 @@ export const BrandMonogram = ({ className = 'h-12 w-auto', color = 'currentColor
       <defs>
         {/* Luxury Warm Gold / Ivory Gradient */}
         <linearGradient id="phrGoldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#FDE68A" />
-          <stop offset="40%" stop-color="#F59E0B" />
-          <stop offset="80%" stop-color="#D97706" />
-          <stop offset="100%" stop-color="#B45309" />
+          <stop offset="0%" stopColor="#FDE68A" />
+          <stop offset="40%" stopColor="#F59E0B" />
+          <stop offset="80%" stopColor="#D97706" />
+          <stop offset="100%" stopColor="#B45309" />
         </linearGradient>
 
         <linearGradient id="phrIvoryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#FFFFFF" />
-          <stop offset="50%" stop-color="#F3F4F6" />
-          <stop offset="100%" stop-color="#E5E7EB" />
+          <stop offset="0%" stopColor="#FFFFFF" />
+          <stop offset="50%" stopColor="#F3F4F6" />
+          <stop offset="100%" stopColor="#E5E7EB" />
         </linearGradient>
       </defs>
 
