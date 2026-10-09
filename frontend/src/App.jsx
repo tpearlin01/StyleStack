@@ -115,6 +115,7 @@ function MainAppFlow() {
           setSelectedQuickFilter('all');
         }}
         searchQuery={searchQuery}
+        setSearchQuery={handleSearchChange}
         onSearchChange={handleSearchChange}
       />
 

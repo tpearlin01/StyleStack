@@ -5,19 +5,44 @@ import { useAuth } from '../context/AuthContext';
 import { MOCK_CATEGORIES } from '../services/mockData';
 import { BrandLogo } from './BrandLogo';
 
-export const Navbar = ({ selectedCategory, onSelectCategory, searchQuery, onSearchChange }) => {
+export const Navbar = ({
+  selectedCategory,
+  onSelectCategory,
+  searchQuery = '',
+  setSearchQuery,
+  onSearchChange,
+}) => {
   const { totalItemCount, openCart } = useCart();
   const { user, role, logout } = useAuth();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+  // Unify query updater support for either setSearchQuery or onSearchChange prop
+  const updateQuery = (val) => {
+    if (setSearchQuery) {
+      setSearchQuery(val);
+    } else if (onSearchChange) {
+      onSearchChange(val);
+    }
+  };
+
+  const handleInputFocus = () => {
+    // Smoothly scroll down to catalog if user clicks search while viewing top hero section
+    const catalogEl = document.getElementById('catalog');
+    if (catalogEl && (window.scrollY < 200 || catalogEl.getBoundingClientRect().top > 250)) {
+      catalogEl.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const handleInputChange = (e) => {
     const val = e.target.value;
-    onSearchChange(val);
+    updateQuery(val);
+    if (val.trim().length > 0) {
+      handleInputFocus();
+    }
   };
 
-  const handleClearSearch = () => {
-    onSearchChange('');
+  const handleClear = () => {
+    updateQuery('');
   };
 
   return (
@@ -61,24 +86,25 @@ export const Navbar = ({ selectedCategory, onSelectCategory, searchQuery, onSear
             </nav>
           </div>
 
-          {/* Dynamic Real-Time Search Bar */}
-          <div className="flex-1 max-w-md mx-2">
-            <div className={`relative flex items-center transition-all ${isSearchFocused ? 'ring-2 ring-rose-500/40' : ''}`}>
-              <Search className="absolute left-3.5 w-4 h-4 text-slate-400 pointer-events-none" />
+          {/* Real Interactive Search Bar Input */}
+          <div className="flex items-center justify-center flex-1 max-w-md mx-2">
+            <div className="relative flex items-center w-full bg-zinc-900/80 border border-zinc-700 focus-within:border-rose-500 focus-within:ring-2 focus-within:ring-rose-500/20 rounded-full px-3.5 py-2 transition-all shadow-inner">
+              <Search className="w-4 h-4 text-zinc-400 shrink-0 mr-2.5 pointer-events-none" />
+              
               <input
                 type="text"
                 value={searchQuery}
                 onChange={handleInputChange}
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setIsSearchFocused(false)}
-                placeholder="Search Kurta, Summer Dress, Tuxedo, Winter Coat, Bag, Sneakers..."
-                className="w-full pl-10 pr-9 py-2.5 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:bg-slate-900 focus:border-rose-500 transition-all"
+                onFocus={handleInputFocus}
+                placeholder="Search dresses, summer, winter, formals..."
+                className="w-full bg-transparent text-white placeholder-zinc-500 text-xs sm:text-sm font-medium outline-none focus:outline-none border-none p-0 cursor-text"
               />
+
               {searchQuery && (
                 <button
                   type="button"
-                  onClick={handleClearSearch}
-                  className="absolute right-3 p-1 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                  onClick={handleClear}
+                  className="ml-2 p-1 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors shrink-0 flex items-center justify-center"
                   title="Clear Search"
                   aria-label="Clear Search"
                 >
