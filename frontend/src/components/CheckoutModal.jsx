@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, CheckCircle, Printer, ShoppingBag, ArrowRight, ShieldCheck, CreditCard, Banknote, QrCode, MapPin, User, Mail, Sparkles, Loader2 } from 'lucide-react';
+import { X, CheckCircle, Printer, ArrowRight, CreditCard, Banknote, QrCode, MapPin, User, Mail, Loader2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { apiService } from '../services/api';
@@ -18,7 +18,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
   const [address, setAddress] = useState('42 Park Avenue, Haute Towers');
   const [city, setCity] = useState('Mumbai');
   const [pincode, setPincode] = useState('400001');
-  const [paymentMethod, setPaymentMethod] = useState('COD'); // 'COD' | 'UPI' | 'CARD'
+  const [paymentMethod, setPaymentMethod] = useState('COD');
   const [formError, setFormError] = useState('');
 
   // Generated Invoice Data State
@@ -85,17 +85,19 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
       <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-200 max-h-[92vh] flex flex-col">
         
         {/* Header Decorator */}
-        <div className="bg-slate-900 text-white p-6 relative overflow-hidden flex items-center justify-between">
+        <div className="bg-slate-950 text-white p-6 relative overflow-hidden flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 to-amber-500 flex items-center justify-center text-white font-bold font-serif-luxury text-xl shadow-md">
-              S
-            </div>
+            <img
+              src="/logo.png"
+              alt="StyleStack PnR Logo"
+              className="h-8 md:h-10 w-auto object-contain"
+            />
             <div>
-              <h3 className="font-serif-luxury text-xl font-bold">
+              <h3 className="font-sans font-bold text-xl text-[#F3F4F6]">
                 {step === 1 ? 'Checkout & Shipping' : 'Official Digital Invoice'}
               </h3>
               <p className="text-xs text-slate-400">
@@ -259,7 +261,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
             </div>
 
             {/* Total Order Summary Box */}
-            <div className="bg-slate-900 text-white p-4 rounded-2xl flex items-center justify-between text-xs font-bold">
+            <div className="bg-slate-950 text-white p-4 rounded-2xl flex items-center justify-between text-xs font-bold border border-slate-800">
               <div>
                 <span className="text-slate-400 block font-normal text-[11px]">Total Pay Amount (incl. 5% GST)</span>
                 <span className="text-2xl text-rose-400 font-mono">₹{totalAmount.toLocaleString('en-IN')}</span>
@@ -304,12 +306,19 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
               </span>
             </div>
 
-            {/* Official Header */}
+            {/* Official Header with PnR Logo */}
             <div className="flex justify-between items-start border-b border-slate-200 pb-4">
-              <div>
-                <span className="font-serif-luxury text-2xl font-bold text-slate-900">StyleStack</span>
-                <p className="text-xs text-slate-500">Haute Couture &amp; Lifestyle</p>
-                <p className="text-[11px] text-slate-400 mt-1">support@stylestack.com | GSTIN: 27AAAAA0000A1Z5</p>
+              <div className="flex items-center gap-3">
+                <img
+                  src="/logo.png"
+                  alt="StyleStack PnR Logo"
+                  className="h-10 w-auto object-contain"
+                />
+                <div>
+                  <span className="font-sans font-bold text-xl text-slate-900">StyleStack</span>
+                  <p className="text-xs text-slate-500">Dress &amp; Clothing Hub</p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">support@stylestack.com | GSTIN: 27AAAAA0000A1Z5</p>
+                </div>
               </div>
               <div className="text-right">
                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Digital Invoice</p>
@@ -414,7 +423,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
 
               <button
                 onClick={handleFinish}
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 hover:bg-rose-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-950 hover:bg-rose-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all"
               >
                 <span>Continue Shopping</span>
                 <ArrowRight className="w-4 h-4" />

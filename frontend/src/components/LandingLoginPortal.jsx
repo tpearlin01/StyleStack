@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, User, ShieldCheck, Mail, Lock, Phone, ArrowRight, ShoppingBag, LayoutDashboard, AlertCircle, CheckCircle } from 'lucide-react';
+import { Sparkles, User, ShieldCheck, Mail, Lock, Phone, ArrowRight, ShoppingBag, LayoutDashboard, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const LandingLoginPortal = ({ onLoginSuccess }) => {
@@ -75,44 +75,60 @@ export const LandingLoginPortal = ({ onLoginSuccess }) => {
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-rose-600/15 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[140px] pointer-events-none" />
       
-      {/* Background Decorative Pattern */}
+      {/* Background Grid Accent */}
       <div className="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:32px_32px] opacity-20 pointer-events-none" />
 
       {/* Top Header */}
       <header className="relative z-10 max-w-7xl mx-auto w-full px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-600 via-rose-500 to-amber-400 flex items-center justify-center text-white font-serif-luxury font-bold italic text-2xl shadow-xl shadow-rose-900/30">
-            S
-          </div>
-          <div>
-            <span className="font-serif-luxury text-2xl font-bold tracking-tight text-white">StyleStack</span>
-            <span className="block text-[10px] tracking-widest uppercase font-semibold text-rose-400 -mt-1">
-              Curated Fashion &amp; Apparel Hub
+          <img
+            src="/logo.png"
+            alt="StyleStack PnR Logo"
+            className="h-8 md:h-10 w-auto object-contain drop-shadow-[0_2px_10px_rgba(255,255,255,0.15)]"
+          />
+          <div className="flex flex-col">
+            <span className="font-sans font-bold text-xl md:text-2xl tracking-tight text-[#F3F4F6]">
+              StyleStack
+            </span>
+            <span className="text-[10px] tracking-widest uppercase font-semibold text-rose-400 -mt-1">
+              Dress &amp; Clothing Hub
             </span>
           </div>
         </div>
 
         <div className="hidden sm:flex items-center gap-3 text-xs text-slate-400 font-medium">
-          <Sparkles className="w-4 h-4 text-amber-400" />
+          <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
           <span>Haute Couture Collection 2026</span>
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex-1 flex items-center justify-center">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
+      {/* Main Welcome Portal Content */}
+      <main className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex-1 flex items-center justify-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center w-full">
           
-          {/* Left Column: Hero Text Branding */}
+          {/* Left Column: Hero Text & Monogram Centerpiece */}
           <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-semibold uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Unified Customer &amp; Admin Portal</span>
+            
+            {/* Centerpiece PnR Logo */}
+            <div className="flex flex-col items-center lg:items-start gap-4">
+              <div className="p-3 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl backdrop-blur-md inline-block">
+                <img
+                  src="/logo.png"
+                  alt="StyleStack PnR Logo"
+                  className="h-20 md:h-24 w-auto object-contain drop-shadow-[0_4px_20px_rgba(225,29,72,0.35)]"
+                />
+              </div>
+
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-semibold uppercase tracking-wider">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Princel &amp; Pearlin Monogram Edition</span>
+              </div>
             </div>
 
             <h1 className="font-serif-luxury text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
-              Step Into The World Of <br />
+              Curated Fashion &amp; <br />
               <span className="bg-gradient-to-r from-rose-400 via-amber-200 to-rose-300 bg-clip-text text-transparent italic">
-                Effortless Fashion
+                Style Stack Hub
               </span>
             </h1>
 
@@ -120,8 +136,8 @@ export const LandingLoginPortal = ({ onLoginSuccess }) => {
               Explore haute couture silk maxis, Italian leather totes, and botanical cosmetics, or manage store inventory and fulfill live customer orders.
             </p>
 
-            {/* Quick Demo Access Bar */}
-            <div className="pt-4 space-y-3">
+            {/* Quick Demo Access Buttons */}
+            <div className="pt-2 space-y-3">
               <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
                 Instant Quick Access (One-Click Demo):
               </p>
@@ -149,11 +165,11 @@ export const LandingLoginPortal = ({ onLoginSuccess }) => {
             </div>
           </div>
 
-          {/* Right Column: Centralized Clean Auth Card */}
+          {/* Right Column: Centralized Auth Card */}
           <div className="lg:col-span-6 max-w-md mx-auto w-full">
             <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-rose-950/20 relative">
               
-              {/* Role Toggle Selector */}
+              {/* Role Selector */}
               <div className="mb-6">
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 text-center">
                   Select Login Portal Role
@@ -193,10 +209,10 @@ export const LandingLoginPortal = ({ onLoginSuccess }) => {
                 </div>
               </div>
 
-              {/* Header Title */}
+              {/* Card Title */}
               <div className="text-center mb-6">
-                <h3 className="font-serif-luxury text-2xl font-bold text-white">
-                  {role === 'customer' ? 'Customer Sign In' : 'Admin Portal Access'}
+                <h3 className="font-sans font-bold text-2xl text-[#F3F4F6]">
+                  {role === 'customer' ? 'StyleStack Sign In' : 'Admin Portal Access'}
                 </h3>
                 <p className="text-xs text-slate-400 mt-1">
                   {mode === 'login'
@@ -284,7 +300,7 @@ export const LandingLoginPortal = ({ onLoginSuccess }) => {
                   </div>
                 </div>
 
-                {/* Compulsory 10-Digit Phone Number Field */}
+                {/* Compulsory 10-Digit Mobile Number */}
                 <div>
                   <div className="flex justify-between items-center mb-1">
                     <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">
@@ -346,7 +362,7 @@ export const LandingLoginPortal = ({ onLoginSuccess }) => {
 
       {/* Footer */}
       <footer className="relative z-10 max-w-7xl mx-auto w-full px-6 py-4 text-center text-xs text-slate-500 border-t border-slate-900">
-        © {new Date().getFullYear()} StyleStack E-Commerce. Developed by Princel &amp; Pearlin.
+        © {new Date().getFullYear()} StyleStack Dress &amp; Clothing Hub. Monogram Identity PnR by Princel &amp; Pearlin.
       </footer>
 
     </div>

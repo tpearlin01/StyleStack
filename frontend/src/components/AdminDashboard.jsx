@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IndianRupee, Package, AlertTriangle, Plus, RefreshCw, LogOut, ArrowLeft, Image as ImageIcon, Sparkles, ShieldCheck } from 'lucide-react';
+import { IndianRupee, Package, AlertTriangle, Plus, RefreshCw, LogOut, Image as ImageIcon } from 'lucide-react';
 import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -106,15 +106,17 @@ export const AdminDashboard = ({ onProductAdded }) => {
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 pb-16">
       {/* Top Header */}
-      <header className="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-md">
+      <header className="bg-slate-950 text-white border-b border-slate-800 sticky top-0 z-30 shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-600 flex items-center justify-center text-white font-serif-luxury font-bold text-xl shadow-md">
-              S
-            </div>
+            <img
+              src="/logo.png"
+              alt="StyleStack PnR Logo"
+              className="h-8 md:h-10 w-auto object-contain"
+            />
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-serif-luxury text-xl font-bold tracking-tight">StyleStack</span>
+                <span className="font-sans font-bold text-xl tracking-tight text-[#F3F4F6]">StyleStack</span>
                 <span className="bg-amber-500/20 text-amber-300 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border border-amber-500/30">
                   Admin Portal
                 </span>
@@ -229,7 +231,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
             </div>
 
             {formSuccess && (
-              <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-2xl flex items-center gap-2">
+              <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-2xl">
                 <span>{formSuccess}</span>
               </div>
             )}
@@ -343,24 +345,6 @@ export const AdminDashboard = ({ onProductAdded }) => {
                     placeholder="https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&q=80&w=800"
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
                   />
-                </div>
-                {/* Presets */}
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase">Quick Unsplash Presets:</span>
-                  <button
-                    type="button"
-                    onClick={() => setImageUrl('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=800')}
-                    className="text-[10px] bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded text-slate-700 font-medium"
-                  >
-                    High-Fashion Gown
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setImageUrl('https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?auto=format&fit=crop&q=80&w=800')}
-                    className="text-[10px] bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded text-slate-700 font-medium"
-                  >
-                    Designer Clutch
-                  </button>
                 </div>
               </div>
 
