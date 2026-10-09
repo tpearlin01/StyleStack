@@ -5,11 +5,20 @@ import { useAuth } from '../context/AuthContext';
 import { MOCK_CATEGORIES } from '../services/mockData';
 import { BrandLogo } from './BrandLogo';
 
-export const Navbar = ({ selectedCategory, onSelectCategory, searchQuery, setSearchQuery }) => {
+export const Navbar = ({ selectedCategory, onSelectCategory, searchQuery, onSearchChange }) => {
   const { totalItemCount, openCart } = useCart();
   const { user, role, logout } = useAuth();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+  const handleInputChange = (e) => {
+    const val = e.target.value;
+    onSearchChange(val);
+  };
+
+  const handleClearSearch = () => {
+    onSearchChange('');
+  };
 
   return (
     <header className="sticky top-0 z-40 bg-slate-950/95 backdrop-blur-md border-b border-slate-800 text-white shadow-md transition-all duration-200">
@@ -52,24 +61,26 @@ export const Navbar = ({ selectedCategory, onSelectCategory, searchQuery, setSea
             </nav>
           </div>
 
-          {/* Real-Time Search Bar */}
+          {/* Dynamic Real-Time Search Bar */}
           <div className="flex-1 max-w-md mx-2">
             <div className={`relative flex items-center transition-all ${isSearchFocused ? 'ring-2 ring-rose-500/40' : ''}`}>
               <Search className="absolute left-3.5 w-4 h-4 text-slate-400 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleInputChange}
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
-                placeholder="Search Kurta, Lehenga, Blazer, Dress, T-shirt, Bag..."
+                placeholder="Search Kurta, Summer Dress, Tuxedo, Winter Coat, Bag, Sneakers..."
                 className="w-full pl-10 pr-9 py-2.5 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:bg-slate-900 focus:border-rose-500 transition-all"
               />
               {searchQuery && (
                 <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 p-1 rounded-full text-slate-400 hover:text-white hover:bg-slate-800"
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="absolute right-3 p-1 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
                   title="Clear Search"
+                  aria-label="Clear Search"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>

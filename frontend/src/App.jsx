@@ -13,7 +13,7 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { Footer } from './components/Footer';
 import { ToastNotification } from './components/ToastNotification';
 import { apiService } from './services/api';
-import { SearchX, RotateCcw } from 'lucide-react';
+import { SearchX, RotateCcw, X, Sparkles } from 'lucide-react';
 
 function MainAppFlow() {
   const { session, isAuthenticated, role } = useAuth();
@@ -62,6 +62,21 @@ function MainAppFlow() {
     }
   }, [isAuthenticated, role, selectedCategory, selectedQuickFilter, selectedSize, searchQuery, sortBy, minPrice, maxPrice]);
 
+  const handleSearchChange = (query) => {
+    setSearchQuery(query);
+    
+    // Smooth scroll to catalog grid when typing in Navbar if user is at the top/hero section
+    if (query.trim().length > 0) {
+      const catalogEl = document.getElementById('catalog');
+      if (catalogEl) {
+        const rect = catalogEl.getBoundingClientRect();
+        if (rect.top > 300 || window.scrollY < 200) {
+          catalogEl.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+  };
+
   const handleResetFilters = () => {
     setSelectedCategory('all');
     setSelectedQuickFilter('all');
@@ -100,7 +115,7 @@ function MainAppFlow() {
           setSelectedQuickFilter('all');
         }}
         searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
+        onSearchChange={handleSearchChange}
       />
 
       {/* Hero Section */}
@@ -112,21 +127,34 @@ function MainAppFlow() {
         {/* Catalog Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-rose-600">
-              StyleStack Fashion Catalog
-            </span>
-            <h2 className="font-serif-luxury text-3xl sm:text-4xl font-bold text-slate-900 mt-1">
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-rose-600 mb-1">
+              <Sparkles className="w-3.5 h-3.5 text-rose-500" />
+              <span>StyleStack Real-Time Catalog</span>
+            </div>
+            <h2 className="font-serif-luxury text-3xl sm:text-4xl font-bold text-slate-900">
               Curated Dress &amp; Clothing Collections
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Explore festive traditional wear, tailored formals, summer dresses, Italian leather bags, and designer footwear.
+              Explore festive traditional wear, tailored formals, summer dresses, winter coats, and luxury accessories.
             </p>
           </div>
 
           {searchQuery && (
-            <div className="text-xs text-slate-600 font-medium bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-xl flex items-center gap-2">
-              <span>Filtering search results for:</span>
-              <strong className="text-slate-950 font-bold">"{searchQuery}"</strong>
+            <div className="text-xs text-slate-700 font-medium bg-rose-50/80 border border-rose-200 px-3.5 py-2 rounded-2xl flex items-center justify-between gap-3 shadow-xs">
+              <div className="flex items-center gap-1.5 truncate">
+                <span className="text-slate-500">Search results for:</span>
+                <strong className="text-slate-950 font-bold font-mono">"{searchQuery}"</strong>
+                <span className="bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full ml-1">
+                  {products.length} {products.length === 1 ? 'match' : 'matches'}
+                </span>
+              </div>
+              <button
+                onClick={() => setSearchQuery('')}
+                className="p-1 rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-100 transition-colors"
+                title="Clear Search"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
             </div>
           )}
         </div>
@@ -153,7 +181,7 @@ function MainAppFlow() {
           totalResults={products.length}
         />
 
-        {/* Product Grid */}
+        {/* Product Grid / Dynamic States */}
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-12">
             {[...Array(8)].map((_, i) => (
@@ -166,25 +194,32 @@ function MainAppFlow() {
             ))}
           </div>
         ) : products.length === 0 ? (
-          <div className="bg-white rounded-3xl p-12 border border-slate-200 text-center max-w-md mx-auto my-12 space-y-4 shadow-sm">
-            <div className="w-16 h-16 rounded-full bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 mx-auto">
-              <SearchX className="w-8 h-8" />
+          /* Elegant Dark-Themed Empty State */
+          <div className="bg-slate-950 text-white rounded-3xl p-10 sm:p-14 border border-slate-800 text-center max-w-lg mx-auto my-12 space-y-5 shadow-2xl shadow-slate-950/40 animate-in fade-in zoom-in-95 duration-200">
+            <div className="w-20 h-20 rounded-3xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 mx-auto shadow-inner">
+              <SearchX className="w-10 h-10" />
             </div>
-            <h3 className="font-serif-luxury text-xl font-bold text-slate-900">
-              No Products Found
-            </h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              {searchQuery
-                ? `No fashion items matched your search query "${searchQuery}". Try searching with different keywords.`
-                : 'We couldn’t find any fashion items matching your current filters. Try resetting your filters to explore our full collection.'}
-            </p>
-            <button
-              onClick={handleResetFilters}
-              className="px-6 py-2.5 rounded-full bg-slate-950 text-white text-xs font-bold hover:bg-rose-600 transition-colors shadow-md flex items-center gap-2 mx-auto"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Reset All Filters</span>
-            </button>
+
+            <div className="space-y-2">
+              <h3 className="font-serif-luxury text-2xl font-bold text-white">
+                {searchQuery ? `No styles found for "${searchQuery}"` : 'No products found'}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto leading-relaxed">
+                {searchQuery
+                  ? `We couldn't find any fashion items matching "${searchQuery}". Try searching for categories like "summer", "winter", "formal", "kurta", "lehenga", or "dress".`
+                  : 'We couldn’t find any fashion apparel matching your current combination of filters. Try resetting your filters to explore our full collection.'}
+              </p>
+            </div>
+
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button
+                onClick={handleResetFilters}
+                className="w-full sm:w-auto px-7 py-3 rounded-full bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-all shadow-lg shadow-rose-600/25 flex items-center justify-center gap-2"
+              >
+                <RotateCcw className="w-4 h-4" />
+                <span>Clear Search &amp; Reset Filters</span>
+              </button>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

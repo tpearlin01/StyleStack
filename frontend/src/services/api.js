@@ -85,11 +85,11 @@ export const apiService = {
 
     let catalog = MOCK_PRODUCTS;
     try {
-      const stored = localStorage.getItem('stylestack_catalog_v3');
+      const stored = localStorage.getItem('stylestack_catalog_v4');
       if (stored) {
         catalog = JSON.parse(stored);
       } else {
-        localStorage.setItem('stylestack_catalog_v3', JSON.stringify(MOCK_PRODUCTS));
+        localStorage.setItem('stylestack_catalog_v4', JSON.stringify(MOCK_PRODUCTS));
       }
     } catch (e) {
       console.error('Error reading catalog', e);
@@ -104,7 +104,7 @@ export const apiService = {
         result = result.filter((p) => p.gender === catLower);
       } else {
         result = result.filter(
-          (p) => p.category.toLowerCase() === catLower
+          (p) => p.category && p.category.toLowerCase() === catLower
         );
       }
     }
@@ -131,17 +131,26 @@ export const apiService = {
       );
     }
 
-    // Real-Time Search Query Filter (Title, Category, Gender, Description, Tag)
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          (p.categoryName && p.categoryName.toLowerCase().includes(q)) ||
-          (p.gender && p.gender.toLowerCase().includes(q)) ||
-          (p.tag && p.tag.toLowerCase().includes(q)) ||
-          (p.description && p.description.toLowerCase().includes(q))
-      );
+    // Real-Time Smart Search Query Filter (Multi-Field & Keyword Matching)
+    if (searchQuery && searchQuery.trim()) {
+      const terms = searchQuery.toLowerCase().trim().split(/\s+/).filter(Boolean);
+      result = result.filter((p) => {
+        const searchableCorpus = [
+          p.name || '',
+          p.category || '',
+          p.categoryName || '',
+          p.gender || '',
+          p.tag || '',
+          p.season || '',
+          p.style || '',
+          Array.isArray(p.tags) ? p.tags.join(' ') : '',
+          p.description || '',
+          p.imageUrl || '',
+        ].join(' ').toLowerCase();
+
+        // Every term entered should be matched in the product's searchable data
+        return terms.every((term) => searchableCorpus.includes(term));
+      });
     }
 
     // Filter by Price
@@ -189,10 +198,10 @@ export const apiService = {
     };
 
     try {
-      const stored = localStorage.getItem('stylestack_catalog_v3');
+      const stored = localStorage.getItem('stylestack_catalog_v4');
       const catalog = stored ? JSON.parse(stored) : [...MOCK_PRODUCTS];
       const updatedCatalog = [newProduct, ...catalog];
-      localStorage.setItem('stylestack_catalog_v3', JSON.stringify(updatedCatalog));
+      localStorage.setItem('stylestack_catalog_v4', JSON.stringify(updatedCatalog));
     } catch (e) {
       console.error('Error saving new product', e);
     }
