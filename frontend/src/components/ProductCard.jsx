@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Star, Eye, Sparkles, Tag, Flame } from 'lucide-react';
+import { ShoppingBag, Star, Eye, Sparkles, Flame } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 export const ProductCard = ({ product, onQuickView }) => {
@@ -18,7 +18,7 @@ export const ProductCard = ({ product, onQuickView }) => {
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-amber-300/60 transition-all duration-300 flex flex-col overflow-hidden"
+      className="group relative bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-300 flex flex-col overflow-hidden"
     >
       {/* Product Image Container */}
       <div
@@ -36,19 +36,19 @@ export const ProductCard = ({ product, onQuickView }) => {
         {product.tag && (
           <div className="absolute top-3 left-3 flex flex-col gap-1 z-10">
             {product.tag === 'Festive Offer' && (
-              <span className="bg-amber-500 text-slate-950 font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 border border-amber-300">
-                <Sparkles className="w-3 h-3 text-slate-950 fill-slate-950" />
+              <span className="bg-rose-600 text-white font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-white fill-white" />
                 <span>Festive Offer • 20% OFF</span>
               </span>
             )}
             {product.tag === 'Sale' && (
-              <span className="bg-rose-600 text-white font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
-                <Flame className="w-3 h-3 text-white fill-white" />
+              <span className="bg-slate-950 text-white font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 border border-slate-700">
+                <Flame className="w-3 h-3 text-rose-500 fill-rose-500" />
                 <span>On Sale</span>
               </span>
             )}
             {product.tag === 'New Arrival' && (
-              <span className="bg-slate-950/90 backdrop-blur-md text-amber-300 font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md border border-amber-400/30">
+              <span className="bg-slate-950/90 backdrop-blur-md text-white font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md border border-slate-700">
                 New Arrival
               </span>
             )}
@@ -63,7 +63,7 @@ export const ProductCard = ({ product, onQuickView }) => {
           }}
           className={`absolute inset-x-4 bottom-4 py-2.5 bg-slate-950/90 backdrop-blur-md text-white text-xs font-bold rounded-xl shadow-lg border border-slate-700 flex items-center justify-center gap-2 transition-all duration-300 ${
             isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
-          } hover:bg-amber-500 hover:text-slate-950 hover:border-amber-500`}
+          } hover:bg-rose-600 hover:border-rose-600`}
         >
           <Eye className="w-4 h-4" />
           <span>Quick View</span>
@@ -75,11 +75,11 @@ export const ProductCard = ({ product, onQuickView }) => {
         <div>
           {/* Category Tag & Rating */}
           <div className="flex items-center justify-between text-xs text-slate-400 font-medium mb-1">
-            <span className="uppercase tracking-wider font-bold text-amber-600 text-[10px]">
-              {product.categoryName} • {product.gender === 'men' ? 'Men' : 'Women'}
+            <span className="uppercase tracking-wider font-bold text-rose-600 text-[10px]">
+              {product.categoryName || product.category} • {product.gender === 'men' ? 'Men' : 'Women'}
             </span>
-            <div className="flex items-center gap-1 text-slate-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
-              <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+            <div className="flex items-center gap-1 text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">
+              <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
               <span className="font-bold text-[11px]">{product.rating}</span>
               <span className="text-[10px] text-slate-400">({product.reviewsCount})</span>
             </div>
@@ -88,7 +88,7 @@ export const ProductCard = ({ product, onQuickView }) => {
           {/* Product Name */}
           <h4
             onClick={() => onQuickView(product)}
-            className="font-bold text-slate-900 text-sm sm:text-base leading-snug line-clamp-1 group-hover:text-amber-600 transition-colors cursor-pointer"
+            className="font-bold text-slate-900 text-sm sm:text-base leading-snug line-clamp-1 group-hover:text-rose-600 transition-colors cursor-pointer"
             title={product.name}
           >
             {product.name}
@@ -105,7 +105,7 @@ export const ProductCard = ({ product, onQuickView }) => {
               </span>
             )}
             {product.originalPrice && (
-              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+              <span className="text-[10px] font-bold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">
                 {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
               </span>
             )}
@@ -143,7 +143,7 @@ export const ProductCard = ({ product, onQuickView }) => {
         {/* Add to Cart CTA Button */}
         <button
           onClick={handleAddToCart}
-          className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-amber-500 hover:text-slate-950 text-white font-bold text-xs shadow-md shadow-slate-950/10 transition-all duration-200 flex items-center justify-center gap-2 group/btn"
+          className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-rose-600 text-white font-bold text-xs shadow-md shadow-slate-950/10 transition-all duration-200 flex items-center justify-center gap-2 group/btn"
         >
           <ShoppingBag className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
           <span>Add to Cart</span>

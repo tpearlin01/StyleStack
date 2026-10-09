@@ -66,7 +66,8 @@ export const AdminDashboard = ({ onProductAdded }) => {
     else if (val === 'formal') setCategoryName('Formals');
     else if (val === 'casual') setCategoryName('Casual / Summer');
     else if (val === 'winter') setCategoryName('Winter Wear');
-    else if (val === 'accessories') setCategoryName('Accessories');
+    else if (val === 'accessories') setCategoryName('Bags & Accessories');
+    else if (val === 'shoes') setCategoryName('Footwear');
   };
 
   const handleAddProductSubmit = async (e) => {
@@ -178,7 +179,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
 
           {/* Low Stock Alert Metric */}
           <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
+            <div className="w-14 h-14 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600">
               <AlertTriangle className="w-7 h-7" />
             </div>
             <div>
@@ -186,7 +187,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
               <h3 className="font-serif-luxury text-3xl font-bold text-slate-900 mt-0.5">
                 {lowStockCount}
               </h3>
-              <p className="text-[11px] text-amber-600 font-medium">Items with &lt; 10 units in stock</p>
+              <p className="text-[11px] text-rose-600 font-medium">Items with &lt; 10 units in stock</p>
             </div>
           </div>
 
@@ -198,7 +199,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
             onClick={() => setActiveTab('overview')}
             className={`pb-3 text-sm font-bold border-b-2 transition-all ${
               activeTab === 'overview'
-                ? 'border-amber-600 text-amber-600'
+                ? 'border-rose-600 text-rose-600'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -208,7 +209,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
             onClick={() => setActiveTab('add-product')}
             className={`pb-3 text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 ${
               activeTab === 'add-product'
-                ? 'border-amber-600 text-amber-600'
+                ? 'border-rose-600 text-rose-600'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -219,7 +220,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
             onClick={() => setActiveTab('orders')}
             className={`pb-3 text-sm font-bold border-b-2 transition-all ${
               activeTab === 'orders'
-                ? 'border-amber-600 text-amber-600'
+                ? 'border-rose-600 text-rose-600'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -262,7 +263,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="e.g. Silk Zari Embroidered Kurta"
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
                   />
                 </div>
 
@@ -273,13 +274,14 @@ export const AdminDashboard = ({ onProductAdded }) => {
                   <select
                     value={category}
                     onChange={handleCategoryChange}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 bg-white"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 bg-white"
                   >
                     <option value="traditional">Festive / Traditional</option>
                     <option value="formal">Formals</option>
                     <option value="casual">Casual / Summer</option>
                     <option value="winter">Winter Wear</option>
-                    <option value="accessories">Accessories</option>
+                    <option value="accessories">Bags &amp; Accessories</option>
+                    <option value="shoes">Footwear</option>
                   </select>
                 </div>
               </div>
@@ -292,7 +294,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
                   <select
                     value={gender}
                     onChange={(e) => setGender(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 bg-white"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 bg-white"
                   >
                     <option value="women">Women</option>
                     <option value="men">Men</option>
@@ -311,7 +313,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     placeholder="3999"
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
                   />
                 </div>
 
@@ -322,7 +324,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
                   <select
                     value={tag}
                     onChange={(e) => setTag(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 bg-white"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 bg-white"
                   >
                     <option value="New Arrival">New Arrival</option>
                     <option value="Festive Offer">Festive Offer</option>
@@ -343,7 +345,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
                         type="checkbox"
                         checked={selectedSizes.includes(sz)}
                         onChange={() => handleSizeToggle(sz)}
-                        className="w-4 h-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                        className="w-4 h-4 rounded border-slate-300 text-rose-600 focus:ring-rose-500"
                       />
                       <span>{sz}</span>
                     </label>
@@ -364,7 +366,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
                     placeholder="/images/women tarditional dress/1183653B-EA4C-4D27-A91A-900C61473B85_600x.webp"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 font-mono"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 font-mono"
                   />
                 </div>
                 {/* Presets */}
@@ -404,13 +406,13 @@ export const AdminDashboard = ({ onProductAdded }) => {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Tailored silk festive attire with embellished craftsmanship..."
-                  className="w-full px-4 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                  className="w-full px-4 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 px-6 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2"
+                className="w-full py-3.5 px-6 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2"
               >
                 <Plus className="w-4 h-4" />
                 <span>Publish Apparel Item to Catalog &amp; Storefront</span>
@@ -464,11 +466,11 @@ export const AdminDashboard = ({ onProductAdded }) => {
                           <p className="text-[10px] text-slate-400 font-mono">ID: {p.id}</p>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4 font-bold text-amber-600">{p.categoryName || p.category}</td>
+                      <td className="py-3.5 px-4 font-bold text-rose-600">{p.categoryName || p.category}</td>
                       <td className="py-3.5 px-4 uppercase text-[10px] font-bold text-slate-600">{p.gender}</td>
                       <td className="py-3.5 px-4 font-bold font-mono">₹{p.price.toLocaleString('en-IN')}</td>
                       <td className="py-3.5 px-4">
-                        <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        <span className="bg-slate-100 text-slate-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-slate-200">
                           {p.tag || 'Standard'}
                         </span>
                       </td>
@@ -520,7 +522,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
                 <tbody className="divide-y divide-slate-100 font-medium">
                   {orders.map((o) => (
                     <tr key={o.orderId} className="hover:bg-slate-50">
-                      <td className="py-3.5 px-6 font-mono font-bold text-amber-600">
+                      <td className="py-3.5 px-6 font-mono font-bold text-rose-600">
                         {o.orderId}
                       </td>
                       <td className="py-3.5 px-4">

@@ -11,17 +11,17 @@ export const Footer = () => {
           <div className="space-y-3">
             <BrandLogo size="sm" subtitle="DRESS & CLOTHING HUB" />
             <p className="text-slate-400 text-xs leading-relaxed">
-              Curated luxury fashion, silk dresses, Italian leather bags, and botanical cosmetics for modern style trendsetters.
+              Curated fashion apparel, festive ethnic wear, bespoke suits, Italian leather bags, and designer footwear.
             </p>
           </div>
 
           <div>
             <h4 className="font-bold text-white text-sm mb-3">Categories</h4>
             <ul className="space-y-2">
-              <li><a href="#catalog" className="hover:text-white transition-colors">Silk &amp; Floral Dresses</a></li>
-              <li><a href="#catalog" className="hover:text-white transition-colors">Leather Totes &amp; Bags</a></li>
-              <li><a href="#catalog" className="hover:text-white transition-colors">Stiletto &amp; Chelsea Footwear</a></li>
-              <li><a href="#catalog" className="hover:text-white transition-colors">Luminous Cosmetics</a></li>
+              <li><a href="#catalog" className="hover:text-white transition-colors">Festive &amp; Traditional Wear</a></li>
+              <li><a href="#catalog" className="hover:text-white transition-colors">Executive Formals &amp; Suits</a></li>
+              <li><a href="#catalog" className="hover:text-white transition-colors">Casual &amp; Summer Dresses</a></li>
+              <li><a href="#catalog" className="hover:text-white transition-colors">Bags, Footwear &amp; Accessories</a></li>
             </ul>
           </div>
 
@@ -41,7 +41,7 @@ export const Footer = () => {
               Frontend developed by <strong className="text-rose-400">Princel</strong> (React + Vite + Tailwind CSS). Decoupled API service layer with standalone mock data.
             </p>
             <p className="text-slate-400 text-xs">
-              Backend architecture developed by <strong className="text-amber-400">Pearlin</strong>.
+              Backend architecture developed by <strong className="text-slate-300">Pearlin</strong>.
             </p>
           </div>
 

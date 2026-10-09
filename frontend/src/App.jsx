@@ -91,7 +91,7 @@ function MainAppFlow() {
 
   // 3. CUSTOMER ROLE: Show Customer Storefront
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col selection:bg-amber-500 selection:text-slate-950">
+    <div className="min-h-screen bg-slate-50 flex flex-col selection:bg-rose-600 selection:text-white">
       {/* Navigation Bar */}
       <Navbar
         selectedCategory={selectedCategory}
@@ -112,19 +112,19 @@ function MainAppFlow() {
         {/* Catalog Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-amber-600">
-              StyleStack Apparel Catalog
+            <span className="text-xs font-bold uppercase tracking-widest text-rose-600">
+              StyleStack Fashion Catalog
             </span>
             <h2 className="font-serif-luxury text-3xl sm:text-4xl font-bold text-slate-900 mt-1">
               Curated Dress &amp; Clothing Collections
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Explore festive traditional ensembles, sharp formals, breathable summer wear, and handcrafted accessories.
+              Explore festive traditional wear, tailored formals, summer dresses, Italian leather bags, and designer footwear.
             </p>
           </div>
 
           {searchQuery && (
-            <div className="text-xs text-slate-600 font-medium bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-xl flex items-center gap-2">
+            <div className="text-xs text-slate-600 font-medium bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-xl flex items-center gap-2">
               <span>Filtering search results for:</span>
               <strong className="text-slate-950 font-bold">"{searchQuery}"</strong>
             </div>
@@ -167,7 +167,7 @@ function MainAppFlow() {
           </div>
         ) : products.length === 0 ? (
           <div className="bg-white rounded-3xl p-12 border border-slate-200 text-center max-w-md mx-auto my-12 space-y-4 shadow-sm">
-            <div className="w-16 h-16 rounded-full bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 mx-auto">
+            <div className="w-16 h-16 rounded-full bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 mx-auto">
               <SearchX className="w-8 h-8" />
             </div>
             <h3 className="font-serif-luxury text-xl font-bold text-slate-900">
@@ -180,7 +180,7 @@ function MainAppFlow() {
             </p>
             <button
               onClick={handleResetFilters}
-              className="px-6 py-2.5 rounded-full bg-slate-950 text-white text-xs font-bold hover:bg-amber-500 hover:text-slate-950 transition-colors shadow-md flex items-center gap-2 mx-auto"
+              className="px-6 py-2.5 rounded-full bg-slate-950 text-white text-xs font-bold hover:bg-rose-600 transition-colors shadow-md flex items-center gap-2 mx-auto"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Reset All Filters</span>

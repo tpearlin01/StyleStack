@@ -85,11 +85,11 @@ export const apiService = {
 
     let catalog = MOCK_PRODUCTS;
     try {
-      const stored = localStorage.getItem('stylestack_catalog_v2');
+      const stored = localStorage.getItem('stylestack_catalog_v3');
       if (stored) {
         catalog = JSON.parse(stored);
       } else {
-        localStorage.setItem('stylestack_catalog_v2', JSON.stringify(MOCK_PRODUCTS));
+        localStorage.setItem('stylestack_catalog_v3', JSON.stringify(MOCK_PRODUCTS));
       }
     } catch (e) {
       console.error('Error reading catalog', e);
@@ -189,10 +189,10 @@ export const apiService = {
     };
 
     try {
-      const stored = localStorage.getItem('stylestack_catalog_v2');
+      const stored = localStorage.getItem('stylestack_catalog_v3');
       const catalog = stored ? JSON.parse(stored) : [...MOCK_PRODUCTS];
       const updatedCatalog = [newProduct, ...catalog];
-      localStorage.setItem('stylestack_catalog_v2', JSON.stringify(updatedCatalog));
+      localStorage.setItem('stylestack_catalog_v3', JSON.stringify(updatedCatalog));
     } catch (e) {
       console.error('Error saving new product', e);
     }

@@ -63,8 +63,8 @@ export const LandingLoginPortal = ({ onLoginSuccess }) => {
     <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-between relative overflow-hidden selection:bg-rose-600 selection:text-white">
       
       {/* Background Ambient Glows */}
-      <div className="absolute top-0 left-1/3 w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-[160px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-rose-600/10 rounded-full blur-[160px] pointer-events-none" />
+      <div className="absolute top-0 left-1/3 w-[600px] h-[600px] bg-rose-600/10 rounded-full blur-[160px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-slate-800/40 rounded-full blur-[160px] pointer-events-none" />
 
       {/* Main Container - Centered Clean Layout */}
       <main className="relative z-10 max-w-xl mx-auto w-full px-4 sm:px-6 py-10 flex-1 flex flex-col items-center justify-center space-y-8">
@@ -104,7 +104,7 @@ export const LandingLoginPortal = ({ onLoginSuccess }) => {
                 }}
                 className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
                   role === 'admin'
-                    ? 'bg-amber-600 text-white shadow-md'
+                    ? 'bg-slate-800 text-white shadow-md border border-slate-700'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -124,7 +124,7 @@ export const LandingLoginPortal = ({ onLoginSuccess }) => {
               }}
               className={`flex-1 pb-3 text-xs font-bold border-b-2 transition-all ${
                 mode === 'login'
-                  ? 'border-amber-500 text-amber-400'
+                  ? 'border-rose-600 text-rose-400'
                   : 'border-transparent text-slate-500 hover:text-slate-300'
               }`}
             >
@@ -138,7 +138,7 @@ export const LandingLoginPortal = ({ onLoginSuccess }) => {
               }}
               className={`flex-1 pb-3 text-xs font-bold border-b-2 transition-all ${
                 mode === 'register'
-                  ? 'border-amber-500 text-amber-400'
+                  ? 'border-rose-600 text-rose-400'
                   : 'border-transparent text-slate-500 hover:text-slate-300'
               }`}
             >
@@ -170,7 +170,7 @@ export const LandingLoginPortal = ({ onLoginSuccess }) => {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Enter your full name"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-colors"
                   />
                 </div>
               </div>
@@ -188,7 +188,7 @@ export const LandingLoginPortal = ({ onLoginSuccess }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-colors"
                 />
               </div>
             </div>
@@ -200,7 +200,7 @@ export const LandingLoginPortal = ({ onLoginSuccess }) => {
                   Mobile Number (Compulsory 10 Digits) *
                 </label>
                 {phone.length > 0 && (
-                  <span className="text-[10px] text-amber-400 font-semibold">
+                  <span className="text-[10px] text-rose-400 font-semibold">
                     {phone.replace(/\D/g, '').length}/10
                   </span>
                 )}
@@ -214,7 +214,7 @@ export const LandingLoginPortal = ({ onLoginSuccess }) => {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                   placeholder="Enter your number"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono placeholder-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono placeholder-slate-500 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-colors"
                 />
               </div>
             </div>
@@ -231,18 +231,14 @@ export const LandingLoginPortal = ({ onLoginSuccess }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-colors"
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className={`w-full py-3.5 px-4 rounded-xl font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2 mt-4 ${
-                role === 'admin'
-                  ? 'bg-amber-600 hover:bg-amber-500 text-white shadow-amber-900/20'
-                  : 'bg-rose-600 hover:bg-rose-500 text-white shadow-rose-900/20'
-              }`}
+              className="w-full py-3.5 px-4 rounded-xl font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2 mt-4 bg-rose-600 hover:bg-rose-500 text-white shadow-rose-900/30"
             >
               <span>{mode === 'login' ? `Sign In as ${role === 'admin' ? 'Admin' : 'Customer'}` : `Register ${role === 'admin' ? 'Admin' : 'Customer'} Account`}</span>
               <ArrowRight className="w-4 h-4" />
