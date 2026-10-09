@@ -1,41 +1,122 @@
 import { MOCK_PRODUCTS, MOCK_CATEGORIES, MOCK_USER } from './mockData';
 
 // Helper to simulate asynchronous API delay
-const delay = (ms = 150) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = (ms = 120) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Helper for initial mock orders
+const INITIAL_MOCK_ORDERS = [
+  {
+    orderId: 'ORD-849201',
+    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    customer: {
+      name: 'Ananya Sharma',
+      email: 'ananya@example.com',
+      address: '42 Marine Drive, Apartment 5B',
+      city: 'Mumbai',
+      pincode: '400020',
+      paymentMethod: 'UPI / GPay',
+    },
+    items: [
+      {
+        id: 'prod-1',
+        name: 'Silk Wrap Floral Maxi Dress',
+        category: 'Dresses',
+        price: 3499,
+        selectedSize: 'M',
+        quantity: 1,
+        imageUrl: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&q=80&w=800',
+      },
+      {
+        id: 'prod-4',
+        name: 'Luminous Matte Velvet Lipstick Set',
+        category: 'Cosmetics',
+        price: 1499,
+        selectedSize: 'One Size',
+        quantity: 1,
+        imageUrl: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&q=80&w=800',
+      }
+    ],
+    subtotal: 4998,
+    gstAmount: 250,
+    shippingFee: 0,
+    totalAmount: 5248,
+    status: 'Delivered',
+  },
+  {
+    orderId: 'ORD-739104',
+    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    customer: {
+      name: 'Rohan Mehta',
+      email: 'rohan.m@example.com',
+      address: '15 MG Road, Indiranagar',
+      city: 'Bengaluru',
+      pincode: '560038',
+      paymentMethod: 'Credit / Debit Card',
+    },
+    items: [
+      {
+        id: 'prod-2',
+        name: 'Structured Italian Leather Tote',
+        category: 'Bags',
+        price: 5299,
+        selectedSize: 'One Size',
+        quantity: 1,
+        imageUrl: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=800',
+      }
+    ],
+    subtotal: 5299,
+    gstAmount: 265,
+    shippingFee: 0,
+    totalAmount: 5564,
+    status: 'Dispatched',
+  }
+];
 
 export const apiService = {
-  // Fetch all catalog items with filtering, search, and sorting
+  // Get catalog products (supports dynamic additions)
   async getProducts({ category = 'all', size = 'all', searchQuery = '', sortBy = 'featured', minPrice = 0, maxPrice = 10000 } = {}) {
     await delay();
 
-    let result = [...MOCK_PRODUCTS];
+    let catalog = MOCK_PRODUCTS;
+    try {
+      const stored = localStorage.getItem('stylestack_catalog');
+      if (stored) {
+        catalog = JSON.parse(stored);
+      } else {
+        localStorage.setItem('stylestack_catalog', JSON.stringify(MOCK_PRODUCTS));
+      }
+    } catch (e) {
+      console.error('Error reading catalog', e);
+    }
 
-    // Filter by Category
+    let result = [...catalog];
+
+    // Category filter
     if (category && category !== 'all') {
       result = result.filter(
         (p) => p.category.toLowerCase() === category.toLowerCase()
       );
     }
 
-    // Filter by Size
+    // Size filter
     if (size && size !== 'all') {
       result = result.filter(
         (p) => p.sizes && (p.sizes.includes(size) || p.sizes.includes('One Size'))
       );
     }
 
-    // Filter by Search Query
+    // Search query filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       result = result.filter(
         (p) =>
           p.name.toLowerCase().includes(q) ||
-          p.categoryName.toLowerCase().includes(q) ||
+          (p.categoryName && p.categoryName.toLowerCase().includes(q)) ||
           p.description.toLowerCase().includes(q)
       );
     }
 
-    // Filter by Price Range
+    // Price range filter
     result = result.filter((p) => p.price >= minPrice && p.price <= maxPrice);
 
     // Sorting
@@ -54,24 +135,49 @@ export const apiService = {
     };
   },
 
-  // Fetch single product by ID
-  async getProductById(id) {
-    await delay();
-    const product = MOCK_PRODUCTS.find((p) => p.id === id);
-    if (!product) {
-      return { success: false, message: 'Product not found' };
+  // Add new fashion product (Admin)
+  async addProduct(newProductData) {
+    await delay(200);
+
+    const newProduct = {
+      id: 'prod-' + Date.now(),
+      name: newProductData.name,
+      category: newProductData.category.toLowerCase(),
+      categoryName: newProductData.category,
+      price: Number(newProductData.price),
+      originalPrice: Math.round(Number(newProductData.price) * 1.3),
+      rating: 5.0,
+      reviewsCount: 1,
+      sizes: newProductData.sizes || ['S', 'M', 'L', 'XL'],
+      imageUrl: newProductData.imageUrl || 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=800',
+      tag: 'New Arrival',
+      description: newProductData.description || 'Newly added exclusive fashion piece.',
+      inStock: Number(newProductData.inStock || 10),
+    };
+
+    try {
+      const stored = localStorage.getItem('stylestack_catalog');
+      const catalog = stored ? JSON.parse(stored) : [...MOCK_PRODUCTS];
+      const updatedCatalog = [newProduct, ...catalog];
+      localStorage.setItem('stylestack_catalog', JSON.stringify(updatedCatalog));
+    } catch (e) {
+      console.error('Error saving new product', e);
     }
-    return { success: true, data: product };
+
+    return {
+      success: true,
+      data: newProduct,
+      message: `Product "${newProduct.name}" added to catalog successfully!`,
+    };
   },
 
   // User Login Simulation
   async loginUser({ email, password, rememberMe = true }) {
-    await delay(300);
+    await delay(200);
     if (!email || !password) {
       return { success: false, message: 'Please provide both email and password.' };
     }
     
-    // Simulate valid login
     const userSession = {
       id: 'usr-' + Date.now(),
       name: email.split('@')[0].replace('.', ' ').replace(/\b\w/g, l => l.toUpperCase()),
@@ -90,7 +196,7 @@ export const apiService = {
 
   // User Registration Simulation
   async registerUser({ fullName, email, password }) {
-    await delay(300);
+    await delay(200);
     if (!fullName || !email || !password) {
       return { success: false, message: 'Please fill in all required fields.' };
     }
@@ -110,17 +216,21 @@ export const apiService = {
     };
   },
 
-  // Order Placement & Invoice Breakdown Generator
+  // Place Order with Customer Form & Invoice breakdown
   async placeOrder({ customer, items, subtotal, gstAmount, shippingFee, totalAmount }) {
-    await delay(400);
+    await delay(300);
 
     const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
     const invoice = {
       orderId,
       createdAt: new Date().toISOString(),
-      customer: customer || {
-        name: 'Guest Customer',
-        email: 'guest@stylestack.com',
+      customer: {
+        name: customer.name || 'Guest Fashionista',
+        email: customer.email || 'guest@stylestack.com',
+        address: customer.address || 'Standard Delivery Address',
+        city: customer.city || 'Mumbai',
+        pincode: customer.pincode || '400001',
+        paymentMethod: customer.paymentMethod || 'Cash on Delivery',
       },
       items,
       subtotal,
@@ -135,12 +245,13 @@ export const apiService = {
       }),
     };
 
-    // Store order in local storage for order history reference
     try {
-      const existingOrders = JSON.parse(localStorage.getItem('stylestack_orders') || '[]');
-      localStorage.setItem('stylestack_orders', JSON.stringify([invoice, ...existingOrders]));
+      const stored = localStorage.getItem('stylestack_orders');
+      const orders = stored ? JSON.parse(stored) : INITIAL_MOCK_ORDERS;
+      const updatedOrders = [invoice, ...orders];
+      localStorage.setItem('stylestack_orders', JSON.stringify(updatedOrders));
     } catch (e) {
-      console.error('LocalStorage write error', e);
+      console.error('LocalStorage order save error', e);
     }
 
     return {
@@ -150,7 +261,35 @@ export const apiService = {
     };
   },
 
-  // Get categories
+  // Get all orders (Admin & Customer History)
+  async getOrders() {
+    await delay(100);
+    try {
+      const stored = localStorage.getItem('stylestack_orders');
+      if (stored) {
+        return { success: true, data: JSON.parse(stored) };
+      }
+      localStorage.setItem('stylestack_orders', JSON.stringify(INITIAL_MOCK_ORDERS));
+      return { success: true, data: INITIAL_MOCK_ORDERS };
+    } catch (e) {
+      return { success: true, data: INITIAL_MOCK_ORDERS };
+    }
+  },
+
+  // Update order status (Admin interactive toggle)
+  async updateOrderStatus(orderId, newStatus) {
+    await delay(100);
+    try {
+      const stored = localStorage.getItem('stylestack_orders');
+      const orders = stored ? JSON.parse(stored) : INITIAL_MOCK_ORDERS;
+      const updated = orders.map((o) => (o.orderId === orderId ? { ...o, status: newStatus } : o));
+      localStorage.setItem('stylestack_orders', JSON.stringify(updated));
+      return { success: true, data: updated };
+    } catch (e) {
+      return { success: false, message: 'Could not update status' };
+    }
+  },
+
   async getCategories() {
     await delay(50);
     return { success: true, data: MOCK_CATEGORIES };
