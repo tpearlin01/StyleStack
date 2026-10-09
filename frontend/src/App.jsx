@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { LandingLoginPortal } from './components/LandingLoginPortal';
 import { Navbar } from './components/Navbar';
 import { HeroBanner } from './components/HeroBanner';
 import { ProductFilter } from './components/ProductFilter';
 import { ProductCard } from './components/ProductCard';
 import { ProductQuickViewModal } from './components/ProductQuickViewModal';
-import { AuthModal } from './components/AuthModal';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
 import { AdminDashboard } from './components/AdminDashboard';
@@ -15,8 +15,8 @@ import { ToastNotification } from './components/ToastNotification';
 import { apiService } from './services/api';
 import { SearchX } from 'lucide-react';
 
-function CatalogContent() {
-  const [viewMode, setViewMode] = useState('storefront'); // 'storefront' | 'admin'
+function MainAppFlow() {
+  const { session, isAuthenticated, role } = useAuth();
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,8 +55,10 @@ function CatalogContent() {
   };
 
   useEffect(() => {
-    loadProducts();
-  }, [selectedCategory, selectedSize, searchQuery, sortBy, minPrice, maxPrice]);
+    if (isAuthenticated && role === 'customer') {
+      loadProducts();
+    }
+  }, [isAuthenticated, role, selectedCategory, selectedSize, searchQuery, sortBy, minPrice, maxPrice]);
 
   const handleResetFilters = () => {
     setSelectedCategory('all');
@@ -74,20 +76,17 @@ function CatalogContent() {
     }
   };
 
-  if (viewMode === 'admin') {
-    return (
-      <AdminDashboard
-        onBackToStorefront={() => {
-          setViewMode('storefront');
-          loadProducts();
-        }}
-        onProductAdded={() => {
-          loadProducts();
-        }}
-      />
-    );
+  // 1. UNAUTHENTICATED: Show Landing Login Portal
+  if (!isAuthenticated || !session) {
+    return <LandingLoginPortal onLoginSuccess={() => loadProducts()} />;
   }
 
+  // 2. ADMIN ROLE: Show Admin Dashboard Portal
+  if (role === 'admin') {
+    return <AdminDashboard onProductAdded={() => loadProducts()} />;
+  }
+
+  // 3. CUSTOMER ROLE: Show Customer Storefront
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* Navigation Bar */}
@@ -96,8 +95,6 @@ function CatalogContent() {
         onSelectCategory={setSelectedCategory}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        viewMode={viewMode}
-        onToggleViewMode={setViewMode}
       />
 
       {/* Hero Section */}
@@ -182,15 +179,13 @@ function CatalogContent() {
       </main>
 
       {/* Footer */}
-      <Footer onToggleAdmin={() => setViewMode('admin')} />
+      <Footer />
 
       {/* Modals & Overlays */}
       <ProductQuickViewModal
         product={quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
       />
-
-      <AuthModal />
 
       <CartDrawer
         onOpenCheckoutModal={() => setIsCheckoutModalOpen(true)}
@@ -213,7 +208,7 @@ export default function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <CatalogContent />
+        <MainAppFlow />
       </CartProvider>
     </AuthProvider>
   );

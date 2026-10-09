@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { IndianRupee, Package, AlertTriangle, Plus, RefreshCw, ShoppingBag, CheckCircle, Truck, Clock, ArrowLeft, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { IndianRupee, Package, AlertTriangle, Plus, RefreshCw, LogOut, ArrowLeft, Image as ImageIcon, Sparkles, ShieldCheck } from 'lucide-react';
 import { apiService } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
-export const AdminDashboard = ({ onBackToStorefront, onProductAdded }) => {
+export const AdminDashboard = ({ onProductAdded }) => {
+  const { user, logout } = useAuth();
+
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -75,12 +78,10 @@ export const AdminDashboard = ({ onBackToStorefront, onProductAdded }) => {
 
       if (res.success) {
         setFormSuccess(res.message);
-        // Reset form
         setTitle('');
         setPrice('');
         setImageUrl('');
         setDescription('');
-        // Reload local admin data
         await loadAdminData();
         if (onProductAdded) {
           onProductAdded();
@@ -108,26 +109,26 @@ export const AdminDashboard = ({ onBackToStorefront, onProductAdded }) => {
       <header className="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-rose-600 flex items-center justify-center text-white font-serif-luxury font-bold text-xl shadow-md">
+            <div className="w-10 h-10 rounded-xl bg-amber-600 flex items-center justify-center text-white font-serif-luxury font-bold text-xl shadow-md">
               S
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-serif-luxury text-xl font-bold tracking-tight">StyleStack</span>
-                <span className="bg-rose-500/20 text-rose-300 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border border-rose-500/30">
+                <span className="bg-amber-500/20 text-amber-300 text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border border-amber-500/30">
                   Admin Portal
                 </span>
               </div>
-              <p className="text-xs text-slate-400">Inventory &amp; Order Fulfillment Management</p>
+              <p className="text-xs text-slate-400">Authenticated as {user?.email || 'Administrator'}</p>
             </div>
           </div>
 
           <button
-            onClick={onBackToStorefront}
-            className="flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 hover:bg-slate-800 text-slate-200 text-xs font-semibold transition-all"
+            onClick={logout}
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-all shadow-md"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Return to Storefront</span>
+            <LogOut className="w-4 h-4" />
+            <span>Admin Sign Out</span>
           </button>
         </div>
       </header>
@@ -188,7 +189,7 @@ export const AdminDashboard = ({ onBackToStorefront, onProductAdded }) => {
             onClick={() => setActiveTab('overview')}
             className={`pb-3 text-sm font-bold border-b-2 transition-all ${
               activeTab === 'overview'
-                ? 'border-rose-600 text-rose-600'
+                ? 'border-amber-600 text-amber-600'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -198,7 +199,7 @@ export const AdminDashboard = ({ onBackToStorefront, onProductAdded }) => {
             onClick={() => setActiveTab('add-product')}
             className={`pb-3 text-sm font-bold border-b-2 transition-all flex items-center gap-1.5 ${
               activeTab === 'add-product'
-                ? 'border-rose-600 text-rose-600'
+                ? 'border-amber-600 text-amber-600'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -209,7 +210,7 @@ export const AdminDashboard = ({ onBackToStorefront, onProductAdded }) => {
             onClick={() => setActiveTab('orders')}
             className={`pb-3 text-sm font-bold border-b-2 transition-all ${
               activeTab === 'orders'
-                ? 'border-rose-600 text-rose-600'
+                ? 'border-amber-600 text-amber-600'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -229,7 +230,6 @@ export const AdminDashboard = ({ onBackToStorefront, onProductAdded }) => {
 
             {formSuccess && (
               <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-2xl flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-600" />
                 <span>{formSuccess}</span>
               </div>
             )}
@@ -328,7 +328,7 @@ export const AdminDashboard = ({ onBackToStorefront, onProductAdded }) => {
                 </div>
               </div>
 
-              {/* Image URL & Quick Preset Options */}
+              {/* Image URL */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                   Image URL *
@@ -344,7 +344,7 @@ export const AdminDashboard = ({ onBackToStorefront, onProductAdded }) => {
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
                   />
                 </div>
-                {/* Unsplash Presets */}
+                {/* Presets */}
                 <div className="flex items-center gap-2 mt-2">
                   <span className="text-[10px] text-slate-400 font-bold uppercase">Quick Unsplash Presets:</span>
                   <button
@@ -373,14 +373,14 @@ export const AdminDashboard = ({ onBackToStorefront, onProductAdded }) => {
                   rows="3"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Tailored silk couture gown with embellished accent details..."
+                  placeholder="Tailored silk gown with embellished accent details..."
                   className="w-full px-4 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 px-6 rounded-2xl bg-slate-900 hover:bg-rose-600 text-white font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2"
+                className="w-full py-3.5 px-6 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2"
               >
                 <Plus className="w-4 h-4" />
                 <span>Publish Item to Catalog &amp; Storefront</span>
@@ -390,7 +390,7 @@ export const AdminDashboard = ({ onBackToStorefront, onProductAdded }) => {
           </div>
         )}
 
-        {/* TAB 2: CATALOG & INVENTORY LIST */}
+        {/* TAB 2: CATALOG LIST */}
         {activeTab === 'overview' && (
           <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
@@ -464,7 +464,7 @@ export const AdminDashboard = ({ onBackToStorefront, onProductAdded }) => {
           </div>
         )}
 
-        {/* TAB 3: RECENT ORDERS TABLE */}
+        {/* TAB 3: ORDERS TABLE */}
         {activeTab === 'orders' && (
           <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm space-y-4">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
@@ -515,7 +515,6 @@ export const AdminDashboard = ({ onBackToStorefront, onProductAdded }) => {
                         })}
                       </td>
                       <td className="py-3.5 px-6 text-right">
-                        {/* Interactive Status Dropdown */}
                         <select
                           value={o.status || 'Placed'}
                           onChange={(e) => handleStatusChange(o.orderId, e.target.value)}

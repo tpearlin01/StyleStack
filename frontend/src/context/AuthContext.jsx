@@ -1,104 +1,100 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { apiService } from '../services/api';
+import { MOCK_USER } from '../services/mockData';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState('login'); // 'login' | 'register'
-  const [authError, setAuthError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [session, setSession] = useState(() => {
+    try {
+      const saved = localStorage.getItem('stylestack_session');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      console.error('Error loading session', e);
+      return null;
+    }
+  });
 
   useEffect(() => {
     try {
-      const savedUser = localStorage.getItem('stylestack_user');
-      if (savedUser) {
-        setUser(JSON.parse(savedUser));
+      if (session) {
+        localStorage.setItem('stylestack_session', JSON.stringify(session));
+      } else {
+        localStorage.removeItem('stylestack_session');
       }
     } catch (e) {
-      console.error('Failed to load user session', e);
+      console.error('Error writing session', e);
     }
-  }, []);
+  }, [session]);
 
-  const openAuthModal = (mode = 'login') => {
-    setAuthMode(mode);
-    setAuthError('');
-    setIsAuthModalOpen(true);
+  const loginWithRole = async ({ email, phone, password, role, fullName }) => {
+    // Validate inputs
+    if (!email || !phone || !password) {
+      return { success: false, message: 'Please fill in all required fields.' };
+    }
+
+    if (phone.length !== 10) {
+      return { success: false, message: 'Phone number must be exactly 10 digits.' };
+    }
+
+    const userObj = {
+      id: 'usr-' + Date.now(),
+      name: fullName || (email ? email.split('@')[0] : 'User'),
+      email,
+      phone,
+      role: role || 'customer',
+      avatar: MOCK_USER.avatar,
+    };
+
+    const newSession = {
+      user: userObj,
+      role: role || 'customer',
+      isAuthenticated: true,
+      token: 'jwt-mock-token-' + Date.now(),
+    };
+
+    setSession(newSession);
+
+    return {
+      success: true,
+      data: newSession,
+      message: `Welcome, ${userObj.name}!`,
+    };
   };
 
-  const closeAuthModal = () => {
-    setIsAuthModalOpen(false);
-    setAuthError('');
-  };
+  const demoLogin = (role = 'customer') => {
+    const isCustomer = role === 'customer';
+    const demoSession = {
+      user: {
+        id: isCustomer ? 'usr-cust-101' : 'usr-admin-999',
+        name: isCustomer ? 'Princel Tixeira' : 'Store Administrator',
+        email: isCustomer ? 'princel@stylestack.com' : 'admin@stylestack.com',
+        phone: '9876543210',
+        role: role,
+        avatar: MOCK_USER.avatar,
+      },
+      role: role,
+      isAuthenticated: true,
+      token: 'demo-jwt-token-' + Date.now(),
+    };
 
-  const login = async ({ email, password, rememberMe }) => {
-    setIsSubmitting(true);
-    setAuthError('');
-    try {
-      const res = await apiService.loginUser({ email, password, rememberMe });
-      if (res.success) {
-        setUser(res.data);
-        if (rememberMe) {
-          localStorage.setItem('stylestack_user', JSON.stringify(res.data));
-        } else {
-          sessionStorage.setItem('stylestack_user', JSON.stringify(res.data));
-        }
-        closeAuthModal();
-        return { success: true };
-      } else {
-        setAuthError(res.message);
-        return { success: false, message: res.message };
-      }
-    } catch (err) {
-      setAuthError('Authentication failed. Please try again.');
-      return { success: false, message: 'Auth failed' };
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const register = async ({ fullName, email, password }) => {
-    setIsSubmitting(true);
-    setAuthError('');
-    try {
-      const res = await apiService.registerUser({ fullName, email, password });
-      if (res.success) {
-        setUser(res.data);
-        localStorage.setItem('stylestack_user', JSON.stringify(res.data));
-        closeAuthModal();
-        return { success: true };
-      } else {
-        setAuthError(res.message);
-        return { success: false, message: res.message };
-      }
-    } catch (err) {
-      setAuthError('Registration failed. Please try again.');
-      return { success: false, message: 'Registration failed' };
-    } finally {
-      setIsSubmitting(false);
-    }
+    setSession(demoSession);
+    return demoSession;
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem('stylestack_user');
-    sessionStorage.removeItem('stylestack_user');
+    setSession(null);
+    localStorage.removeItem('stylestack_session');
   };
 
   return (
     <AuthContext.Provider
       value={{
-        user,
-        isAuthModalOpen,
-        authMode,
-        authError,
-        isSubmitting,
-        setAuthMode,
-        openAuthModal,
-        closeAuthModal,
-        login,
-        register,
+        session,
+        user: session?.user || null,
+        role: session?.role || null,
+        isAuthenticated: !!session?.isAuthenticated,
+        loginWithRole,
+        demoLogin,
         logout,
       }}
     >
