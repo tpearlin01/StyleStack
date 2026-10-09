@@ -8,13 +8,16 @@ import { ProductCard } from './components/ProductCard';
 import { ProductQuickViewModal } from './components/ProductQuickViewModal';
 import { AuthModal } from './components/AuthModal';
 import { CartDrawer } from './components/CartDrawer';
-import { CheckoutInvoiceModal } from './components/CheckoutInvoiceModal';
+import { CheckoutModal } from './components/CheckoutModal';
+import { AdminDashboard } from './components/AdminDashboard';
 import { Footer } from './components/Footer';
 import { ToastNotification } from './components/ToastNotification';
 import { apiService } from './services/api';
-import { Sparkles, ShoppingBag, SearchX, Filter } from 'lucide-react';
+import { SearchX } from 'lucide-react';
 
 function CatalogContent() {
+  const [viewMode, setViewMode] = useState('storefront'); // 'storefront' | 'admin'
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -26,36 +29,33 @@ function CatalogContent() {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(10000);
 
-  // Modals
+  // Modals State
   const [quickViewProduct, setQuickViewProduct] = useState(null);
-  const [invoiceData, setInvoiceData] = useState(null);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
-  // Load products when filters change
-  useEffect(() => {
-    let isMounted = true;
+  const loadProducts = async () => {
     setLoading(true);
-
-    apiService
-      .getProducts({
+    try {
+      const res = await apiService.getProducts({
         category: selectedCategory,
         size: selectedSize,
         searchQuery,
         sortBy,
         minPrice,
         maxPrice,
-      })
-      .then((res) => {
-        if (isMounted && res.success) {
-          setProducts(res.data);
-        }
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false);
       });
+      if (res.success) {
+        setProducts(res.data);
+      }
+    } catch (e) {
+      console.error('Error fetching products', e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return () => {
-      isMounted = false;
-    };
+  useEffect(() => {
+    loadProducts();
   }, [selectedCategory, selectedSize, searchQuery, sortBy, minPrice, maxPrice]);
 
   const handleResetFilters = () => {
@@ -74,6 +74,20 @@ function CatalogContent() {
     }
   };
 
+  if (viewMode === 'admin') {
+    return (
+      <AdminDashboard
+        onBackToStorefront={() => {
+          setViewMode('storefront');
+          loadProducts();
+        }}
+        onProductAdded={() => {
+          loadProducts();
+        }}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* Navigation Bar */}
@@ -82,6 +96,8 @@ function CatalogContent() {
         onSelectCategory={setSelectedCategory}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        viewMode={viewMode}
+        onToggleViewMode={setViewMode}
       />
 
       {/* Hero Section */}
@@ -166,7 +182,7 @@ function CatalogContent() {
       </main>
 
       {/* Footer */}
-      <Footer />
+      <Footer onToggleAdmin={() => setViewMode('admin')} />
 
       {/* Modals & Overlays */}
       <ProductQuickViewModal
@@ -177,12 +193,15 @@ function CatalogContent() {
       <AuthModal />
 
       <CartDrawer
-        onCheckoutSuccess={(invoice) => setInvoiceData(invoice)}
+        onOpenCheckoutModal={() => setIsCheckoutModalOpen(true)}
       />
 
-      <CheckoutInvoiceModal
-        invoice={invoiceData}
-        onClose={() => setInvoiceData(null)}
+      <CheckoutModal
+        isOpen={isCheckoutModalOpen}
+        onClose={() => setIsCheckoutModalOpen(false)}
+        onOrderConfirmed={() => {
+          loadProducts();
+        }}
       />
 
       <ToastNotification />

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Sparkles, Heart } from 'lucide-react';
+import { LayoutDashboard, Heart } from 'lucide-react';
 
-export const Footer = () => {
+export const Footer = ({ onToggleAdmin }) => {
   return (
     <footer className="bg-slate-900 text-slate-400 text-xs py-12 mt-16 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,20 +24,28 @@ export const Footer = () => {
           <div>
             <h4 className="font-bold text-white text-sm mb-3">Categories</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="hover:text-white transition-colors">Silk &amp; Floral Dresses</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Leather Totes &amp; Bags</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Stiletto &amp; Chelsea Footwear</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Luminous Cosmetics</a></li>
+              <li><a href="#catalog" className="hover:text-white transition-colors">Silk &amp; Floral Dresses</a></li>
+              <li><a href="#catalog" className="hover:text-white transition-colors">Leather Totes &amp; Bags</a></li>
+              <li><a href="#catalog" className="hover:text-white transition-colors">Stiletto &amp; Chelsea Footwear</a></li>
+              <li><a href="#catalog" className="hover:text-white transition-colors">Luminous Cosmetics</a></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold text-white text-sm mb-3">Customer Service</h4>
+            <h4 className="font-bold text-white text-sm mb-3">Quick Navigation</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="hover:text-white transition-colors">Instant Invoice Generator</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Shipping &amp; Delivery Terms</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Easy 7-Day Returns</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Size Guide &amp; Fitting</a></li>
+              <li>
+                <button
+                  onClick={onToggleAdmin}
+                  className="text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1.5 transition-colors"
+                >
+                  <LayoutDashboard className="w-3.5 h-3.5" />
+                  <span>Admin Dashboard Portal</span>
+                </button>
+              </li>
+              <li><a href="#catalog" className="hover:text-white transition-colors">Instant Invoice Generator</a></li>
+              <li><a href="#catalog" className="hover:text-white transition-colors">Shipping &amp; Delivery Terms</a></li>
+              <li><a href="#catalog" className="hover:text-white transition-colors">Easy 7-Day Returns</a></li>
             </ul>
           </div>
 
