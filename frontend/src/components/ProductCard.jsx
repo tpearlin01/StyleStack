@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ShoppingBag, Star, Eye, Sparkles, Flame } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import AddToCartButton from './AddToCartButton';
 
 export const ProductCard = ({ product, onQuickView }) => {
   const { addToCart } = useCart();
@@ -147,13 +148,15 @@ export const ProductCard = ({ product, onQuickView }) => {
         )}
 
         {/* Action Button */}
-        <button
-          onClick={handleAddToCart}
-          className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-rose-600 text-white font-bold text-xs shadow-md shadow-slate-950/10 transition-all duration-200 flex items-center justify-center gap-2 group/btn active:scale-95 cursor-pointer"
-        >
-          <ShoppingBag className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
-          <span>Add to Cart</span>
-        </button>
+        <div className="w-full flex justify-center">
+          <AddToCartButton
+            product={product}
+            selectedSize={selectedSize}
+            quantity={1}
+            fullWidth
+            label="Add to Cart"
+          />
+        </div>
       </div>
     </div>
   );

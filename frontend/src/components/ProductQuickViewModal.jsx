@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Star, ShoppingBag, Truck, ShieldCheck, Check, Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import AddToCartButton from './AddToCartButton';
 
 export const ProductQuickViewModal = ({ product, onClose }) => {
   const { addToCart } = useCart();
@@ -146,14 +147,17 @@ export const ProductQuickViewModal = ({ product, onClose }) => {
             </div>
 
             {/* Action CTAs */}
-            <div className="space-y-3 pt-2">
-              <button
-                onClick={handleAddToCart}
-                className="w-full py-3.5 px-6 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm shadow-xl shadow-rose-600/20 transition-all flex items-center justify-center gap-2"
-              >
-                <ShoppingBag className="w-4 h-4" />
-                <span>Add to Shopping Cart — ₹{(product.price * quantity).toLocaleString('en-IN')}</span>
-              </button>
+            <div className="space-y-3 pt-2 flex flex-col items-center">
+              <AddToCartButton
+                product={product}
+                selectedSize={selectedSize}
+                quantity={quantity}
+                fullWidth
+                label={`Add to Shopping Cart — ₹${(product.price * quantity).toLocaleString('en-IN')}`}
+                onComplete={() => {
+                  setTimeout(() => onClose(), 400);
+                }}
+              />
             </div>
 
             {/* Trust Footer */}
