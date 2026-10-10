@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ShoppingBag, Star, Eye, Sparkles, Flame } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
-export const ProductCard = ({ product, onQuickView }) => {
+export const ProductCard = ({ product, onQuickView, onTryOn }) => {
   const { addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState(
     product.sizes && product.sizes.length > 0 ? product.sizes[0] : 'M'
@@ -26,48 +26,72 @@ export const ProductCard = ({ product, onQuickView }) => {
         onClick={() => onQuickView(product)}
       >
         <img
-          src={product.imageUrl}
+          src={product.imageUrl || product.image}
           alt={product.name}
           className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
         />
 
-        {/* Highlight Badge */}
-        {product.tag && (
-          <div className="absolute top-3 left-3 flex flex-col gap-1 z-10">
-            {product.tag === 'Festive Offer' && (
-              <span className="bg-rose-600 text-white font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-white fill-white" />
-                <span>Festive Offer • 20% OFF</span>
-              </span>
-            )}
-            {product.tag === 'Sale' && (
-              <span className="bg-slate-950 text-white font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 border border-slate-700">
-                <Flame className="w-3 h-3 text-rose-500 fill-rose-500" />
-                <span>On Sale</span>
-              </span>
-            )}
-            {product.tag === 'New Arrival' && (
-              <span className="bg-slate-950/90 backdrop-blur-md text-white font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md border border-slate-700">
-                New Arrival
-              </span>
-            )}
-          </div>
-        )}
+        {/* Highlight Badges */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1 z-10">
+          {product.isTryOnEligible && (
+            <span className="bg-gradient-to-r from-rose-600 to-rose-700 text-white font-black text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 border border-rose-400/30">
+              <Sparkles className="w-3 h-3 text-white fill-white" />
+              <span>⚡ Try-On Ready</span>
+            </span>
+          )}
+          {product.tag && product.tag !== '⚡ Try-On' && (
+            <>
+              {product.tag === 'Festive Offer' && (
+                <span className="bg-rose-600 text-white font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-white fill-white" />
+                  <span>Festive Offer • 20% OFF</span>
+                </span>
+              )}
+              {product.tag === 'Sale' && (
+                <span className="bg-slate-950 text-white font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 border border-slate-700">
+                  <Flame className="w-3 h-3 text-rose-500 fill-rose-500" />
+                  <span>On Sale</span>
+                </span>
+              )}
+              {product.tag === 'New Arrival' && (
+                <span className="bg-slate-950/90 backdrop-blur-md text-white font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md border border-slate-700">
+                  New Arrival
+                </span>
+              )}
+            </>
+          )}
+        </div>
 
-        {/* Quick View Button Overlay */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onQuickView(product);
-          }}
-          className={`absolute inset-x-4 bottom-4 py-2.5 bg-slate-950/90 backdrop-blur-md text-white text-xs font-bold rounded-xl shadow-lg border border-slate-700 flex items-center justify-center gap-2 transition-all duration-300 ${
+        {/* Quick View & Try On Overlay */}
+        <div
+          className={`absolute inset-x-4 bottom-4 flex gap-2 transition-all duration-300 ${
             isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
-          } hover:bg-rose-600 hover:border-rose-600`}
+          }`}
         >
-          <Eye className="w-4 h-4" />
-          <span>Quick View</span>
-        </button>
+          {product.isTryOnEligible && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onTryOn?.(product);
+              }}
+              className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold rounded-xl shadow-lg border border-rose-500 flex items-center justify-center gap-1.5 transition-all"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>⚡ Try On</span>
+            </button>
+          )}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onQuickView(product);
+            }}
+            className="flex-1 py-2.5 bg-slate-950/90 backdrop-blur-md hover:bg-zinc-800 text-white text-xs font-bold rounded-xl shadow-lg border border-slate-700 flex items-center justify-center gap-1.5 transition-all"
+          >
+            <Eye className="w-4 h-4" />
+            <span>Quick View</span>
+          </button>
+        </div>
       </div>
 
       {/* Product Info Section */}
@@ -140,14 +164,37 @@ export const ProductCard = ({ product, onQuickView }) => {
           </div>
         )}
 
-        {/* Add to Cart CTA Button */}
-        <button
-          onClick={handleAddToCart}
-          className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-rose-600 text-white font-bold text-xs shadow-md shadow-slate-950/10 transition-all duration-200 flex items-center justify-center gap-2 group/btn"
-        >
-          <ShoppingBag className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
-          <span>Add to Cart</span>
-        </button>
+        {/* Action Buttons */}
+        {product.isTryOnEligible ? (
+          <div className="grid grid-cols-2 gap-2 pt-1">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onTryOn?.(product);
+              }}
+              className="py-2.5 px-3 rounded-xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold text-xs shadow-md shadow-rose-600/25 transition-all duration-200 flex items-center justify-center gap-1.5 active:scale-95 group/try"
+              title="Virtual Try-On in Fitting Room"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-rose-200" />
+              <span>⚡ Try On</span>
+            </button>
+            <button
+              onClick={handleAddToCart}
+              className="py-2.5 px-3 rounded-xl bg-slate-950 hover:bg-zinc-800 text-white font-bold text-xs shadow-md shadow-slate-950/10 transition-all duration-200 flex items-center justify-center gap-1.5 active:scale-95 group/btn"
+            >
+              <ShoppingBag className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
+              <span>Add to Cart</span>
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={handleAddToCart}
+            className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-rose-600 text-white font-bold text-xs shadow-md shadow-slate-950/10 transition-all duration-200 flex items-center justify-center gap-2 group/btn"
+          >
+            <ShoppingBag className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
+            <span>Add to Cart</span>
+          </button>
+        )}
       </div>
     </div>
   );
