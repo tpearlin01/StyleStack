@@ -34,8 +34,13 @@ function MainAppFlow() {
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
+  const [hasLoadedInitial, setHasLoadedInitial] = useState(false);
+
   const loadProducts = async () => {
-    setLoading(true);
+    // Only display full skeleton placeholders on initial mount, preventing violent flash on keystrokes
+    if (!hasLoadedInitial) {
+      setLoading(true);
+    }
     try {
       const res = await apiService.getProducts({
         category: selectedCategory,
@@ -53,6 +58,7 @@ function MainAppFlow() {
       console.error('Error fetching products', e);
     } finally {
       setLoading(false);
+      setHasLoadedInitial(true);
     }
   };
 

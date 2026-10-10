@@ -14,9 +14,9 @@ export const AuthModal = () => {
     isSubmitting,
   } = useAuth();
 
-  // Login form state
-  const [loginEmail, setLoginEmail] = useState('princel@stylestack.com');
-  const [loginPassword, setLoginPassword] = useState('password123');
+  // Login form state - all fields mount blank
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
 
   // Register form state

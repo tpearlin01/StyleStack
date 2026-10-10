@@ -248,6 +248,7 @@ export const apiService = {
         name: customer.name || 'Fashion Customer',
         email: customer.email || 'customer@stylestack.com',
         address: customer.address || 'Standard Delivery Address',
+        state: customer.state || '',
         city: customer.city || 'Mumbai',
         pincode: customer.pincode || '400001',
         paymentMethod: customer.paymentMethod || 'Cash on Delivery',

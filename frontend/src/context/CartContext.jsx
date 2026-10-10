@@ -1,28 +1,51 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { useAuth } from './AuthContext';
 
 const CartContext = createContext(null);
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState(() => {
-    try {
-      const saved = localStorage.getItem('stylestack_cart');
-      return saved ? JSON.parse(saved) : [];
-    } catch (e) {
-      console.error('Error reading cart from localStorage', e);
-      return [];
-    }
-  });
+  const { currentUser, user } = useAuth();
+  const activeUser = currentUser || user;
+  const userEmail = activeUser?.email ? activeUser.email.toLowerCase().trim() : null;
 
+  const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [notification, setNotification] = useState(null);
 
+  // Tracks the email whose cart has been loaded into state to prevent overwriting
+  const loadedEmailRef = useRef(null);
+
+  // Effect 1: Load cart when active user changes or purge on logout
   useEffect(() => {
-    try {
-      localStorage.setItem('stylestack_cart', JSON.stringify(cartItems));
-    } catch (e) {
-      console.error('Error saving cart to localStorage', e);
+    if (userEmail) {
+      const cartKey = `stylestack_cart_${userEmail}`;
+      try {
+        const saved = localStorage.getItem(cartKey);
+        const parsed = saved ? JSON.parse(saved) : [];
+        setCartItems(Array.isArray(parsed) ? parsed : []);
+      } catch (e) {
+        console.error('Error loading per-user cart', e);
+        setCartItems([]);
+      }
+      loadedEmailRef.current = userEmail;
+    } else {
+      // Immediate purge of in-memory cart on logout / unauthenticated session
+      loadedEmailRef.current = null;
+      setCartItems([]);
     }
-  }, [cartItems]);
+  }, [userEmail]);
+
+  // Effect 2: Persist cart changes strictly under active user's key
+  useEffect(() => {
+    if (userEmail && loadedEmailRef.current === userEmail) {
+      const cartKey = `stylestack_cart_${userEmail}`;
+      try {
+        localStorage.setItem(cartKey, JSON.stringify(cartItems));
+      } catch (e) {
+        console.error('Error saving per-user cart to localStorage', e);
+      }
+    }
+  }, [cartItems, userEmail]);
 
   const showToast = (message, type = 'success') => {
     setNotification({ message, type });
@@ -91,7 +114,14 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => {
     setCartItems([]);
-    localStorage.removeItem('stylestack_cart');
+    if (userEmail) {
+      const cartKey = `stylestack_cart_${userEmail}`;
+      try {
+        localStorage.removeItem(cartKey);
+      } catch (e) {
+        console.error('Error clearing per-user cart', e);
+      }
+    }
   };
 
   // Calculations
@@ -134,3 +164,4 @@ export const useCart = () => {
   }
   return context;
 };
+
