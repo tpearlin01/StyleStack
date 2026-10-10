@@ -518,13 +518,8 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
               {/* DYNAMIC SUBSECTION A: INSTANT UPI / GPAY */}
               {paymentMethod === 'UPI' && (
                 <div className="bg-zinc-950 p-5 rounded-2xl border border-zinc-800 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
-                    <div className="flex items-center gap-2">
-                      <QrCode className="w-4 h-4 text-rose-500" />
-                      <span className="text-xs font-bold text-white">Dynamic UPI Gateway Verification</span>
-                    </div>
-
-                    {/* Mode Toggle: Scan QR Code or Enter UPI ID */}
+                  {/* Mode Toggle: Scan QR Code or Enter UPI ID */}
+                  <div className="flex items-center justify-center border-b border-zinc-800/80 pb-3">
                     <div className="flex items-center bg-zinc-900 p-1 rounded-xl border border-zinc-800">
                       <button
                         type="button"
