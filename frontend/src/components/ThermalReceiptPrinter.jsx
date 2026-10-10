@@ -57,8 +57,8 @@ export class ReceiptErrorBoundary extends Component {
 // 2. INNER RECEIPT PRINTER COMPONENT WITH SAFE OPTIONAL CHAINING & DEFAULTS
 const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose }) => {
   // paperState: 'idle' | 'printing' | 'printed' | 'teared'
-  // Default to 'printed' so the receipt is immediately visible with all order details and NOT a blank white paper!
-  const [paperState, setPaperState] = useState('printed');
+  // Starts 'idle' with receipt paper fully retracted inside the slot (height: 0, overflow: hidden)
+  const [paperState, setPaperState] = useState('idle');
 
   // Normalize order data from any prop variation (invoice, order, orderDetails)
   const orderObj = order || orderDetails || invoice || {};
@@ -186,7 +186,7 @@ const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose })
     setPaperState('printing');
     setTimeout(() => {
       setPaperState('printed');
-    }, 2000);
+    }, 2500);
   };
 
   // Handle TEAR click
@@ -223,7 +223,7 @@ const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose })
             <span className="printer-brand">STYLESTACK POS-80T</span>
             <div className="printer-status-led">
               <span className={`led-dot ${paperState === 'printing' ? 'busy' : ''}`}></span>
-              <span>{paperState === 'printing' ? 'FEEDING' : 'READY'}</span>
+              <span>{paperState === 'printing' ? 'PRINTING...' : 'READY'}</span>
             </div>
           </div>
 
@@ -379,7 +379,7 @@ const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose })
           <button
             type="button"
             onClick={handlePrint}
-            disabled={paperState === 'printing'}
+            disabled={paperState === 'printing' || paperState === 'printed' || paperState === 'teared'}
             className="control-btn control-btn-primary"
             title="Roll out paper receipt"
           >
@@ -387,6 +387,8 @@ const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose })
             <span>
               {paperState === 'printing'
                 ? 'PRINTING...'
+                : paperState === 'printed' || paperState === 'teared'
+                ? 'PRINTED'
                 : 'PRINT RECEIPT'}
             </span>
           </button>
