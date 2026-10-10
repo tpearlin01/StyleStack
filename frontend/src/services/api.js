@@ -85,11 +85,18 @@ export const apiService = {
 
     let catalog = MOCK_PRODUCTS;
     try {
-      const stored = localStorage.getItem('stylestack_catalog_v4');
+      const stored = localStorage.getItem('stylestack_catalog_v5');
       if (stored) {
-        catalog = JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        // Ensure new try-on products are included even if previous catalog is cached
+        const existingIds = new Set(parsed.map((p) => p.id));
+        const missingTryOn = MOCK_PRODUCTS.filter(
+          (p) => p.isTryOnEligible && !existingIds.has(p.id)
+        );
+        catalog = missingTryOn.length > 0 ? [...parsed, ...missingTryOn] : parsed;
+        localStorage.setItem('stylestack_catalog_v5', JSON.stringify(catalog));
       } else {
-        localStorage.setItem('stylestack_catalog_v4', JSON.stringify(MOCK_PRODUCTS));
+        localStorage.setItem('stylestack_catalog_v5', JSON.stringify(MOCK_PRODUCTS));
       }
     } catch (e) {
       console.error('Error reading catalog', e);
