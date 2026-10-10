@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Sparkles, Trash2, ShoppingBag, X, Check, Shirt, Layers, ArrowRight, Zap, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Sparkles, Trash2, ShoppingBag, X, Check, Shirt, Layers, ArrowRight, Zap, RotateCcw } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { TRYON_SHIRTS, TRYON_PANTS, TRYON_CAPS, ALL_TRYON_PRODUCTS } from '../services/tryOnCatalog';
 
@@ -18,17 +18,16 @@ export default function FittingRoom({ isOpen, onClose, initialItem, onAddToCart 
     bottom: 0,
   });
 
-  const [lastEquippedSlot, setLastEquippedSlot] = useState(null);
+  const [activeSlotGlow, setActiveSlotGlow] = useState(null);
   const [activeTab, setActiveTab] = useState('all'); // 'all' | 'top' | 'bottom' | 'head'
 
-  // Dynamic lists from all local files (13 shirts, 13 pants, 16 caps = 42 total)
   const tryOnItems = {
     top: TRYON_SHIRTS,
     bottom: TRYON_PANTS,
     head: TRYON_CAPS,
   };
 
-  // If opened with an initialItem from a ProductCard click, auto-equip it with fly-in
+  // If opened with an initialItem from a ProductCard click, auto-equip it with fluid animation
   useEffect(() => {
     if (initialItem && initialItem.tryOnCategory) {
       const slot = initialItem.tryOnCategory;
@@ -40,7 +39,7 @@ export default function FittingRoom({ isOpen, onClose, initialItem, onAddToCart 
         ...prev,
         [slot]: Date.now(),
       }));
-      setLastEquippedSlot(slot);
+      setActiveSlotGlow(slot);
       setActiveTab(slot);
     }
   }, [initialItem]);
@@ -55,20 +54,21 @@ export default function FittingRoom({ isOpen, onClose, initialItem, onAddToCart 
       });
       const now = Date.now();
       setAnimKeys({ head: now, top: now + 50, bottom: now + 100 });
+      setActiveSlotGlow('top');
     }
   }, [isOpen]);
 
   const handleEquip = (category, item) => {
     const isCurrentlyEquipped = equipped[category]?.id === item.id;
     if (isCurrentlyEquipped) {
-      // Toggle off
+      // Toggle off / remove piece
       setEquipped((prev) => ({
         ...prev,
         [category]: null,
       }));
-      setLastEquippedSlot(null);
+      setActiveSlotGlow(null);
     } else {
-      // Equip with smooth fly-in magnet animation
+      // Equip with smooth fluid slide-and-scale transition
       setEquipped((prev) => ({
         ...prev,
         [category]: item,
@@ -77,7 +77,7 @@ export default function FittingRoom({ isOpen, onClose, initialItem, onAddToCart 
         ...prev,
         [category]: Date.now(),
       }));
-      setLastEquippedSlot(category);
+      setActiveSlotGlow(category);
     }
   };
 
@@ -86,11 +86,14 @@ export default function FittingRoom({ isOpen, onClose, initialItem, onAddToCart 
       ...prev,
       [category]: null,
     }));
+    if (activeSlotGlow === category) {
+      setActiveSlotGlow(null);
+    }
   };
 
   const handleReset = () => {
     setEquipped({ head: null, top: null, bottom: null });
-    setLastEquippedSlot(null);
+    setActiveSlotGlow(null);
   };
 
   const equippedCount = Object.values(equipped).filter(Boolean).length;
@@ -134,36 +137,36 @@ export default function FittingRoom({ isOpen, onClose, initialItem, onAddToCart 
           <X className="w-5 h-5" />
         </button>
 
-        {/* LEFT SIDE: Interactive Mannequin Canvas Stage */}
-        <div className="w-full md:w-[48%] bg-gradient-to-b from-zinc-900/90 via-zinc-950 to-zinc-950 p-5 sm:p-6 flex flex-col items-center justify-between border-b md:border-b-0 md:border-r border-zinc-800/80 relative">
+        {/* LEFT SIDE: High-Contrast Mannequin Silhouette Canvas Stage */}
+        <div className="w-full md:w-[46%] bg-gradient-to-b from-zinc-900/90 via-zinc-950 to-zinc-950 p-5 sm:p-6 flex flex-col items-center justify-between border-b md:border-b-0 md:border-r border-zinc-800/80 relative">
           
           {/* Header Bar */}
           <div className="w-full flex items-center justify-between pb-3 border-b border-zinc-800/70">
             <div className="flex items-center gap-2">
               <span className="flex items-center gap-1.5 text-rose-500 text-xs font-bold uppercase tracking-wider bg-rose-500/10 px-3 py-1 rounded-full border border-rose-500/20 shadow-xs">
-                <Sparkles className="w-3.5 h-3.5 text-rose-400 fill-rose-500 animate-pulse" /> AI Virtual Try-On
+                <Sparkles className="w-3.5 h-3.5 text-rose-400 fill-rose-500 animate-pulse" /> Virtual Fitting Room
               </span>
               <span className="text-[11px] text-zinc-400 hidden sm:inline">
-                3-Slot Silhouette Stage
+                Silhouette Canvas
               </span>
             </div>
 
             <button
               onClick={handleReset}
               className="text-xs text-zinc-400 hover:text-rose-400 flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-zinc-900 transition-all cursor-pointer"
-              title="Clear all equipped clothes"
+              title="Reset Mannequin"
             >
-              <Trash2 className="w-3.5 h-3.5" />
+              <RotateCcw className="w-3.5 h-3.5" />
               <span>Reset Mannequin</span>
             </button>
           </div>
 
-          {/* Equipped Active Slots Pill Row */}
+          {/* Equipped Active Badges Row */}
           <div className="w-full flex items-center justify-center gap-2 py-2 flex-wrap min-h-[36px]">
             {equipped.head && (
               <span className="inline-flex items-center gap-1.5 text-[11px] bg-zinc-900 border border-rose-500/30 text-rose-200 px-2.5 py-1 rounded-full shadow-sm animate-in zoom-in-95 duration-150">
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
-                <span className="font-medium truncate max-w-[110px]">{equipped.head.name}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                <span className="font-medium truncate max-w-[100px]">{equipped.head.name}</span>
                 <button
                   onClick={() => handleRemoveSlot('head')}
                   className="hover:text-white p-0.5 ml-0.5 cursor-pointer"
@@ -176,12 +179,12 @@ export default function FittingRoom({ isOpen, onClose, initialItem, onAddToCart 
 
             {equipped.top && (
               <span className="inline-flex items-center gap-1.5 text-[11px] bg-zinc-900 border border-rose-500/30 text-rose-200 px-2.5 py-1 rounded-full shadow-sm animate-in zoom-in-95 duration-150">
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
-                <span className="font-medium truncate max-w-[110px]">{equipped.top.name}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                <span className="font-medium truncate max-w-[100px]">{equipped.top.name}</span>
                 <button
                   onClick={() => handleRemoveSlot('top')}
                   className="hover:text-white p-0.5 ml-0.5 cursor-pointer"
-                  title="Remove shirt"
+                  title="Remove top"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -190,12 +193,12 @@ export default function FittingRoom({ isOpen, onClose, initialItem, onAddToCart 
 
             {equipped.bottom && (
               <span className="inline-flex items-center gap-1.5 text-[11px] bg-zinc-900 border border-rose-500/30 text-rose-200 px-2.5 py-1 rounded-full shadow-sm animate-in zoom-in-95 duration-150">
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
-                <span className="font-medium truncate max-w-[110px]">{equipped.bottom.name}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                <span className="font-medium truncate max-w-[100px]">{equipped.bottom.name}</span>
                 <button
                   onClick={() => handleRemoveSlot('bottom')}
                   className="hover:text-white p-0.5 ml-0.5 cursor-pointer"
-                  title="Remove pants"
+                  title="Remove bottom"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -203,117 +206,126 @@ export default function FittingRoom({ isOpen, onClose, initialItem, onAddToCart 
             )}
 
             {equippedCount === 0 && (
-              <span className="text-xs text-zinc-500 italic flex items-center gap-1">
-                <span>Mannequin is bare. Click pieces on the right to magnetically attach them!</span>
+              <span className="text-xs text-zinc-500 italic">
+                Mannequin is bare. Click pieces on the right to try on!
               </span>
             )}
           </div>
 
           {/* MANNEQUIN STAGE CONTAINER */}
-          {/* Neutral gray/zinc stage background with border */}
-          <div className="w-full bg-zinc-800/40 rounded-2xl border border-zinc-700/50 p-4 relative flex items-center justify-center overflow-hidden h-[470px] sm:h-[500px] my-auto select-none shadow-inner">
+          {/* Dark/slate backdrop stage: bg-zinc-900/90 rounded-2xl border border-zinc-800 */}
+          <div className="w-full bg-zinc-900/90 rounded-2xl border border-zinc-800 p-4 relative flex items-center justify-center overflow-hidden h-[470px] sm:h-[500px] my-auto select-none shadow-inner">
             
-            {/* Ambient Lighting & Stage Depth */}
+            {/* Ambient Lighting & Glow */}
             <div className="absolute inset-x-8 top-12 h-64 bg-rose-600/10 blur-3xl rounded-full pointer-events-none" />
-            
-            {/* Soft Mannequin Canvas Light-Pad (Enables multiply blend mode to eliminate white box borders cleanly) */}
-            <div className="absolute inset-x-14 top-6 bottom-8 bg-gradient-to-b from-zinc-200/90 via-zinc-300/85 to-zinc-200/90 rounded-[48px] opacity-80 blur-[0.5px] shadow-lg pointer-events-none border border-white/40" />
 
-            {/* BASE MANNEQUIN SILHOUETTE SVG */}
-            <svg
-              className="w-56 h-full text-zinc-700/80 drop-shadow-md transition-all duration-300 relative z-0 pointer-events-none"
-              viewBox="0 0 100 220"
-              fill="currentColor"
-            >
-              {/* Head Silhouette */}
-              <circle cx="50" cy="22" r="13" fill="#3f3f46" />
-              {/* Neck & Shoulders & Torso */}
-              <path
-                d="M 45 35 L 55 35 L 55 42 L 75 50 L 78 112 L 71 112 L 67 65 L 62 65 L 62 120 L 38 120 L 38 65 L 33 65 L 29 112 L 22 112 L 25 50 L 45 42 Z"
-                fill="#3f3f46"
-              />
-              {/* Left Leg */}
-              <path
-                d="M 38 120 L 48 120 L 46 205 L 35 205 Z"
-                fill="#3f3f46"
-              />
-              {/* Right Leg */}
-              <path
-                d="M 52 120 L 62 120 L 65 205 L 54 205 Z"
-                fill="#3f3f46"
-              />
-              {/* Chrome Stand Base */}
-              <ellipse cx="50" cy="214" rx="28" ry="4" fill="#71717a" opacity="0.6" />
-            </svg>
+            {/* High-Contrast Neutral Mannequin Pedestal Canvas: Eliminates Solid White Boxes via Multiply Blending */}
+            <div className="relative w-full max-w-[280px] h-[450px] bg-slate-100/95 rounded-2xl border border-slate-300/60 shadow-lg flex items-center justify-center overflow-hidden">
+              
+              {/* Subtle Body Contour Lighting */}
+              <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-slate-100/90 to-slate-200/90 pointer-events-none" />
 
-            {/* Empty Slot Placeholder Guides */}
-            {!equipped.head && (
-              <div className="absolute top-8 text-[9px] text-zinc-500 font-extrabold uppercase tracking-widest border border-dashed border-zinc-500/70 px-2.5 py-0.5 rounded-full pointer-events-none z-10 bg-white/40 backdrop-blur-xs">
-                Head Slot
-              </div>
-            )}
-            {!equipped.top && (
-              <div className="absolute top-24 text-[9px] text-zinc-500 font-extrabold uppercase tracking-widest border border-dashed border-zinc-500/70 px-2.5 py-0.5 rounded-full pointer-events-none z-10 bg-white/40 backdrop-blur-xs">
-                Torso Slot
-              </div>
-            )}
-            {!equipped.bottom && (
-              <div className="absolute top-64 text-[9px] text-zinc-500 font-extrabold uppercase tracking-widest border border-dashed border-zinc-500/70 px-2.5 py-0.5 rounded-full pointer-events-none z-10 bg-white/40 backdrop-blur-xs">
-                Legs Slot
-              </div>
-            )}
-
-            {/* 1. HEAD / CAP LAYER */}
-            {/* Proportional anchor: w-32 top-8 z-30 */}
-            {equipped.head && (
-              <div
-                key={`head-container-${equipped.head.id}-${animKeys.head}`}
-                className="absolute top-8 w-32 flex items-center justify-center z-30 animate-magnet-fly-in pointer-events-none"
+              {/* VECTOR MANNEQUIN SILHOUETTE BASE ANCHOR */}
+              <svg
+                className="w-52 h-full text-zinc-400 drop-shadow-sm relative z-0 pointer-events-none transition-all duration-300"
+                viewBox="0 0 100 220"
+                fill="currentColor"
               >
-                <img
-                  src={equipped.head.imageUrl || equipped.head.image}
-                  alt={equipped.head.name}
-                  className="w-full h-24 object-contain tryon-multiply-blend transition-transform duration-300"
+                {/* Head */}
+                <circle cx="50" cy="22" r="13" fill="#52525b" />
+                {/* Neck & Shoulders & Torso */}
+                <path
+                  d="M 45 35 L 55 35 L 55 42 L 75 50 L 78 112 L 71 112 L 67 65 L 62 65 L 62 120 L 38 120 L 38 65 L 33 65 L 29 112 L 22 112 L 25 50 L 45 42 Z"
+                  fill="#71717a"
                 />
-              </div>
-            )}
-
-            {/* 2. TORSO / SHIRT LAYER */}
-            {/* Proportional anchor: w-56 top-24 z-20 */}
-            {equipped.top && (
-              <div
-                key={`top-container-${equipped.top.id}-${animKeys.top}`}
-                className="absolute top-24 w-56 flex items-center justify-center z-20 animate-magnet-fly-in pointer-events-none"
-              >
-                <img
-                  src={equipped.top.imageUrl || equipped.top.image}
-                  alt={equipped.top.name}
-                  className="w-full h-52 object-contain tryon-multiply-blend transition-transform duration-300"
+                {/* Left Leg */}
+                <path
+                  d="M 38 120 L 48 120 L 46 205 L 35 205 Z"
+                  fill="#71717a"
                 />
-              </div>
-            )}
-
-            {/* 3. LEGS / PANTS LAYER */}
-            {/* Proportional anchor: w-48 top-64 z-10 */}
-            {equipped.bottom && (
-              <div
-                key={`bottom-container-${equipped.bottom.id}-${animKeys.bottom}`}
-                className="absolute top-64 w-48 flex items-center justify-center z-10 animate-magnet-fly-in pointer-events-none"
-              >
-                <img
-                  src={equipped.bottom.imageUrl || equipped.bottom.image}
-                  alt={equipped.bottom.name}
-                  className="w-full h-52 object-contain tryon-multiply-blend transition-transform duration-300"
+                {/* Right Leg */}
+                <path
+                  d="M 52 120 L 62 120 L 65 205 L 54 205 Z"
+                  fill="#71717a"
                 />
-              </div>
-            )}
+                {/* Mannequin Stand Base */}
+                <ellipse cx="50" cy="214" rx="28" ry="4" fill="#a1a1aa" opacity="0.7" />
+              </svg>
 
-            {/* Magnetic Pull Pulse Effect when new item equipped */}
-            {lastEquippedSlot && (
-              <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-40">
-                <span className="w-48 h-48 rounded-full border-2 border-rose-500/40 animate-ping opacity-30" />
-              </div>
-            )}
+              {/* Empty Slot Placeholder Guides */}
+              {!equipped.head && (
+                <div className="absolute top-6 text-[9px] text-zinc-600 font-bold uppercase tracking-wider border border-dashed border-zinc-400 px-2 py-0.5 rounded-full pointer-events-none z-10 bg-white/70">
+                  Head Slot
+                </div>
+              )}
+              {!equipped.top && (
+                <div className="absolute top-20 text-[9px] text-zinc-600 font-bold uppercase tracking-wider border border-dashed border-zinc-400 px-2 py-0.5 rounded-full pointer-events-none z-10 bg-white/70">
+                  Torso Slot
+                </div>
+              )}
+              {!equipped.bottom && (
+                <div className="absolute top-48 text-[9px] text-zinc-600 font-bold uppercase tracking-wider border border-dashed border-zinc-400 px-2 py-0.5 rounded-full pointer-events-none z-10 bg-white/70">
+                  Legs Slot
+                </div>
+              )}
+
+              {/* 1. HEAD / CAP LAYER */}
+              {/* Exact Layer Positioning: top-6 w-28 z-30 */}
+              {equipped.head && (
+                <div
+                  key={`head-slot-${equipped.head.id}-${animKeys.head}`}
+                  className={`absolute top-6 w-28 flex items-center justify-center z-30 animate-fluid-attach pointer-events-none ${
+                    activeSlotGlow === 'head' ? 'slot-glow-active rounded-xl' : ''
+                  }`}
+                >
+                  <img
+                    src={equipped.head.imageUrl || equipped.head.image}
+                    alt={equipped.head.name}
+                    className="w-full h-22 object-contain tryon-multiply-blend transition-transform duration-300"
+                  />
+                </div>
+              )}
+
+              {/* 2. TORSO / SHIRT LAYER */}
+              {/* Exact Layer Positioning: top-20 w-44 z-20 */}
+              {equipped.top && (
+                <div
+                  key={`top-slot-${equipped.top.id}-${animKeys.top}`}
+                  className={`absolute top-20 w-44 flex items-center justify-center z-20 animate-fluid-attach pointer-events-none ${
+                    activeSlotGlow === 'top' ? 'slot-glow-active rounded-xl' : ''
+                  }`}
+                >
+                  <img
+                    src={equipped.top.imageUrl || equipped.top.image}
+                    alt={equipped.top.name}
+                    className="w-full h-48 object-contain tryon-multiply-blend transition-transform duration-300"
+                  />
+                </div>
+              )}
+
+              {/* 3. LEGS / PANTS LAYER */}
+              {/* Exact Layer Positioning: top-48 w-40 z-10 */}
+              {equipped.bottom && (
+                <div
+                  key={`bottom-slot-${equipped.bottom.id}-${animKeys.bottom}`}
+                  className={`absolute top-48 w-40 flex items-center justify-center z-10 animate-fluid-attach pointer-events-none ${
+                    activeSlotGlow === 'bottom' ? 'slot-glow-active rounded-xl' : ''
+                  }`}
+                >
+                  <img
+                    src={equipped.bottom.imageUrl || equipped.bottom.image}
+                    alt={equipped.bottom.name}
+                    className="w-full h-48 object-contain tryon-multiply-blend transition-transform duration-300"
+                  />
+                </div>
+              )}
+
+              {/* Active Slot Glow Ring Indicator */}
+              {activeSlotGlow && (
+                <div className="absolute inset-0 pointer-events-none border-2 border-rose-500/25 rounded-2xl animate-pulse" />
+              )}
+
+            </div>
           </div>
 
           {/* Action Footer: Price + Add Look to Cart */}
@@ -339,8 +351,8 @@ export default function FittingRoom({ isOpen, onClose, initialItem, onAddToCart 
           </div>
         </div>
 
-        {/* RIGHT SIDE: Dynamic Try-On Wardrobe Selector (ALL 42 Items) */}
-        <div className="w-full md:w-[52%] p-5 sm:p-6 flex flex-col bg-zinc-950 overflow-hidden">
+        {/* RIGHT SIDE: Dynamic Wardrobe Catalog (ALL 42 Items) */}
+        <div className="w-full md:w-[54%] p-5 sm:p-6 flex flex-col bg-zinc-950 overflow-hidden">
           
           {/* Header */}
           <div className="mb-4">
@@ -348,16 +360,16 @@ export default function FittingRoom({ isOpen, onClose, initialItem, onAddToCart 
               <h3 className="text-xl font-bold text-white flex items-center gap-2">
                 <span>Wardrobe Catalog</span>
                 <span className="text-xs bg-rose-500/20 text-rose-300 font-extrabold px-2.5 py-0.5 rounded-full border border-rose-500/30">
-                  {ALL_TRYON_PRODUCTS.length} Styles Total
+                  {ALL_TRYON_PRODUCTS.length} Styles
                 </span>
               </h3>
             </div>
             <p className="text-xs text-zinc-400 mt-1">
-              Click any piece below to trigger the magnet fly-in animation directly onto the mannequin.
+              Click any piece to smoothly animate it onto the mannequin stage.
             </p>
           </div>
 
-          {/* DYNAMIC CATEGORY TABS (BASED ON ACTUAL FOLDER FILE COUNTS) */}
+          {/* DYNAMIC CATEGORY TABS */}
           <div className="flex items-center gap-2 pb-3 mb-3 border-b border-zinc-800/80 overflow-x-auto scrollbar-none">
             <button
               onClick={() => setActiveTab('all')}
@@ -410,7 +422,7 @@ export default function FittingRoom({ isOpen, onClose, initialItem, onAddToCart 
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-xs font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
                     <Shirt className="w-3.5 h-3.5 text-rose-500" />
-                    <span>Shirts &amp; Tops ({tryOnItems.top.length} available)</span>
+                    <span>Shirts &amp; Tops ({tryOnItems.top.length})</span>
                   </h4>
                   {equipped.top && (
                     <button
@@ -478,7 +490,7 @@ export default function FittingRoom({ isOpen, onClose, initialItem, onAddToCart 
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-xs font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
                     <Layers className="w-3.5 h-3.5 text-rose-500" />
-                    <span>Pants &amp; Bottoms ({tryOnItems.bottom.length} available)</span>
+                    <span>Pants &amp; Bottoms ({tryOnItems.bottom.length})</span>
                   </h4>
                   {equipped.bottom && (
                     <button
@@ -546,7 +558,7 @@ export default function FittingRoom({ isOpen, onClose, initialItem, onAddToCart 
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-xs font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-rose-500" />
-                    <span>Caps &amp; Hats ({tryOnItems.head.length} available)</span>
+                    <span>Caps &amp; Hats ({tryOnItems.head.length})</span>
                   </h4>
                   {equipped.head && (
                     <button
