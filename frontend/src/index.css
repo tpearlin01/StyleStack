@@ -54,3 +54,36 @@
 .animate-fadeIn {
   animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* Smooth Magnet Fly-in Animation from Right Wardrobe into Mannequin Slot */
+@keyframes magnetFlyIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(95px, -6px, 0) scale(1.18) rotate(3deg);
+    filter: drop-shadow(-12px 14px 20px rgba(225, 29, 72, 0.5));
+  }
+  65% {
+    opacity: 1;
+    transform: translate3d(-6px, 2px, 0) scale(0.98) rotate(-0.5deg);
+    filter: drop-shadow(-4px 8px 12px rgba(225, 29, 72, 0.25));
+  }
+  85% {
+    transform: translate3d(2px, -1px, 0) scale(1.01) rotate(0.2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+  }
+}
+
+.animate-magnet-fly-in {
+  animation: magnetFlyIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Multiply Blend Mode: Seamlessly eliminates solid white photo boxes on apparel */
+.tryon-multiply-blend {
+  mix-blend-mode: multiply;
+  filter: contrast(1.06) brightness(1.02);
+}
