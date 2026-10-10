@@ -1,8 +1,8 @@
 import React from 'react';
 import { ThermalReceiptPrinter } from './ThermalReceiptPrinter';
 
-export const CheckoutInvoiceModal = ({ invoice, onClose }) => {
+export const InvoiceModal = ({ invoice, onClose }) => {
   return <ThermalReceiptPrinter invoice={invoice} onClose={onClose} />;
 };
 
-export default CheckoutInvoiceModal;
+export default InvoiceModal;

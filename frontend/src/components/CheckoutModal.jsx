@@ -24,7 +24,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { apiService } from '../services/api';
 import { BrandLogo } from './BrandLogo';
-import { ReceiptAnimation } from './ReceiptAnimation';
+import { ThermalReceiptPrinter } from './ThermalReceiptPrinter';
 
 const INDIAN_STATES_CITIES = {
   'Maharashtra': ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Thane', 'Aurangabad'],
@@ -58,7 +58,6 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
   // Step 1 = Form, Step 2 = Invoice View
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showReceiptAnimation, setShowReceiptAnimation] = useState(false);
 
   // Form State: strictly blank initially, email strictly from currentUser.email
   const [fullName, setFullName] = useState('');
@@ -105,6 +104,16 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
   }, [isOpen, activeUser?.email, step]);
 
   if (!isOpen) return null;
+
+  // Step 2: Interactive Thermal Receipt Printer Modal
+  if (step === 2 && generatedInvoice) {
+    return (
+      <ThermalReceiptPrinter
+        invoice={generatedInvoice}
+        onClose={handleBackToHome}
+      />
+    );
+  }
 
   const handleStateChange = (e) => {
     const selectedState = e.target.value;
@@ -194,8 +203,8 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
       if (res.success) {
         setGeneratedInvoice(res.data);
         clearCart();
+        setStep(2);
         setShowCardOtpModal(false);
-        setShowReceiptAnimation(true);
         if (onOrderConfirmed) {
           onOrderConfirmed(res.data);
         }
@@ -296,15 +305,9 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
     window.print();
   };
 
-  const handleReceiptAnimationComplete = () => {
-    setShowReceiptAnimation(false);
-    setStep(2);
-  };
-
   const handleBackToHome = () => {
     clearCart();
     setStep(1);
-    setShowReceiptAnimation(false);
     setGeneratedInvoice(null);
     onClose();
     const catalogEl = document.getElementById('catalog');
@@ -895,168 +898,6 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
 
             </div>
           </div>
-        )}
-
-        {/* STEP 2: PRINTABLE DIGITAL INVOICE RECEIPT */}
-        {step === 2 && generatedInvoice && (
-          <div className="p-6 overflow-y-auto custom-scrollbar space-y-6 flex-1 text-zinc-200 bg-zinc-900 print-section">
-            
-            {/* Conditional Green Payment Status Banner */}
-            {isInvoicePaidOnline && (
-              <div className="bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 p-3.5 rounded-xl flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                  <span className="text-xs font-semibold">Payment Received Successfully! Thank you for your payment.</span>
-                </div>
-                <span className="bg-emerald-500/20 text-emerald-300 text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-md border border-emerald-500/30">
-                  PAID ONLINE
-                </span>
-              </div>
-            )}
-
-            {/* Confirmation Banner */}
-            <div className="bg-rose-950/30 border border-rose-800/40 text-rose-200 p-4 rounded-2xl flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <CheckCircle className="w-6 h-6 text-rose-400 shrink-0" />
-                <div>
-                  <h4 className="font-bold text-sm text-white">Order Confirmed &amp; Invoiced!</h4>
-                  <p className="text-xs text-rose-300/80">A digital receipt has been logged to your account.</p>
-                </div>
-              </div>
-              <span className="bg-rose-600 text-white text-[10px] uppercase font-bold px-2.5 py-1 rounded-full">
-                Status: Confirmed / Processing
-              </span>
-            </div>
-
-            {/* Official Header with Monogram */}
-            <div className="flex justify-between items-start border-b border-zinc-800 pb-4">
-              <div className="flex items-center gap-3">
-                <BrandLogo size="sm" subtitle="DRESS & CLOTHING HUB" />
-              </div>
-              <div className="text-right">
-                <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Digital Invoice</p>
-                <p className="font-mono font-bold text-lg text-white">{generatedInvoice.orderId}</p>
-                <p className="text-xs text-zinc-400">
-                  {new Date(generatedInvoice.createdAt).toLocaleString('en-IN', {
-                    dateStyle: 'medium',
-                    timeStyle: 'short',
-                  })}
-                </p>
-              </div>
-            </div>
-
-            {/* Customer Info Grid */}
-            <div className="grid grid-cols-2 gap-4 bg-zinc-950 p-4 rounded-2xl border border-zinc-800 text-xs">
-              <div>
-                <p className="text-zinc-400 font-semibold uppercase text-[10px]">Billed &amp; Shipped To:</p>
-                <p className="font-bold text-white text-sm mt-0.5">{generatedInvoice.customer.name}</p>
-                <p className="text-zinc-300">{generatedInvoice.customer.address}</p>
-                <p className="text-zinc-300">
-                  {generatedInvoice.customer.city}
-                  {generatedInvoice.customer.state ? `, ${generatedInvoice.customer.state}` : ''} — {generatedInvoice.customer.pincode}
-                </p>
-                <p className="text-zinc-400 text-[11px] mt-1">{generatedInvoice.customer.email}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-zinc-400 font-semibold uppercase text-[10px]">Payment Details:</p>
-                <p className="font-bold text-white mt-0.5">{generatedInvoice.customer.paymentMethod}</p>
-                <p className="text-rose-400 mt-2 text-[10px] uppercase font-bold">
-                  Estimated Delivery: {generatedInvoice.estimatedDelivery}
-                </p>
-              </div>
-            </div>
-
-            {/* Itemized Table */}
-            <div>
-              <h5 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Itemized Breakdown</h5>
-              <div className="border border-zinc-800 rounded-2xl overflow-hidden bg-zinc-950">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-zinc-900 text-zinc-300 uppercase font-semibold border-b border-zinc-800">
-                    <tr>
-                      <th className="py-2.5 px-4">Item &amp; Category</th>
-                      <th className="py-2.5 px-2 text-center">Size</th>
-                      <th className="py-2.5 px-2 text-center">Qty</th>
-                      <th className="py-2.5 px-4 text-right">Price</th>
-                      <th className="py-2.5 px-4 text-right">Subtotal</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-zinc-800/60">
-                    {generatedInvoice.items.map((item, idx) => (
-                      <tr key={idx} className="hover:bg-zinc-900/50">
-                        <td className="py-3 px-4 flex items-center gap-3">
-                          <img
-                            src={item.imageUrl}
-                            alt={item.name}
-                            className="w-9 h-9 rounded-lg object-cover border border-zinc-800"
-                          />
-                          <div>
-                            <p className="font-bold text-white">{item.name}</p>
-                            <p className="text-[10px] text-zinc-400">{item.category}</p>
-                          </div>
-                        </td>
-                        <td className="py-3 px-2 text-center font-bold text-zinc-200">{item.selectedSize}</td>
-                        <td className="py-3 px-2 text-center font-bold text-zinc-200">{item.quantity}</td>
-                        <td className="py-3 px-4 text-right font-mono text-zinc-300">₹{item.price.toLocaleString('en-IN')}</td>
-                        <td className="py-3 px-4 text-right font-bold font-mono text-white">
-                          ₹{(item.price * item.quantity).toLocaleString('en-IN')}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Cost Summary Box */}
-            <div className="bg-zinc-950 text-white p-5 rounded-2xl space-y-2 text-xs border border-zinc-800">
-              <div className="flex justify-between text-zinc-300">
-                <span>Items Subtotal</span>
-                <span className="font-mono text-white">₹{generatedInvoice.subtotal.toLocaleString('en-IN')}</span>
-              </div>
-              <div className="flex justify-between text-zinc-300">
-                <span>GST Tax (5%)</span>
-                <span className="font-mono text-white">₹{generatedInvoice.gstAmount.toLocaleString('en-IN')}</span>
-              </div>
-              <div className="flex justify-between text-zinc-300">
-                <span>Express Shipping Fee</span>
-                <span>{generatedInvoice.shippingFee === 0 ? <strong className="text-rose-400">FREE</strong> : `₹${generatedInvoice.shippingFee}`}</span>
-              </div>
-              <div className="border-t border-zinc-800 pt-3 mt-2 flex justify-between items-baseline font-bold text-sm">
-                <span className="text-white text-base">
-                  {isInvoicePaidOnline ? 'Grand Total Paid' : 'Total Payable on Delivery'}
-                </span>
-                <span className="text-2xl text-rose-400 font-mono">₹{generatedInvoice.totalAmount.toLocaleString('en-IN')}</span>
-              </div>
-            </div>
-
-            {/* Action Buttons: Print Invoice and Prominent Back to Home */}
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 no-print">
-              <button
-                onClick={handlePrint}
-                className="w-full sm:w-auto px-5 py-3 rounded-xl border border-zinc-700 hover:bg-zinc-800 text-zinc-200 font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
-              >
-                <Printer className="w-4 h-4" />
-                <span>Print Invoice</span>
-              </button>
-
-              <button
-                onClick={handleBackToHome}
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-rose-950/40 transition-all cursor-pointer"
-              >
-                <Home className="w-4 h-4" />
-                <span>Back to Home</span>
-              </button>
-            </div>
-
-          </div>
-        )}
-
-        {/* RECEIPT PRINTING & TEARING ANIMATION OVERLAY */}
-        {showReceiptAnimation && generatedInvoice && (
-          <ReceiptAnimation
-            orderDetails={generatedInvoice}
-            onAnimationComplete={handleReceiptAnimationComplete}
-          />
         )}
 
       </div>
