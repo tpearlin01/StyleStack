@@ -12,12 +12,14 @@ export const ProductFilter = ({
   sortBy,
   onSelectSort,
   onResetFilters,
+  searchQuery = '',
   totalResults,
 }) => {
   const isFilterActive =
     selectedCategory !== 'all' ||
     selectedQuickFilter !== 'all' ||
     selectedSize !== 'all' ||
+    Boolean(searchQuery && searchQuery.trim()) ||
     sortBy !== 'featured';
 
   return (

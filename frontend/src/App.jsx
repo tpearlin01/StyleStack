@@ -72,9 +72,13 @@ function MainAppFlow() {
 
   const handleSearchChange = (query) => {
     setSearchQuery(query);
+    if (query && query.trim().length > 0) {
+      setSelectedCategory('all');
+      setSelectedQuickFilter('all');
+    }
     
     // Smooth scroll to catalog grid when typing in Navbar if user is at the top/hero section
-    if (query.trim().length > 0) {
+    if (query && query.trim().length > 0) {
       const catalogEl = document.getElementById('catalog');
       if (catalogEl) {
         const rect = catalogEl.getBoundingClientRect();
@@ -82,6 +86,20 @@ function MainAppFlow() {
           catalogEl.scrollIntoView({ behavior: 'smooth' });
         }
       }
+    }
+  };
+
+  const handleSelectCategory = (cat) => {
+    setSelectedCategory(cat);
+    setSelectedQuickFilter('all');
+    setSearchQuery(''); // Clear search query so full category displays cleanly without conflict
+  };
+
+  const handleSelectQuickFilter = (qf) => {
+    setSelectedQuickFilter(qf);
+    setSearchQuery(''); // Clear search query when quick filter chip is chosen
+    if (qf === 'men' || qf === 'women') {
+      setSelectedCategory(qf);
     }
   };
 
@@ -118,10 +136,7 @@ function MainAppFlow() {
       {/* Navigation Bar */}
       <Navbar
         selectedCategory={selectedCategory}
-        onSelectCategory={(cat) => {
-          setSelectedCategory(cat);
-          setSelectedQuickFilter('all');
-        }}
+        onSelectCategory={handleSelectCategory}
         searchQuery={searchQuery}
         setSearchQuery={handleSearchChange}
         onSearchChange={handleSearchChange}
@@ -171,22 +186,15 @@ function MainAppFlow() {
         {/* Filter Controls */}
         <ProductFilter
           selectedCategory={selectedCategory}
-          onSelectCategory={(cat) => {
-            setSelectedCategory(cat);
-            setSelectedQuickFilter('all');
-          }}
+          onSelectCategory={handleSelectCategory}
           selectedQuickFilter={selectedQuickFilter}
-          onSelectQuickFilter={(qf) => {
-            setSelectedQuickFilter(qf);
-            if (qf === 'men' || qf === 'women') {
-              setSelectedCategory(qf);
-            }
-          }}
+          onSelectQuickFilter={handleSelectQuickFilter}
           selectedSize={selectedSize}
           onSelectSize={setSelectedSize}
           sortBy={sortBy}
           onSelectSort={setSortBy}
           onResetFilters={handleResetFilters}
+          searchQuery={searchQuery}
           totalResults={products.length}
         />
 

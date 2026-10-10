@@ -98,8 +98,10 @@ export const apiService = {
 
     let result = [...catalog];
 
-    // Filter by Category or Gender
-    if (category && category !== 'all') {
+    const hasSearchQuery = Boolean(searchQuery && searchQuery.trim());
+
+    // Filter by Category or Gender (only when NOT performing a global text search)
+    if (!hasSearchQuery && category && category !== 'all') {
       const catLower = category.toLowerCase();
       if (catLower === 'men') {
         result = result.filter((p) => p.gender === 'men' || p.category === 'men');
@@ -112,8 +114,8 @@ export const apiService = {
       }
     }
 
-    // Filter by Quick Filter Chips
-    if (quickFilter && quickFilter !== 'all') {
+    // Filter by Quick Filter Chips (only when NOT performing a global text search)
+    if (!hasSearchQuery && quickFilter && quickFilter !== 'all') {
       if (quickFilter === 'new-arrivals') {
         result = result.filter((p) => p.isNewArrival || p.tag === 'New Arrival');
       } else if (quickFilter === 'festive-offers') {
@@ -134,12 +136,13 @@ export const apiService = {
       );
     }
 
-    // Real-Time Smart Search Query Filter (Multi-Field & Keyword Matching)
-    if (searchQuery && searchQuery.trim()) {
+    // Global Smart Search Query Filter (Searches Entire Catalog Across All Fields)
+    if (hasSearchQuery) {
       const terms = searchQuery.toLowerCase().trim().split(/\s+/).filter(Boolean);
       result = result.filter((p) => {
         const searchableCorpus = [
           p.name || '',
+          p.title || '',
           p.category || '',
           p.categoryName || '',
           p.gender || '',
@@ -149,10 +152,49 @@ export const apiService = {
           Array.isArray(p.tags) ? p.tags.join(' ') : '',
           p.description || '',
           p.imageUrl || '',
+          p.image || '',
+          // Category expansions and aliases
+          (p.category === 'formal' ? 'formal formals formalwear office workwear suit blazer shirt dress' : ''),
+          (p.category === 'traditional' ? 'traditional ethnic festive celebration kurta saree anarkali sherwani tarditional wedding' : ''),
+          (p.category === 'winter' ? 'winter warm cold coat jacket sweater cardigan thermal wool' : ''),
+          (p.category === 'casual' ? 'casual summer dress beach sundress slip maxi midi' : ''),
+          (p.category === 'men-tshirts' || p.category === 'women-tshirts' ? 't-shirt tshirt tshirts tee tees top summer' : ''),
+          (p.category === 'accessories' ? 'accessories accessory cap hat watch belt wallet jewelry bag sunglasses jhumka choker' : ''),
+          (p.gender === 'men' ? 'men mens men\'s' : ''),
+          (p.gender === 'women' ? 'women womens women\'s' : ''),
         ].join(' ').toLowerCase();
 
-        // Every term entered should be matched in the product's searchable data
-        return terms.every((term) => searchableCorpus.includes(term));
+        // Every term entered must match the product's searchable data
+        return terms.every((rawTerm) => {
+          // Direct substring match
+          if (searchableCorpus.includes(rawTerm)) return true;
+
+          // Stemming: plural / singular matching (e.g. 'formals' -> 'formal', 'accessories' -> 'accessory')
+          let stemmed = rawTerm;
+          if (rawTerm.endsWith('ies')) {
+            stemmed = rawTerm.slice(0, -3) + 'y';
+            if (searchableCorpus.includes(stemmed)) return true;
+          } else if (rawTerm.endsWith('es')) {
+            stemmed = rawTerm.slice(0, -2);
+            if (searchableCorpus.includes(stemmed)) return true;
+          } else if (rawTerm.endsWith('s') && rawTerm.length > 3) {
+            stemmed = rawTerm.slice(0, -1);
+            if (searchableCorpus.includes(stemmed)) return true;
+          }
+
+          // Traditional / tarditional typo and folder name matching
+          if (rawTerm.includes('traditional') && (searchableCorpus.includes('traditional') || searchableCorpus.includes('tarditional'))) {
+            return true;
+          }
+
+          // Hyphenated variants (e.g. 't-shirt' <-> 'tshirt')
+          const unhyphenated = rawTerm.replace(/[^a-z0-9]/g, '');
+          if (unhyphenated && searchableCorpus.includes(unhyphenated)) {
+            return true;
+          }
+
+          return false;
+        });
       });
     }
 

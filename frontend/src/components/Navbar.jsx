@@ -147,7 +147,10 @@ export const Navbar = ({
                 return (
                   <button
                     key={cat.id}
-                    onClick={() => onSelectCategory(cat.id)}
+                    onClick={() => {
+                      onSelectCategory(cat.id);
+                      setLocalSearchTerm('');
+                    }}
                     className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
                       isActive
                         ? 'bg-rose-600 text-white shadow-sm'
