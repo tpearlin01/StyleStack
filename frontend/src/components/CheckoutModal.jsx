@@ -13,7 +13,6 @@ import {
   Loader2,
   Home,
   ShieldCheck,
-  Lock,
   Smartphone,
   Copy,
   Check,
@@ -77,7 +76,6 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
   // Card Specific State
   const [cardNumber, setCardNumber] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
-  const [cardCvv, setCardCvv] = useState('');
   const [cardHolder, setCardHolder] = useState('');
   const [showCardOtpModal, setShowCardOtpModal] = useState(false);
   const [cardOtp, setCardOtp] = useState('');
@@ -122,11 +120,6 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
       raw = raw.slice(0, 2) + '/' + raw.slice(2);
     }
     setCardExpiry(raw);
-  };
-
-  const handleCardCvvChange = (e) => {
-    const raw = e.target.value.replace(/\D/g, '').slice(0, 3);
-    setCardCvv(raw);
   };
 
   const handleCopyUpiId = () => {
@@ -257,11 +250,6 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
         Number(expiryParts[0]) > 12
       ) {
         setFormError('Please enter a valid expiry date in MM/YY format (e.g. 08/28).');
-        return;
-      }
-
-      if (cardCvv.length !== 3) {
-        setFormError('Please enter the 3-digit CVV from the back of your card.');
         return;
       }
 
@@ -565,73 +553,21 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
 
                   {upiMode === 'QR' ? (
                     <div className="flex flex-col sm:flex-row items-center gap-6 justify-center py-2">
-                      {/* High-Resolution Vector Simulated QR Box */}
+                      {/* Realistic Standard QR Code Card */}
                       <div className="bg-white p-4 rounded-2xl shadow-xl flex flex-col items-center border border-zinc-200 text-zinc-900 shrink-0">
-                        <div className="flex items-center justify-between w-full mb-1.5 px-0.5">
-                          <span className="text-[9px] font-extrabold uppercase tracking-wider text-zinc-500">BHIM UPI QR</span>
-                          <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200">
-                            ● Active
-                          </span>
-                        </div>
-
-                        {/* Interactive SVG QR Code Pattern */}
-                        <div className="relative p-2 bg-white rounded-xl border border-zinc-300 shadow-inner flex items-center justify-center">
-                          <svg
-                            viewBox="0 0 160 160"
-                            className="w-40 h-40"
-                            fill="currentColor"
-                          >
-                            <rect x="10" y="10" width="40" height="40" rx="4" fill="#09090b" />
-                            <rect x="18" y="18" width="24" height="24" rx="2" fill="#ffffff" />
-                            <rect x="24" y="24" width="12" height="12" rx="1" fill="#09090b" />
-
-                            <rect x="110" y="10" width="40" height="40" rx="4" fill="#09090b" />
-                            <rect x="118" y="18" width="24" height="24" rx="2" fill="#ffffff" />
-                            <rect x="124" y="24" width="12" height="12" rx="1" fill="#09090b" />
-
-                            <rect x="10" y="110" width="40" height="40" rx="4" fill="#09090b" />
-                            <rect x="18" y="118" width="24" height="24" rx="2" fill="#ffffff" />
-                            <rect x="24" y="124" width="12" height="12" rx="1" fill="#09090b" />
-
-                            <rect x="58" y="16" width="8" height="8" fill="#09090b" />
-                            <rect x="74" y="16" width="8" height="8" fill="#09090b" />
-                            <rect x="90" y="16" width="8" height="8" fill="#09090b" />
-                            <rect x="16" y="58" width="8" height="8" fill="#09090b" />
-                            <rect x="16" y="74" width="8" height="8" fill="#09090b" />
-                            <rect x="16" y="90" width="8" height="8" fill="#09090b" />
-
-                            <rect x="58" y="32" width="16" height="8" fill="#09090b" />
-                            <rect x="82" y="32" width="16" height="8" fill="#09090b" />
-                            <rect x="32" y="58" width="8" height="16" fill="#09090b" />
-                            <rect x="32" y="82" width="8" height="16" fill="#09090b" />
-                            <rect x="58" y="58" width="12" height="12" fill="#09090b" />
-                            <rect x="78" y="58" width="12" height="12" fill="#09090b" />
-                            <rect x="98" y="58" width="12" height="12" fill="#09090b" />
-                            <rect x="58" y="78" width="12" height="12" fill="#09090b" />
-                            <rect x="98" y="78" width="12" height="12" fill="#09090b" />
-                            <rect x="58" y="98" width="12" height="12" fill="#09090b" />
-                            <rect x="78" y="98" width="12" height="12" fill="#09090b" />
-                            <rect x="98" y="98" width="12" height="12" fill="#09090b" />
-                            <rect x="118" y="58" width="16" height="8" fill="#09090b" />
-                            <rect x="118" y="74" width="8" height="16" fill="#09090b" />
-                            <rect x="134" y="90" width="16" height="8" fill="#09090b" />
-                            <rect x="58" y="118" width="16" height="8" fill="#09090b" />
-                            <rect x="58" y="134" width="8" height="16" fill="#09090b" />
-                            <rect x="82" y="118" width="16" height="8" fill="#09090b" />
-                            <rect x="82" y="134" width="16" height="8" fill="#09090b" />
-                            <rect x="110" y="118" width="16" height="16" fill="#09090b" />
-                            <rect x="134" y="118" width="16" height="16" fill="#09090b" />
-                            <rect x="118" y="138" width="16" height="12" fill="#09090b" />
-
-                            {/* Center Brand Badge */}
-                            <rect x="65" y="65" width="30" height="30" rx="6" fill="#ffffff" stroke="#e11d48" strokeWidth="2" />
-                            <text x="80" y="83" fontSize="10" fontWeight="900" textAnchor="middle" fill="#e11d48">UPI</text>
-                          </svg>
+                        <div className="p-1 bg-white rounded-xl flex items-center justify-center">
+                          <img
+                            src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&data=${encodeURIComponent(`upi://pay?pa=stylestack@bank&pn=StyleStack&am=${totalAmount}&cu=INR`)}`}
+                            alt="UPI Payment QR Code"
+                            className="w-44 h-44 object-contain rounded-lg"
+                            loading="lazy"
+                          />
                         </div>
 
                         <div className="mt-2 text-center">
-                          <span className="text-[10px] text-zinc-500 block">Exact Total Amount</span>
-                          <span className="text-base font-black text-zinc-950 font-mono">₹{totalAmount.toLocaleString('en-IN')}</span>
+                          <p className="text-xs font-semibold text-zinc-700">
+                            Exact Total Amount: <span className="font-black text-zinc-950 font-mono text-sm">₹{totalAmount.toLocaleString('en-IN')}</span>
+                          </p>
                         </div>
                       </div>
 
@@ -752,40 +688,19 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {/* Expiry Date */}
-                      <div>
-                        <label className="block text-xs font-semibold text-zinc-300 mb-1">
-                          Expiry Date (MM/YY) *
-                        </label>
-                        <input
-                          type="text"
-                          maxLength={5}
-                          value={cardExpiry}
-                          onChange={handleCardExpiryChange}
-                          placeholder="MM/YY"
-                          className="w-full px-4 py-2.5 rounded-xl border border-zinc-800 bg-zinc-900 text-white placeholder-zinc-500 text-xs font-mono font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 outline-none transition-colors"
-                        />
-                      </div>
-
-                      {/* CVV */}
-                      <div>
-                        <label className="block text-xs font-semibold text-zinc-300 mb-1 flex items-center justify-between">
-                          <span>CVV / Security Code *</span>
-                          <span className="text-[10px] text-zinc-500 font-normal">3 digits on back</span>
-                        </label>
-                        <div className="relative">
-                          <Lock className="absolute left-3.5 top-3 w-4 h-4 text-zinc-500" />
-                          <input
-                            type="password"
-                            maxLength={3}
-                            value={cardCvv}
-                            onChange={handleCardCvvChange}
-                            placeholder="•••"
-                            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-800 bg-zinc-900 text-white placeholder-zinc-500 text-xs font-mono font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 outline-none transition-colors"
-                          />
-                        </div>
-                      </div>
+                    {/* Expiry Date */}
+                    <div>
+                      <label className="block text-xs font-semibold text-zinc-300 mb-1">
+                        Expiry Date (MM/YY) *
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={5}
+                        value={cardExpiry}
+                        onChange={handleCardExpiryChange}
+                        placeholder="MM/YY"
+                        className="w-full px-4 py-2.5 rounded-xl border border-zinc-800 bg-zinc-900 text-white placeholder-zinc-500 text-xs font-mono font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 outline-none transition-colors"
+                      />
                     </div>
 
                     {/* Cardholder Name */}
