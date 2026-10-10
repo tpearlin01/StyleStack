@@ -85,7 +85,7 @@ export const apiService = {
 
     let catalog = MOCK_PRODUCTS;
     try {
-      const stored = localStorage.getItem('stylestack_catalog_v6');
+      const stored = localStorage.getItem('stylestack_catalog_v7');
       if (stored) {
         const parsed = JSON.parse(stored);
         // Ensure new try-on products are included even if previous catalog is cached
@@ -94,9 +94,9 @@ export const apiService = {
           (p) => p.isTryOnEligible && !existingIds.has(p.id)
         );
         catalog = missingTryOn.length > 0 ? [...parsed, ...missingTryOn] : parsed;
-        localStorage.setItem('stylestack_catalog_v6', JSON.stringify(catalog));
+        localStorage.setItem('stylestack_catalog_v7', JSON.stringify(catalog));
       } else {
-        localStorage.setItem('stylestack_catalog_v6', JSON.stringify(MOCK_PRODUCTS));
+        localStorage.setItem('stylestack_catalog_v7', JSON.stringify(MOCK_PRODUCTS));
       }
     } catch (e) {
       console.error('Error reading catalog', e);
@@ -107,8 +107,10 @@ export const apiService = {
     // Filter by Category or Gender
     if (category && category !== 'all') {
       const catLower = category.toLowerCase();
-      if (catLower === 'men' || catLower === 'women') {
-        result = result.filter((p) => p.gender === catLower);
+      if (catLower === 'men') {
+        result = result.filter((p) => p.gender === 'men' || p.category === 'men');
+      } else if (catLower === 'women') {
+        result = result.filter((p) => p.gender === 'women' || p.category === 'women');
       } else {
         result = result.filter(
           (p) => p.category && p.category.toLowerCase() === catLower
