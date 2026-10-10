@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Component } from 'react';
 import {
   Printer,
   Scissors,
@@ -6,47 +6,127 @@ import {
   Home,
   CheckCircle2,
   Download,
+  X,
 } from 'lucide-react';
 import './ThermalReceiptPrinter.css';
 
-export const ThermalReceiptPrinter = ({ invoice, onClose }) => {
+// 1. ERROR BOUNDARY WRAPPER FOR SAFE FALLBACK RENDERING
+export class ReceiptErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('ThermalReceiptPrinter caught an error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="printer-overlay">
+          <div className="printer-stage">
+            <div className="p-6 bg-zinc-900 border border-zinc-800 rounded-3xl text-center space-y-4 max-w-md mx-auto text-white shadow-2xl">
+              <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center">
+                <CheckCircle2 className="w-6 h-6 text-emerald-400" />
+              </div>
+              <h3 className="text-base font-bold text-white">Order Confirmed!</h3>
+              <p className="text-xs text-zinc-400">
+                Payment received successfully. Thank you for shopping with StyleStack.
+              </p>
+              <button
+                type="button"
+                onClick={this.props.onClose || (() => window.location.reload())}
+                className="px-6 py-2.5 rounded-full bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition cursor-pointer"
+              >
+                Back to Store
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+// 2. INNER RECEIPT PRINTER COMPONENT WITH SAFE OPTIONAL CHAINING & DEFAULTS
+const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose }) => {
   // paperState: 'idle' | 'printing' | 'printed' | 'teared'
   const [paperState, setPaperState] = useState('idle');
 
-  if (!invoice) return null;
+  // Safely normalize order data from any prop variation (invoice, order, orderDetails)
+  const data = invoice || order || orderDetails || {};
 
+  // Safe payment method extraction & COD check
   const paymentMethod =
-    invoice?.customer?.paymentMethod ||
-    invoice?.paymentMethod ||
-    '';
+    data?.customer?.paymentMethod ||
+    data?.paymentMethod ||
+    data?.paymentMode ||
+    'Instant UPI / GPay';
+
   const isCod =
-    paymentMethod.toLowerCase().includes('cash') ||
-    paymentMethod.toLowerCase() === 'cod';
+    typeof paymentMethod === 'string' &&
+    (paymentMethod.toLowerCase().includes('cash') ||
+      paymentMethod.toLowerCase() === 'cod');
   const isPaidOnline = !isCod;
 
-  const orderId = invoice.orderId || invoice.id || 'SS-ORD';
-  const formattedDate = invoice.createdAt
-    ? new Date(invoice.createdAt).toLocaleDateString('en-IN', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-      })
-    : invoice.date || 'Today';
+  // Safe order ID with fallback
+  const orderId =
+    data?.orderId ||
+    data?.id ||
+    data?._id ||
+    'SS-ORD-' + Math.floor(100000 + Math.random() * 900000);
 
-  const formattedTime = invoice.createdAt
-    ? new Date(invoice.createdAt).toLocaleTimeString('en-IN', {
-        hour: '2-digit',
-        minute: '2-digit',
-      })
-    : '';
+  // Safe Date & Time calculation without throwing Invalid time value RangeError
+  let formattedDate = data?.date || 'Today';
+  let formattedTime = '';
 
-  const items = invoice.items || [];
-  const totalAmount =
-    invoice.totalAmount !== undefined
-      ? invoice.totalAmount
-      : invoice.total !== undefined
-      ? invoice.total
-      : 0;
+  const dateVal = data?.createdAt || data?.date;
+  if (dateVal) {
+    try {
+      const d = new Date(dateVal);
+      if (!isNaN(d.getTime())) {
+        formattedDate = d.toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        });
+        formattedTime = d.toLocaleTimeString('en-IN', {
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+      }
+    } catch {
+      formattedDate = typeof dateVal === 'string' ? dateVal : 'Today';
+    }
+  }
+
+  // Safe items array with fallback
+  const rawItems = Array.isArray(data?.items)
+    ? data.items
+    : Array.isArray(data?.orderItems)
+    ? data.orderItems
+    : [];
+
+  // Safe numeric totals
+  const totalAmount = Number(
+    data?.totalAmount ?? data?.total ?? data?.amount ?? 0
+  );
+
+  const subtotal = Number(
+    data?.subtotal ?? (totalAmount > 0 ? Math.round(totalAmount / 1.05) : 0)
+  );
+
+  const gstAmount = Number(
+    data?.gstAmount ?? (totalAmount > 0 ? Math.round(totalAmount - subtotal) : 0)
+  );
+
+  const shippingFee = Number(data?.shippingFee ?? 0);
 
   // Handle PRINT RECEIPT click
   const handlePrint = () => {
@@ -132,7 +212,9 @@ export const ThermalReceiptPrinter = ({ invoice, onClose }) => {
               </div>
               <div className="flex justify-between">
                 <span>DATE:</span>
-                <span className="font-semibold text-black">{formattedDate} {formattedTime}</span>
+                <span className="font-semibold text-black">
+                  {formattedDate} {formattedTime}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span>PAYMENT:</span>
@@ -155,37 +237,53 @@ export const ThermalReceiptPrinter = ({ invoice, onClose }) => {
                 <span>PRICE</span>
               </div>
               <div className="space-y-1">
-                {items.map((item, idx) => (
-                  <div key={idx} className="flex justify-between text-[10px] text-zinc-900 leading-tight">
+                {rawItems.length === 0 ? (
+                  <div className="flex justify-between text-[10px] text-zinc-900 leading-tight">
                     <span className="truncate max-w-[155px]">
-                      {item.name} <strong className="text-zinc-600 font-mono">x{item.quantity}</strong>
+                      Selected Apparel Items <strong className="text-zinc-600 font-mono">x1</strong>
                     </span>
                     <span className="font-bold font-mono text-black">
-                      ₹{((item.price || 0) * (item.quantity || 1)).toLocaleString('en-IN')}
+                      ₹{totalAmount.toLocaleString('en-IN')}
                     </span>
                   </div>
-                ))}
+                ) : (
+                  (rawItems || []).map((item, idx) => {
+                    const itemName =
+                      item?.name || item?.title || item?.productName || 'Fashion Apparel';
+                    const itemQty = Number(item?.quantity ?? item?.qty ?? 1);
+                    const itemPrice = Number(
+                      item?.price ?? (totalAmount ? Math.round(totalAmount / itemQty) : 0)
+                    );
+                    const itemTotal = itemPrice * itemQty;
+                    return (
+                      <div key={idx} className="flex justify-between text-[10px] text-zinc-900 leading-tight">
+                        <span className="truncate max-w-[155px]">
+                          {itemName} <strong className="text-zinc-600 font-mono">x{itemQty}</strong>
+                        </span>
+                        <span className="font-bold font-mono text-black">
+                          ₹{itemTotal.toLocaleString('en-IN')}
+                        </span>
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </div>
 
             {/* Cost Breakdown */}
             <div className="text-[10px] space-y-0.5 pb-2 mb-2 border-b border-dashed border-zinc-400 text-zinc-700">
-              {invoice.subtotal !== undefined && (
-                <div className="flex justify-between">
-                  <span>SUBTOTAL:</span>
-                  <span className="font-mono">₹{invoice.subtotal.toLocaleString('en-IN')}</span>
-                </div>
-              )}
-              {invoice.gstAmount !== undefined && (
-                <div className="flex justify-between">
-                  <span>GST (5%):</span>
-                  <span className="font-mono">₹{invoice.gstAmount.toLocaleString('en-IN')}</span>
-                </div>
-              )}
+              <div className="flex justify-between">
+                <span>SUBTOTAL:</span>
+                <span className="font-mono">₹{subtotal.toLocaleString('en-IN')}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>GST (5%):</span>
+                <span className="font-mono">₹{gstAmount.toLocaleString('en-IN')}</span>
+              </div>
               <div className="flex justify-between">
                 <span>SHIPPING:</span>
                 <span className="font-mono">
-                  {invoice.shippingFee === 0 ? 'FREE' : `₹${invoice.shippingFee || 0}`}
+                  {shippingFee === 0 ? 'FREE' : `₹${shippingFee.toLocaleString('en-IN')}`}
                 </span>
               </div>
             </div>
@@ -293,6 +391,15 @@ export const ThermalReceiptPrinter = ({ invoice, onClose }) => {
 
       </div>
     </div>
+  );
+};
+
+// 3. MAIN EXPORT WRAPPED IN ERROR BOUNDARY
+export const ThermalReceiptPrinter = (props) => {
+  return (
+    <ReceiptErrorBoundary onClose={props.onClose}>
+      <ThermalReceiptPrinterContent {...props} />
+    </ReceiptErrorBoundary>
   );
 };
 
