@@ -9,6 +9,7 @@ import { ProductCard } from './components/ProductCard';
 import { ProductQuickViewModal } from './components/ProductQuickViewModal';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
+import { InvoiceModal } from './components/InvoiceModal';
 import { AdminDashboard } from './components/AdminDashboard';
 import { Footer } from './components/Footer';
 import { ToastNotification } from './components/ToastNotification';
@@ -33,6 +34,8 @@ function MainAppFlow() {
   // Modals State
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+  const [invoiceOrder, setInvoiceOrder] = useState(null);
   const [visibleCount, setVisibleCount] = useState(32);
 
   const [hasLoadedInitial, setHasLoadedInitial] = useState(false);
@@ -312,8 +315,22 @@ function MainAppFlow() {
       <CheckoutModal
         isOpen={isCheckoutModalOpen}
         onClose={() => setIsCheckoutModalOpen(false)}
-        onOrderConfirmed={() => {
+        onOrderConfirmed={(orderData) => {
+          setIsCheckoutModalOpen(false);
+          setInvoiceOrder(orderData);
+          setIsInvoiceModalOpen(true);
           loadProducts();
+        }}
+      />
+
+      <InvoiceModal
+        isOpen={isInvoiceModalOpen}
+        order={invoiceOrder}
+        invoice={invoiceOrder}
+        orderDetails={invoiceOrder}
+        onClose={() => {
+          setIsInvoiceModalOpen(false);
+          setInvoiceOrder(null);
         }}
       />
 

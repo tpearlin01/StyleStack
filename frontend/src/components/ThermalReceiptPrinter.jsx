@@ -57,16 +57,20 @@ export class ReceiptErrorBoundary extends Component {
 // 2. INNER RECEIPT PRINTER COMPONENT WITH SAFE OPTIONAL CHAINING & DEFAULTS
 const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose }) => {
   // paperState: 'idle' | 'printing' | 'printed' | 'teared'
-  const [paperState, setPaperState] = useState('idle');
+  // Default to 'printed' so the receipt is immediately visible with all order details and NOT a blank white paper!
+  const [paperState, setPaperState] = useState('printed');
 
-  // Safely normalize order data from any prop variation (invoice, order, orderDetails)
-  const data = invoice || order || orderDetails || {};
+  // Normalize order data from any prop variation (invoice, order, orderDetails)
+  const orderObj = order || orderDetails || invoice || {};
 
-  // Safe payment method extraction & COD check
+  // Safe payment method extraction with fallback
   const paymentMethod =
-    data?.customer?.paymentMethod ||
-    data?.paymentMethod ||
-    data?.paymentMode ||
+    order?.paymentMethod ||
+    orderDetails?.paymentMethod ||
+    invoice?.paymentMethod ||
+    orderObj?.customer?.paymentMethod ||
+    orderObj?.paymentMethod ||
+    orderObj?.paymentMode ||
     'Instant UPI / GPay';
 
   const isCod =
@@ -77,16 +81,35 @@ const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose })
 
   // Safe order ID with fallback
   const orderId =
-    data?.orderId ||
-    data?.id ||
-    data?._id ||
+    order?.id ||
+    order?.orderId ||
+    orderDetails?.id ||
+    orderDetails?.orderId ||
+    invoice?.id ||
+    invoice?.orderId ||
+    orderObj?.id ||
+    orderObj?.orderId ||
     'SS-ORD-' + Math.floor(100000 + Math.random() * 900000);
 
   // Safe Date & Time calculation without throwing Invalid time value RangeError
-  let formattedDate = data?.date || 'Today';
+  let formattedDate =
+    order?.date ||
+    orderDetails?.date ||
+    invoice?.date ||
+    orderObj?.date ||
+    'Today';
   let formattedTime = '';
 
-  const dateVal = data?.createdAt || data?.date;
+  const dateVal =
+    order?.createdAt ||
+    orderDetails?.createdAt ||
+    invoice?.createdAt ||
+    orderObj?.createdAt ||
+    order?.date ||
+    orderDetails?.date ||
+    invoice?.date ||
+    orderObj?.date;
+
   if (dateVal) {
     try {
       const d = new Date(dateVal);
@@ -106,27 +129,56 @@ const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose })
     }
   }
 
-  // Safe items array with fallback
-  const rawItems = Array.isArray(data?.items)
-    ? data.items
-    : Array.isArray(data?.orderItems)
-    ? data.orderItems
+  // Safe items array with fallback - checking order?.items, orderDetails?.items, invoice?.items
+  const rawItems = Array.isArray(order?.items)
+    ? order.items
+    : Array.isArray(orderDetails?.items)
+    ? orderDetails.items
+    : Array.isArray(invoice?.items)
+    ? invoice.items
+    : Array.isArray(orderObj?.items)
+    ? orderObj.items
+    : Array.isArray(orderObj?.orderItems)
+    ? orderObj.orderItems
     : [];
 
-  // Safe numeric totals
+  // Safe numeric totals - checking order?.total, orderDetails?.total, invoice?.total
   const totalAmount = Number(
-    data?.totalAmount ?? data?.total ?? data?.amount ?? 0
+    order?.total ??
+    order?.totalAmount ??
+    orderDetails?.total ??
+    orderDetails?.totalAmount ??
+    invoice?.total ??
+    invoice?.totalAmount ??
+    orderObj?.total ??
+    orderObj?.totalAmount ??
+    orderObj?.amount ??
+    0
   );
 
   const subtotal = Number(
-    data?.subtotal ?? (totalAmount > 0 ? Math.round(totalAmount / 1.05) : 0)
+    order?.subtotal ??
+    orderDetails?.subtotal ??
+    invoice?.subtotal ??
+    orderObj?.subtotal ??
+    (totalAmount > 0 ? Math.round(totalAmount / 1.05) : 0)
   );
 
   const gstAmount = Number(
-    data?.gstAmount ?? (totalAmount > 0 ? Math.round(totalAmount - subtotal) : 0)
+    order?.gstAmount ??
+    orderDetails?.gstAmount ??
+    invoice?.gstAmount ??
+    orderObj?.gstAmount ??
+    (totalAmount > 0 ? Math.round(totalAmount - subtotal) : 0)
   );
 
-  const shippingFee = Number(data?.shippingFee ?? 0);
+  const shippingFee = Number(
+    order?.shippingFee ??
+    orderDetails?.shippingFee ??
+    invoice?.shippingFee ??
+    orderObj?.shippingFee ??
+    0
+  );
 
   // Handle PRINT RECEIPT click
   const handlePrint = () => {
@@ -134,7 +186,7 @@ const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose })
     setPaperState('printing');
     setTimeout(() => {
       setPaperState('printed');
-    }, 2500);
+    }, 2000);
   };
 
   // Handle TEAR click
@@ -237,7 +289,7 @@ const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose })
                 <span>PRICE</span>
               </div>
               <div className="space-y-1">
-                {rawItems.length === 0 ? (
+                {(rawItems || []).length === 0 ? (
                   <div className="flex justify-between text-[10px] text-zinc-900 leading-tight">
                     <span className="truncate max-w-[155px]">
                       Selected Apparel Items <strong className="text-zinc-600 font-mono">x1</strong>
@@ -327,7 +379,7 @@ const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose })
           <button
             type="button"
             onClick={handlePrint}
-            disabled={paperState === 'printing' || paperState === 'printed' || paperState === 'teared'}
+            disabled={paperState === 'printing'}
             className="control-btn control-btn-primary"
             title="Roll out paper receipt"
           >
@@ -335,8 +387,6 @@ const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose })
             <span>
               {paperState === 'printing'
                 ? 'PRINTING...'
-                : paperState === 'printed' || paperState === 'teared'
-                ? 'PRINTED'
                 : 'PRINT RECEIPT'}
             </span>
           </button>
