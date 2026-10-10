@@ -14,6 +14,7 @@ import { Footer } from './components/Footer';
 import { ToastNotification } from './components/ToastNotification';
 import { apiService } from './services/api';
 import { SearchX, RotateCcw, X, Sparkles } from 'lucide-react';
+import FittingRoom from './components/FittingRoom';
 
 function MainAppFlow() {
   const { session, isAuthenticated, role } = useAuth();
@@ -33,6 +34,13 @@ function MainAppFlow() {
   // Modals State
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [isFittingRoomOpen, setIsFittingRoomOpen] = useState(false);
+  const [tryOnInitialItem, setTryOnInitialItem] = useState(null);
+
+  const handleOpenTryOn = (item = null) => {
+    setTryOnInitialItem(item);
+    setIsFittingRoomOpen(true);
+  };
 
   const [hasLoadedInitial, setHasLoadedInitial] = useState(false);
 
@@ -123,10 +131,40 @@ function MainAppFlow() {
         searchQuery={searchQuery}
         setSearchQuery={handleSearchChange}
         onSearchChange={handleSearchChange}
+        onOpenFittingRoom={() => handleOpenTryOn(null)}
       />
 
       {/* Hero Section */}
       <HeroBanner onShopNow={handleShopNowClick} />
+
+      {/* AI Virtual Try-On Fitting Room Teaser Bar */}
+      <div className="bg-gradient-to-r from-zinc-950 via-zinc-900 to-zinc-950 border-y border-zinc-800/80 py-3.5 px-4 sm:px-8">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-rose-600/20 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0">
+              <Sparkles className="w-5 h-5 fill-rose-500 text-rose-400" />
+            </div>
+            <div>
+              <p className="text-xs sm:text-sm font-bold text-white flex items-center justify-center sm:justify-start gap-1.5">
+                <span>AI Virtual Fitting Room Experience</span>
+                <span className="text-[10px] bg-rose-500/20 text-rose-300 font-bold px-2 py-0.5 rounded-full uppercase border border-rose-500/30">
+                  Interactive
+                </span>
+              </p>
+              <p className="text-[11px] text-zinc-400">
+                Mix &amp; match shirts, tailored trousers, and snapbacks in live multi-slot silhouette before buying.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => handleOpenTryOn(null)}
+            className="w-full sm:w-auto px-5 py-2 rounded-xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white text-xs font-bold shadow-lg shadow-rose-950/50 flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-rose-200" />
+            <span>Launch Fitting Room</span>
+          </button>
+        </div>
+      </div>
 
       {/* Main Catalog Container */}
       <main id="catalog" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -235,12 +273,27 @@ function MainAppFlow() {
                 key={product.id}
                 product={product}
                 onQuickView={(p) => setQuickViewProduct(p)}
+                onTryOn={(p) => handleOpenTryOn(p)}
               />
             ))}
           </div>
         )}
 
       </main>
+
+      {/* Floating AI Try-On Widget Button */}
+      <button
+        onClick={() => handleOpenTryOn(null)}
+        className="fixed bottom-6 right-6 z-40 px-4 py-3 bg-gradient-to-r from-rose-600 via-rose-500 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white rounded-full shadow-2xl shadow-rose-950/60 border border-rose-400/40 flex items-center gap-2.5 font-bold text-xs cursor-pointer active:scale-95 transition-all group hover:shadow-rose-600/40 hover:-translate-y-0.5"
+        title="Open AI Virtual Try-On Fitting Room"
+      >
+        <Sparkles className="w-4 h-4 text-white fill-white animate-pulse" />
+        <span className="hidden sm:inline">AI Virtual Try-On</span>
+        <span className="sm:hidden font-extrabold">⚡ Try-On</span>
+        <span className="bg-white/20 px-2 py-0.5 rounded-full text-[10px] uppercase font-extrabold hidden md:inline">
+          Fitting Room
+        </span>
+      </button>
 
       {/* Footer */}
       <Footer />
@@ -249,6 +302,15 @@ function MainAppFlow() {
       <ProductQuickViewModal
         product={quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
+      />
+
+      <FittingRoom
+        isOpen={isFittingRoomOpen}
+        onClose={() => {
+          setIsFittingRoomOpen(false);
+          setTryOnInitialItem(null);
+        }}
+        initialItem={tryOnInitialItem}
       />
 
       <CartDrawer

@@ -21,6 +21,7 @@ export const Navbar = ({
   searchQuery = '',
   setSearchQuery,
   onSearchChange,
+  onOpenFittingRoom,
 }) => {
   const { totalItemCount, setIsCartOpen, openCart } = useCart();
   const { user, role, logout } = useAuth();
@@ -179,6 +180,17 @@ export const Navbar = ({
               {searchQuery && !isSearchOpen && (
                 <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-500 rounded-full ring-2 ring-zinc-900" />
               )}
+            </button>
+
+            {/* AI Virtual Try-On Fitting Room Button */}
+            <button
+              onClick={onOpenFittingRoom}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold text-xs shadow-md shadow-rose-950/40 transition-all border border-rose-500/40 cursor-pointer active:scale-95 group"
+              title="Open AI Virtual Try-On Fitting Room"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-rose-200 fill-rose-300 animate-pulse" />
+              <span className="hidden sm:inline">AI Try-On</span>
+              <span className="sm:hidden text-[10px]">Try-On</span>
             </button>
 
             {/* Shopping Cart Button */}
