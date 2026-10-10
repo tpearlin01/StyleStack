@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   X,
   CheckCircle,
+  CheckCircle2,
   Printer,
   ArrowRight,
   CreditCard,
@@ -84,6 +85,12 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
 
   // Generated Invoice Data State
   const [generatedInvoice, setGeneratedInvoice] = useState(null);
+  const invoicePaymentMethod = generatedInvoice?.customer?.paymentMethod || '';
+  const isInvoicePaidOnline = Boolean(
+    invoicePaymentMethod &&
+    !invoicePaymentMethod.toLowerCase().includes('cash') &&
+    invoicePaymentMethod.toLowerCase() !== 'cod'
+  );
 
   // Prefill email strictly from currentUser and reset errors when modal opens
   useEffect(() => {
@@ -886,6 +893,19 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
         {step === 2 && generatedInvoice && (
           <div className="p-6 overflow-y-auto custom-scrollbar space-y-6 flex-1 text-zinc-200 bg-zinc-900 print-section">
             
+            {/* Conditional Green Payment Status Banner */}
+            {isInvoicePaidOnline && (
+              <div className="bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 p-3.5 rounded-xl flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                  <span className="text-xs font-semibold">Payment Received Successfully! Thank you for your payment.</span>
+                </div>
+                <span className="bg-emerald-500/20 text-emerald-300 text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-md border border-emerald-500/30">
+                  PAID ONLINE
+                </span>
+              </div>
+            )}
+
             {/* Confirmation Banner */}
             <div className="bg-rose-950/30 border border-rose-800/40 text-rose-200 p-4 rounded-2xl flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -994,7 +1014,9 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
                 <span>{generatedInvoice.shippingFee === 0 ? <strong className="text-rose-400">FREE</strong> : `₹${generatedInvoice.shippingFee}`}</span>
               </div>
               <div className="border-t border-zinc-800 pt-3 mt-2 flex justify-between items-baseline font-bold text-sm">
-                <span className="text-white text-base">Grand Total Paid</span>
+                <span className="text-white text-base">
+                  {isInvoicePaidOnline ? 'Grand Total Paid' : 'Total Payable on Delivery'}
+                </span>
                 <span className="text-2xl text-rose-400 font-mono">₹{generatedInvoice.totalAmount.toLocaleString('en-IN')}</span>
               </div>
             </div>

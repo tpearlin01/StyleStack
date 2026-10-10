@@ -1,7 +1,11 @@
-import { CheckCircle, Printer, Home } from 'lucide-react';
+import { CheckCircle, CheckCircle2, Printer, Home } from 'lucide-react';
 
 export const CheckoutInvoiceModal = ({ invoice, onClose }) => {
   if (!invoice) return null;
+
+  const paymentMethodStr = invoice?.customer?.paymentMethod || '';
+  const isCod = paymentMethodStr.toLowerCase().includes('cash') || paymentMethodStr.toLowerCase() === 'cod';
+  const isPaidOnline = !isCod;
 
   const handlePrint = () => {
     window.print();
@@ -31,6 +35,19 @@ export const CheckoutInvoiceModal = ({ invoice, onClose }) => {
         {/* Invoice Body Content */}
         <div className="p-6 overflow-y-auto custom-scrollbar space-y-6 flex-1 text-zinc-200 bg-zinc-900">
           
+          {/* Conditional Green Payment Status Banner */}
+          {isPaidOnline && (
+            <div className="bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 p-3.5 rounded-xl flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                <span className="text-xs font-semibold">Payment Received Successfully! Thank you for your payment.</span>
+              </div>
+              <span className="bg-emerald-500/20 text-emerald-300 text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-md border border-emerald-500/30">
+                PAID ONLINE
+              </span>
+            </div>
+          )}
+
           {/* Order Details Bar */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 bg-zinc-950 p-4 rounded-2xl border border-zinc-800 text-xs">
             <div>
@@ -117,7 +134,9 @@ export const CheckoutInvoiceModal = ({ invoice, onClose }) => {
               </span>
             </div>
             <div className="border-t border-zinc-800 pt-3 mt-2 flex justify-between items-baseline text-sm font-bold">
-              <span className="text-white text-base">Grand Total Paid</span>
+              <span className="text-white text-base">
+                {isPaidOnline ? 'Grand Total Paid' : 'Total Payable on Delivery'}
+              </span>
               <span className="text-2xl font-extrabold text-rose-400 font-mono">
                 ₹{invoice.totalAmount.toLocaleString('en-IN')}
               </span>
