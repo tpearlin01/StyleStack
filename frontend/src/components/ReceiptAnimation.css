@@ -1,0 +1,134 @@
+/* ReceiptAnimation.css */
+.receipt-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(9, 9, 11, 0.94);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.receipt-content-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 380px;
+  width: 100%;
+  padding: 0 16px;
+}
+
+/* Styled green alert box above printer */
+.payment-success-box {
+  background-color: rgba(6, 78, 59, 0.6);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: rgb(110, 231, 183);
+  padding: 14px 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+/* White printer slot housing ("white dabba") from where paper emerges */
+.printer-housing {
+  width: 270px;
+  height: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 30;
+  border: 1px solid #e4e4e7;
+}
+
+.printer-slot {
+  width: 236px;
+  height: 6px;
+  background-color: #18181b;
+  border-radius: 3px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Paper sliding down from slot */
+.receipt-paper {
+  width: 240px;
+  background-color: #ffffff;
+  color: #09090b;
+  padding: 18px 16px 22px;
+  position: relative;
+  top: -4px;
+  z-index: 20;
+  transform-origin: top center;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  border-radius: 0 0 6px 6px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
+
+.receipt-paper.printing {
+  animation: printReceipt 2.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.receipt-paper.tearing {
+  animation: tearReceipt 1.4s ease-in-out forwards;
+}
+
+@keyframes printReceipt {
+  0% {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    max-height: 600px;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tearReceipt {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  40% {
+    transform: translateY(14px) rotate(-1.5deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(34px) rotate(-3.5deg) scale(0.96);
+    opacity: 0;
+  }
+}
+
+.tear-line {
+  margin-top: 14px;
+  border-bottom: 2px dashed #a1a1aa;
+  position: relative;
+}
+
+.tear-line::after {
+  content: '✂ - - - - - - - - - - - - - - - -';
+  display: block;
+  font-size: 10px;
+  color: #a1a1aa;
+  text-align: center;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}

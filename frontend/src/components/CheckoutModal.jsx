@@ -24,6 +24,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { apiService } from '../services/api';
 import { BrandLogo } from './BrandLogo';
+import { ReceiptAnimation } from './ReceiptAnimation';
 
 const INDIAN_STATES_CITIES = {
   'Maharashtra': ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Thane', 'Aurangabad'],
@@ -57,6 +58,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
   // Step 1 = Form, Step 2 = Invoice View
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showReceiptAnimation, setShowReceiptAnimation] = useState(false);
 
   // Form State: strictly blank initially, email strictly from currentUser.email
   const [fullName, setFullName] = useState('');
@@ -192,8 +194,8 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
       if (res.success) {
         setGeneratedInvoice(res.data);
         clearCart();
-        setStep(2);
         setShowCardOtpModal(false);
+        setShowReceiptAnimation(true);
         if (onOrderConfirmed) {
           onOrderConfirmed(res.data);
         }
@@ -294,9 +296,15 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
     window.print();
   };
 
+  const handleReceiptAnimationComplete = () => {
+    setShowReceiptAnimation(false);
+    setStep(2);
+  };
+
   const handleBackToHome = () => {
     clearCart();
     setStep(1);
+    setShowReceiptAnimation(false);
     setGeneratedInvoice(null);
     onClose();
     const catalogEl = document.getElementById('catalog');
@@ -1041,6 +1049,14 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
             </div>
 
           </div>
+        )}
+
+        {/* RECEIPT PRINTING & TEARING ANIMATION OVERLAY */}
+        {showReceiptAnimation && generatedInvoice && (
+          <ReceiptAnimation
+            orderDetails={generatedInvoice}
+            onAnimationComplete={handleReceiptAnimationComplete}
+          />
         )}
 
       </div>
