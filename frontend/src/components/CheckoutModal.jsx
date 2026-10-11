@@ -250,42 +250,35 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
         ? { ...safeOrderData, ...res.data }
         : safeOrderData;
 
-      // Safely transition states without null references
+      // Safely store order data and reset cart without early navigation
       setInvoiceOrder(finalOrder);
       setGeneratedInvoice(finalOrder);
       clearCart();
-      if (!deferStepTransition) {
-        setStep(2);
-        setShowCardOtpModal(false);
-      }
 
       if (onOrderConfirmed) {
         onOrderConfirmed(finalOrder);
       }
     } catch (err) {
       console.error('Order placement caught exception:', err);
-      // Fallback transition directly to thermal receipt without crashing app
+      // Fallback order state
       setInvoiceOrder(safeOrderData);
       setGeneratedInvoice(safeOrderData);
       clearCart();
-      if (!deferStepTransition) {
-        setStep(2);
-        setShowCardOtpModal(false);
-      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Called when the CompleteOrderButton animation completes
-  const handleOrderAnimationComplete = () => {
+  // Called strictly after the CompleteOrderButton 4.5s animation finishes
+  const handleOrderSuccess = () => {
     setShowCardOtpModal(false);
     setStep(2);
   };
 
   // Handler for clicking CompleteOrderButton in the main checkout view
   const handleCompleteOrderClick = async (e) => {
-    e?.preventDefault?.();
+    if (e && e.preventDefault) e.preventDefault();
+    if (e && e.stopPropagation) e.stopPropagation();
     setFormError('');
 
     if (!validateDeliveryDetails()) {
@@ -324,7 +317,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
       return false; // Do not animate main button; animate in the OTP modal
     }
 
-    // UPI FLOW
+    // UPI FLOW: Instant background preparation without early navigation timers
     if (paymentMethod === 'UPI') {
       if (upiMode === 'ID') {
         const cleanedUpi = upiId.trim().toLowerCase();
@@ -334,26 +327,25 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
         }
       }
 
-      setIsUpiVerifying(true);
-      await executePlaceOrder('Instant UPI / GPay', { deferStepTransition: true });
-      setIsUpiVerifying(false);
+      await executePlaceOrder('Instant UPI / GPay');
       return true;
     }
 
-    // COD FLOW
-    await executePlaceOrder('Cash on Delivery', { deferStepTransition: true });
+    // COD FLOW: Instant background preparation
+    await executePlaceOrder('Cash on Delivery');
     return true;
   };
 
-  // 1. Submit Handler from Form
-  const handleSubmitOrder = async (e) => {
-    e.preventDefault();
-    await handleCompleteOrderClick(e);
+  // 1. Submit Handler from Form (Prevent default form jump)
+  const handleSubmitOrder = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (e && e.stopPropagation) e.stopPropagation();
   };
 
   // 2. Submit Handler for Card 3D-Secure OTP with animation support
   const handleCardOtpAnimationStart = async (e) => {
-    e?.preventDefault?.();
+    if (e && e.preventDefault) e.preventDefault();
+    if (e && e.stopPropagation) e.stopPropagation();
     setOtpError('');
 
     const cleanedOtp = cardOtp.replace(/\D/g, '');
@@ -363,7 +355,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
     }
 
     setIsCardVerifying(true);
-    await executePlaceOrder('Credit / Debit Card (3D-Secure Verified)', { deferStepTransition: true });
+    await executePlaceOrder('Credit / Debit Card (3D-Secure Verified)');
     setIsCardVerifying(false);
     return true;
   };
@@ -820,13 +812,8 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
               </div>
 
               <CompleteOrderButton
-                totalAmount={totalAmount}
-                defaultText="Complete Order"
-                successText="Order Placed"
-                disabled={isSubmitting || isUpiVerifying}
                 onClick={handleCompleteOrderClick}
-                onComplete={handleOrderAnimationComplete}
-                onAnimationComplete={handleOrderAnimationComplete}
+                onComplete={handleOrderSuccess}
               />
             </div>
 
@@ -932,13 +919,8 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
                   </button>
 
                   <CompleteOrderButton
-                    defaultText="Complete Order"
-                    successText="Order Placed"
-                    disabled={isCardVerifying}
                     onClick={handleCardOtpAnimationStart}
-                    onComplete={handleOrderAnimationComplete}
-                    onAnimationComplete={handleOrderAnimationComplete}
-                    style={{ flex: 1, height: '48px' }}
+                    onComplete={handleOrderSuccess}
                   />
                 </div>
               </form>
