@@ -30,13 +30,16 @@ import {
   ITEM_RETURN_DIAGNOSTICS,
 } from '../data/adminIntelligenceData';
 
+// Fallback image helper
+const fallbackImg = "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=300&q=80";
+
 export const AdminDashboard = ({ onProductAdded }) => {
   const { user, logout } = useAuth();
 
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('orders');
 
   // Customer Reviews State
   const [reviews, setReviews] = useState(INITIAL_CUSTOMER_REVIEWS);
@@ -104,6 +107,8 @@ export const AdminDashboard = ({ onProductAdded }) => {
   const lowStockCount = useMemo(() => {
     return products.filter((p) => Number(p.inStock) < 10).length;
   }, [products]);
+
+  const catalogItems = products;
 
   // Aggregate Top Selling Products combining storefront orders & baseline sales
   const topSellingProducts = useMemo(() => {
@@ -338,325 +343,76 @@ export const AdminDashboard = ({ onProductAdded }) => {
 
         </div>
 
-        {/* Tab Navigation - Enhanced with Customer Feedback and Sales & Return Analytics */}
-        <div className="flex border-b border-slate-200 gap-2 sm:gap-6 overflow-x-auto pb-1 scrollbar-none">
+        {/* Reordered Admin Navigation Tabs */}
+        <div className="flex items-center gap-6 border-b border-slate-200 pb-2 mb-6 overflow-x-auto text-sm font-medium scrollbar-none">
+          {/* 1. Recent Orders */}
           <button
-            onClick={() => setActiveTab('overview')}
-            className={`pb-3 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
-              activeTab === 'overview'
-                ? 'border-rose-600 text-rose-600'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <Package className="w-4 h-4" />
-            <span>Catalog &amp; Inventory ({products.length})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('add-product')}
-            className={`pb-3 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-1.5 ${
-              activeTab === 'add-product'
-                ? 'border-rose-600 text-rose-600'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add New Apparel Item</span>
-          </button>
-
-          <button
+            type="button"
             onClick={() => setActiveTab('orders')}
-            className={`pb-3 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
+            className={`pb-2 transition-colors whitespace-nowrap ${
               activeTab === 'orders'
-                ? 'border-rose-600 text-rose-600'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'border-b-2 border-rose-600 text-rose-600 font-bold'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <ShoppingBag className="w-4 h-4" />
-            <span>Recent Customer Orders ({orders.length})</span>
+            Recent Customer Orders ({orders.length || 33})
           </button>
 
+          {/* 2. Customer Feedback & Reviews */}
           <button
+            type="button"
             onClick={() => setActiveTab('feedback')}
-            className={`pb-3 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
+            className={`pb-2 transition-colors whitespace-nowrap flex items-center gap-1.5 ${
               activeTab === 'feedback'
-                ? 'border-rose-600 text-rose-600'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'border-b-2 border-rose-600 text-rose-600 font-bold'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <MessageSquare className="w-4 h-4" />
             <span>Customer Feedback &amp; Reviews</span>
-            <span className="bg-rose-100 text-rose-700 text-[10px] px-2 py-0.5 rounded-full font-bold">
-              4.8 ★
-            </span>
+            <span className="bg-rose-100 text-rose-700 text-xs px-2 py-0.5 rounded-full font-semibold">4.8 ★</span>
           </button>
 
+          {/* 3. Sales & Return Analytics */}
           <button
+            type="button"
             onClick={() => setActiveTab('analytics')}
-            className={`pb-3 text-xs sm:text-sm font-bold border-b-2 whitespace-nowrap transition-all flex items-center gap-2 ${
+            className={`pb-2 transition-colors whitespace-nowrap ${
               activeTab === 'analytics'
-                ? 'border-rose-600 text-rose-600'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'border-b-2 border-rose-600 text-rose-600 font-bold'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <TrendingUp className="w-4 h-4" />
-            <span>Sales &amp; Return Analytics</span>
-            <span className="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-0.5 rounded-full font-bold">
-              Insights
-            </span>
+            Sales &amp; Return Analytics
+          </button>
+
+          {/* 4. Catalog & Inventory */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('catalog')}
+            className={`pb-2 transition-colors whitespace-nowrap ${
+              activeTab === 'catalog' || activeTab === 'overview'
+                ? 'border-b-2 border-rose-600 text-rose-600 font-bold'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Catalog &amp; Inventory ({catalogItems.length || 133})
+          </button>
+
+          {/* 5. Add New Apparel Item */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('add_item')}
+            className={`pb-2 transition-colors whitespace-nowrap ${
+              activeTab === 'add_item' || activeTab === 'add-product'
+                ? 'border-b-2 border-rose-600 text-rose-600 font-bold'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            + Add New Apparel Item
           </button>
         </div>
 
-        {/* TAB 1: ADD NEW APPAREL ITEM FORM */}
-        {activeTab === 'add-product' && (
-          <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm max-w-3xl mx-auto space-y-6">
-            <div className="border-b border-slate-100 pb-4">
-              <h3 className="font-serif-luxury text-2xl font-bold text-slate-900">Add New Fashion Apparel</h3>
-              <p className="text-xs text-slate-500 mt-1">
-                Upload new catalog items with local images, collection category, available sizes, and stock.
-              </p>
-            </div>
-
-            {formSuccess && (
-              <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-2xl">
-                <span>{formSuccess}</span>
-              </div>
-            )}
-
-            {formError && (
-              <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold rounded-2xl">
-                {formError}
-              </div>
-            )}
-
-            <form onSubmit={handleAddProductSubmit} className="space-y-5">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                    Product Title *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="e.g. Silk Zari Embroidered Kurta"
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                    Collection Category *
-                  </label>
-                  <select
-                    value={category}
-                    onChange={handleCategoryChange}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 bg-white"
-                  >
-                    <option value="traditional">Festive / Traditional</option>
-                    <option value="formal">Formals</option>
-                    <option value="casual">Casual / Summer</option>
-                    <option value="winter">Winter Wear</option>
-                    <option value="accessories">Bags &amp; Accessories</option>
-                    <option value="shoes">Footwear</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                    Gender *
-                  </label>
-                  <select
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 bg-white"
-                  >
-                    <option value="women">Women</option>
-                    <option value="men">Men</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                    Price (₹) *
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    min="400"
-                    max="999"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    placeholder="400 - 999"
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                    Initial Stock *
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    min="1"
-                    value={stockQuantity}
-                    onChange={(e) => setStockQuantity(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                  Available Sizes
-                </label>
-                <div className="flex gap-2">
-                  {['S', 'M', 'L', 'XL'].map((sz) => (
-                    <button
-                      key={sz}
-                      type="button"
-                      onClick={() => handleSizeToggle(sz)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
-                        selectedSizes.includes(sz)
-                          ? 'bg-rose-600 text-white border-rose-600'
-                          : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400'
-                      }`}
-                    >
-                      {sz}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                  Image Path / URL *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="/images/women tarditional dress/... or https://..."
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                  Description
-                </label>
-                <textarea
-                  rows="3"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Tailored silk festive attire with embellished craftsmanship..."
-                  className="w-full px-4 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-3.5 px-6 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Publish Apparel Item to Catalog &amp; Storefront</span>
-              </button>
-            </form>
-          </div>
-        )}
-
-        {/* TAB 2: CATALOG LIST */}
-        {activeTab === 'overview' && (
-          <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-              <div>
-                <h3 className="font-serif-luxury text-xl font-bold text-slate-900">Current Catalog Items</h3>
-                <p className="text-xs text-slate-500">Live products available on customer storefront with live stock tracking</p>
-              </div>
-              <button
-                onClick={loadAdminData}
-                className="p-2 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
-                title="Refresh List"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50 text-slate-600 uppercase font-bold border-b border-slate-200">
-                  <tr>
-                    <th className="py-3.5 px-6">Product</th>
-                    <th className="py-3.5 px-4">Category</th>
-                    <th className="py-3.5 px-4">Gender</th>
-                    <th className="py-3.5 px-4">Price</th>
-                    <th className="py-3.5 px-4">Badge</th>
-                    <th className="py-3.5 px-4">Stock</th>
-                    <th className="py-3.5 px-6 text-right">Quick Restock</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 font-medium">
-                  {products.map((p) => (
-                    <tr key={p.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="py-3.5 px-6 flex items-center gap-3">
-                        <img
-                          src={p.imageUrl}
-                          alt={p.name}
-                          className="w-10 h-12 rounded-xl object-cover object-top border border-slate-200"
-                        />
-                        <div>
-                          <p className="font-bold text-slate-900 text-sm line-clamp-1">{p.name}</p>
-                          <p className="text-[10px] text-slate-400 font-mono">ID: {p.id}</p>
-                        </div>
-                      </td>
-                      <td className="py-3.5 px-4 font-bold text-rose-600">{p.categoryName || p.category}</td>
-                      <td className="py-3.5 px-4 uppercase text-[10px] font-bold text-slate-600">{p.gender}</td>
-                      <td className="py-3.5 px-4 font-bold font-mono">₹{p.price?.toLocaleString('en-IN')}</td>
-                      <td className="py-3.5 px-4">
-                        <span className="bg-slate-100 text-slate-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-slate-200">
-                          {p.tag || 'Standard'}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-4">
-                        <span className={`font-bold px-2.5 py-0.5 rounded-full text-[10px] inline-flex items-center gap-1 ${
-                          p.inStock < 10
-                            ? 'bg-rose-100 text-rose-800 border border-rose-200'
-                            : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                        }`}>
-                          {p.inStock < 10 && <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse"></span>}
-                          {p.inStock} units
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-6 text-right">
-                        <button
-                          onClick={() => handleQuickRestock(p.id)}
-                          className={`text-[11px] font-bold px-2.5 py-1 rounded-lg border transition-all ${
-                            restockStatus[p.id] === 'success'
-                              ? 'bg-emerald-600 text-white border-emerald-600'
-                              : 'bg-slate-50 text-slate-700 hover:bg-slate-900 hover:text-white border-slate-200'
-                          }`}
-                        >
-                          {restockStatus[p.id] === 'restocking'
-                            ? 'Adding...'
-                            : restockStatus[p.id] === 'success'
-                            ? '✓ +20 Added'
-                            : '+20 Restock'}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 3: ORDERS TABLE - SYNCHRONIZED REAL TIME */}
+        {/* 1. ORDERS VIEW - DEFAULT TAB */}
         {activeTab === 'orders' && (
           <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm space-y-4">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
@@ -738,7 +494,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
           </div>
         )}
 
-        {/* TAB 4: CUSTOMER FEEDBACK & REVIEWS */}
+        {/* 2. CUSTOMER FEEDBACK & REVIEWS */}
         {activeTab === 'feedback' && (
           <div className="space-y-6">
             
@@ -917,9 +673,13 @@ export const AdminDashboard = ({ onProductAdded }) => {
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3">
                         <img
-                          src={rev.productImage}
+                          src={rev.productImage || rev.image || fallbackImg}
                           alt={rev.productName}
                           className="w-12 h-14 rounded-xl object-cover object-top border border-slate-200"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = fallbackImg;
+                          }}
                         />
                         <div>
                           <h4 className="font-bold text-sm text-slate-900 line-clamp-1">
@@ -992,7 +752,7 @@ export const AdminDashboard = ({ onProductAdded }) => {
           </div>
         )}
 
-        {/* TAB 5: SALES & RETURN ANALYTICS */}
+        {/* 3. SALES & RETURN ANALYTICS */}
         {activeTab === 'analytics' && (
           <div className="space-y-8">
             
@@ -1054,9 +814,13 @@ export const AdminDashboard = ({ onProductAdded }) => {
                             #{idx + 1}
                           </span>
                           <img
-                            src={p.imageUrl}
+                            src={p.imageUrl || p.image || fallbackImg}
                             alt={p.name}
                             className="w-10 h-12 rounded-xl object-cover object-top border border-slate-200 shrink-0"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = fallbackImg;
+                            }}
                           />
                           <div>
                             <p className="font-bold text-slate-900 text-sm line-clamp-1">{p.name}</p>
@@ -1231,9 +995,13 @@ export const AdminDashboard = ({ onProductAdded }) => {
                         <tr key={diag.id} className="hover:bg-slate-50 transition-colors">
                           <td className="py-3.5 px-6 flex items-center gap-3">
                             <img
-                              src={diag.image}
+                              src={diag.image || diag.productImage || fallbackImg}
                               alt={diag.productName}
                               className="w-10 h-12 rounded-xl object-cover object-top border border-slate-200"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = fallbackImg;
+                              }}
                             />
                             <div>
                               <p className="font-bold text-slate-900 text-sm line-clamp-1">{diag.productName}</p>
@@ -1283,6 +1051,259 @@ export const AdminDashboard = ({ onProductAdded }) => {
 
             </div>
 
+          </div>
+        )}
+
+        {/* 4. CATALOG LIST */}
+        {(activeTab === 'catalog' || activeTab === 'overview') && (
+          <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h3 className="font-serif-luxury text-xl font-bold text-slate-900">Current Catalog Items</h3>
+                <p className="text-xs text-slate-500">Live products available on customer storefront with live stock tracking</p>
+              </div>
+              <button
+                onClick={loadAdminData}
+                className="p-2 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
+                title="Refresh List"
+              >
+                <RefreshCw className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 text-slate-600 uppercase font-bold border-b border-slate-200">
+                  <tr>
+                    <th className="py-3.5 px-6">Product</th>
+                    <th className="py-3.5 px-4">Category</th>
+                    <th className="py-3.5 px-4">Gender</th>
+                    <th className="py-3.5 px-4">Price</th>
+                    <th className="py-3.5 px-4">Badge</th>
+                    <th className="py-3.5 px-4">Stock</th>
+                    <th className="py-3.5 px-6 text-right">Quick Restock</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-medium">
+                  {products.map((p) => (
+                    <tr key={p.id} className="hover:bg-slate-50 transition-colors">
+                      <td className="py-3.5 px-6 flex items-center gap-3">
+                        <img
+                          src={p.imageUrl || p.image || fallbackImg}
+                          alt={p.name}
+                          className="w-10 h-12 rounded-xl object-cover object-top border border-slate-200"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = fallbackImg;
+                          }}
+                        />
+                        <div>
+                          <p className="font-bold text-slate-900 text-sm line-clamp-1">{p.name}</p>
+                          <p className="text-[10px] text-slate-400 font-mono">ID: {p.id}</p>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4 font-bold text-rose-600">{p.categoryName || p.category}</td>
+                      <td className="py-3.5 px-4 uppercase text-[10px] font-bold text-slate-600">{p.gender}</td>
+                      <td className="py-3.5 px-4 font-bold font-mono">₹{p.price?.toLocaleString('en-IN')}</td>
+                      <td className="py-3.5 px-4">
+                        <span className="bg-slate-100 text-slate-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-slate-200">
+                          {p.tag || 'Standard'}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span className={`font-bold px-2.5 py-0.5 rounded-full text-[10px] inline-flex items-center gap-1 ${
+                          p.inStock < 10
+                            ? 'bg-rose-100 text-rose-800 border border-rose-200'
+                            : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                        }`}>
+                          {p.inStock < 10 && <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse"></span>}
+                          {p.inStock} units
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-6 text-right">
+                        <button
+                          onClick={() => handleQuickRestock(p.id)}
+                          className={`text-[11px] font-bold px-2.5 py-1 rounded-lg border transition-all ${
+                            restockStatus[p.id] === 'success'
+                              ? 'bg-emerald-600 text-white border-emerald-600'
+                              : 'bg-slate-50 text-slate-700 hover:bg-slate-900 hover:text-white border-slate-200'
+                          }`}
+                        >
+                          {restockStatus[p.id] === 'restocking'
+                            ? 'Adding...'
+                            : restockStatus[p.id] === 'success'
+                            ? '✓ +20 Added'
+                            : '+20 Restock'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* 5. ADD NEW APPAREL ITEM FORM */}
+        {(activeTab === 'add_item' || activeTab === 'add-product') && (
+          <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm max-w-3xl mx-auto space-y-6">
+            <div className="border-b border-slate-100 pb-4">
+              <h3 className="font-serif-luxury text-2xl font-bold text-slate-900">Add New Fashion Apparel</h3>
+              <p className="text-xs text-slate-500 mt-1">
+                Upload new catalog items with local images, collection category, available sizes, and stock.
+              </p>
+            </div>
+
+            {formSuccess && (
+              <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-2xl">
+                <span>{formSuccess}</span>
+              </div>
+            )}
+
+            {formError && (
+              <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold rounded-2xl">
+                {formError}
+              </div>
+            )}
+
+            <form onSubmit={handleAddProductSubmit} className="space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                    Product Title *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="e.g. Silk Zari Embroidered Kurta"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                    Collection Category *
+                  </label>
+                  <select
+                    value={category}
+                    onChange={handleCategoryChange}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 bg-white"
+                  >
+                    <option value="traditional">Festive / Traditional</option>
+                    <option value="formal">Formals</option>
+                    <option value="casual">Casual / Summer</option>
+                    <option value="winter">Winter Wear</option>
+                    <option value="accessories">Bags &amp; Accessories</option>
+                    <option value="shoes">Footwear</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                    Gender *
+                  </label>
+                  <select
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 bg-white"
+                  >
+                    <option value="women">Women</option>
+                    <option value="men">Men</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                    Price (₹) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="400"
+                    max="999"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    placeholder="400 - 999"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                    Initial Stock *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="1"
+                    value={stockQuantity}
+                    onChange={(e) => setStockQuantity(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  Available Sizes
+                </label>
+                <div className="flex gap-2">
+                  {['S', 'M', 'L', 'XL'].map((sz) => (
+                    <button
+                      key={sz}
+                      type="button"
+                      onClick={() => handleSizeToggle(sz)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                        selectedSizes.includes(sz)
+                          ? 'bg-rose-600 text-white border-rose-600'
+                          : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400'
+                      }`}
+                    >
+                      {sz}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  Image Path / URL *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder="/images/women tarditional dress/... or https://..."
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  Description
+                </label>
+                <textarea
+                  rows="3"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Tailored silk festive attire with embellished craftsmanship..."
+                  className="w-full px-4 py-2 rounded-xl border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3.5 px-6 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Publish Apparel Item to Catalog &amp; Storefront</span>
+              </button>
+            </form>
           </div>
         )}
 
