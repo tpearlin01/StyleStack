@@ -25,6 +25,7 @@ import { useAuth } from '../context/AuthContext';
 import { apiService } from '../services/api';
 import { BrandLogo } from './BrandLogo';
 import { ThermalReceiptPrinter } from './ThermalReceiptPrinter';
+import CompleteOrderButton from './CompleteOrderButton';
 
 const INDIAN_STATES_CITIES = {
   'Maharashtra': ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Thane', 'Aurangabad'],
@@ -190,7 +191,8 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
   };
 
   // Core Order Execution (calls apiService.placeOrder)
-  const executePlaceOrder = async (confirmedPaymentMethod) => {
+  const executePlaceOrder = async (confirmedPaymentMethod, options = {}) => {
+    const { deferStepTransition = false } = options;
     setIsSubmitting(true);
     setFormError('');
 
@@ -252,8 +254,10 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
       setInvoiceOrder(finalOrder);
       setGeneratedInvoice(finalOrder);
       clearCart();
-      setStep(2);
-      setShowCardOtpModal(false);
+      if (!deferStepTransition) {
+        setStep(2);
+        setShowCardOtpModal(false);
+      }
 
       if (onOrderConfirmed) {
         onOrderConfirmed(finalOrder);
@@ -264,44 +268,28 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
       setInvoiceOrder(safeOrderData);
       setGeneratedInvoice(safeOrderData);
       clearCart();
-      setStep(2);
-      setShowCardOtpModal(false);
+      if (!deferStepTransition) {
+        setStep(2);
+        setShowCardOtpModal(false);
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // 1. Submit Handler from Form
-  const handleSubmitOrder = async (e) => {
-    e.preventDefault();
+  // Called when the CompleteOrderButton animation completes
+  const handleOrderAnimationComplete = () => {
+    setShowCardOtpModal(false);
+    setStep(2);
+  };
+
+  // Handler for clicking CompleteOrderButton in the main checkout view
+  const handleCompleteOrderClick = async (e) => {
+    e?.preventDefault?.();
     setFormError('');
 
     if (!validateDeliveryDetails()) {
-      return;
-    }
-
-    // COD FLOW: Instant Order Confirmation
-    if (paymentMethod === 'COD') {
-      await executePlaceOrder('Cash on Delivery');
-      return;
-    }
-
-    // UPI FLOW: Verification Required
-    if (paymentMethod === 'UPI') {
-      if (upiMode === 'ID') {
-        const cleanedUpi = upiId.trim().toLowerCase();
-        if (!cleanedUpi || !cleanedUpi.includes('@') || cleanedUpi.length < 5) {
-          setFormError('Please enter a valid UPI ID (e.g. username@okaxis or username@upi).');
-          return;
-        }
-      }
-
-      setIsUpiVerifying(true);
-      setTimeout(async () => {
-        setIsUpiVerifying(false);
-        await executePlaceOrder('Instant UPI / GPay');
-      }, 1500);
-      return;
+      return false;
     }
 
     // CARD FLOW: Validate Card Fields & Prompt 3D-Secure OTP
@@ -309,7 +297,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
       const cleanedCardNumber = cardNumber.replace(/\D/g, '');
       if (cleanedCardNumber.length !== 16) {
         setFormError('Please enter a valid 16-digit debit/credit card number.');
-        return;
+        return false;
       }
 
       const expiryParts = cardExpiry.split('/');
@@ -321,37 +309,68 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
         Number(expiryParts[0]) > 12
       ) {
         setFormError('Please enter a valid expiry date in MM/YY format (e.g. 08/28).');
-        return;
+        return false;
       }
 
       if (!cardHolder.trim()) {
         setFormError('Please enter the cardholder name.');
-        return;
+        return false;
       }
 
       // Card details are valid; open simulated 3D-Secure OTP modal
       setOtpError('');
       setCardOtp('');
       setShowCardOtpModal(true);
+      return false; // Do not animate main button; animate in the OTP modal
     }
+
+    // UPI FLOW
+    if (paymentMethod === 'UPI') {
+      if (upiMode === 'ID') {
+        const cleanedUpi = upiId.trim().toLowerCase();
+        if (!cleanedUpi || !cleanedUpi.includes('@') || cleanedUpi.length < 5) {
+          setFormError('Please enter a valid UPI ID (e.g. username@okaxis or username@upi).');
+          return false;
+        }
+      }
+
+      setIsUpiVerifying(true);
+      await executePlaceOrder('Instant UPI / GPay', { deferStepTransition: true });
+      setIsUpiVerifying(false);
+      return true;
+    }
+
+    // COD FLOW
+    await executePlaceOrder('Cash on Delivery', { deferStepTransition: true });
+    return true;
   };
 
-  // 2. Submit Handler for Card 3D-Secure OTP
-  const handleVerifyCardOtp = (e) => {
+  // 1. Submit Handler from Form
+  const handleSubmitOrder = async (e) => {
     e.preventDefault();
+    await handleCompleteOrderClick(e);
+  };
+
+  // 2. Submit Handler for Card 3D-Secure OTP with animation support
+  const handleCardOtpAnimationStart = async (e) => {
+    e?.preventDefault?.();
     setOtpError('');
 
     const cleanedOtp = cardOtp.replace(/\D/g, '');
     if (cleanedOtp.length < 4 || cleanedOtp.length > 6) {
       setOtpError('Please enter the 4 to 6-digit OTP sent to your registered mobile number.');
-      return;
+      return false;
     }
 
     setIsCardVerifying(true);
-    setTimeout(async () => {
-      setIsCardVerifying(false);
-      await executePlaceOrder('Credit / Debit Card');
-    }, 1200);
+    await executePlaceOrder('Credit / Debit Card (3D-Secure Verified)', { deferStepTransition: true });
+    setIsCardVerifying(false);
+    return true;
+  };
+
+  const handleVerifyCardOtp = async (e) => {
+    e.preventDefault();
+    await handleCardOtpAnimationStart(e);
   };
 
   const handlePrint = () => {
@@ -800,33 +819,13 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
                 <span className="text-2xl text-rose-400 font-mono">₹{totalAmount.toLocaleString('en-IN')}</span>
               </div>
 
-              <button
-                type="submit"
+              <CompleteOrderButton
+                defaultText="Complete Order"
+                successText="Order Placed"
                 disabled={isSubmitting || isUpiVerifying}
-                className="w-full sm:w-auto py-3 px-7 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-lg shadow-rose-950/50 transition-all flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer active:scale-95"
-              >
-                {isSubmitting || isUpiVerifying ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Verifying &amp; Processing...</span>
-                  </>
-                ) : paymentMethod === 'COD' ? (
-                  <>
-                    <span>Confirm &amp; Place Order (COD)</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                ) : paymentMethod === 'UPI' ? (
-                  <>
-                    <span>{upiMode === 'QR' ? 'Make Payment (Confirm QR)' : 'Make Payment via UPI ID'}</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                ) : (
-                  <>
-                    <span>Make Payment (Card) — ₹{Number(totalAmount || 0).toLocaleString('en-IN')}</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
+                onClick={handleCompleteOrderClick}
+                onAnimationComplete={handleOrderAnimationComplete}
+              />
             </div>
 
           </form>
@@ -930,23 +929,14 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
                     Cancel
                   </button>
 
-                  <button
-                    type="submit"
+                  <CompleteOrderButton
+                    defaultText="Complete Order"
+                    successText="Order Placed"
                     disabled={isCardVerifying}
-                    className="flex-1 py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-lg shadow-rose-950/50 flex items-center justify-center gap-2 transition cursor-pointer disabled:opacity-70 active:scale-95"
-                  >
-                    {isCardVerifying ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Verifying...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Make Payment / Authorize</span>
-                        <CheckCircle className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
+                    onClick={handleCardOtpAnimationStart}
+                    onAnimationComplete={handleOrderAnimationComplete}
+                    style={{ flex: 1, height: '48px' }}
+                  />
                 </div>
               </form>
 
