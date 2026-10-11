@@ -85,16 +85,24 @@ export const apiService = {
 
     let catalog = MOCK_PRODUCTS;
     try {
-      const stored = localStorage.getItem('stylestack_catalog_v9');
+      const stored = localStorage.getItem('stylestack_catalog_v10');
       if (stored) {
         catalog = JSON.parse(stored);
       } else {
         catalog = MOCK_PRODUCTS;
-        localStorage.setItem('stylestack_catalog_v9', JSON.stringify(MOCK_PRODUCTS));
+        localStorage.setItem('stylestack_catalog_v10', JSON.stringify(MOCK_PRODUCTS));
       }
     } catch (e) {
       console.error('Error reading catalog', e);
     }
+
+    // Standardize sizes to ensure no legacy numeric sizes persist
+    catalog = catalog.map((p) => {
+      if (Array.isArray(p.sizes) && p.sizes.some((s) => /^\d+$/.test(s))) {
+        return { ...p, sizes: ['S', 'M', 'L', 'XL'] };
+      }
+      return p;
+    });
 
     let result = [...catalog];
 
@@ -243,10 +251,10 @@ export const apiService = {
     };
 
     try {
-      const stored = localStorage.getItem('stylestack_catalog_v9');
+      const stored = localStorage.getItem('stylestack_catalog_v10');
       const catalog = stored ? JSON.parse(stored) : [...MOCK_PRODUCTS];
       const updatedCatalog = [newProduct, ...catalog];
-      localStorage.setItem('stylestack_catalog_v9', JSON.stringify(updatedCatalog));
+      localStorage.setItem('stylestack_catalog_v10', JSON.stringify(updatedCatalog));
     } catch (e) {
       console.error('Error saving new product', e);
     }

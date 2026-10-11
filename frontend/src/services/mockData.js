@@ -474,10 +474,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 222,
     "sizes": [
-      "38",
-      "40",
-      "42",
-      "44"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/men formal/-473Wx593H-469514972-black-MODEL.avif",
     "image": "/images/men formal/-473Wx593H-469514972-black-MODEL.avif",
@@ -520,10 +520,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 239,
     "sizes": [
-      "38",
-      "40",
-      "42",
-      "44"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/men formal/1000016414060-Red-Wine-1000016414060_01-2100.jpg",
     "image": "/images/men formal/1000016414060-Red-Wine-1000016414060_01-2100.jpg",
@@ -566,10 +566,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 256,
     "sizes": [
-      "38",
-      "40",
-      "42",
-      "44"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/men formal/1000016796855-Brown-BROWN-1000016796855_01-2100.jpg",
     "image": "/images/men formal/1000016796855-Brown-BROWN-1000016796855_01-2100.jpg",
@@ -610,10 +610,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 273,
     "sizes": [
-      "38",
-      "40",
-      "42",
-      "44"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/men formal/40247117-25356460.avif",
     "image": "/images/men formal/40247117-25356460.avif",
@@ -655,10 +655,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 290,
     "sizes": [
-      "38",
-      "40",
-      "42",
-      "44"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/men formal/BSH61879LLH.webp",
     "image": "/images/men formal/BSH61879LLH.webp",
@@ -701,10 +701,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 307,
     "sizes": [
-      "38",
-      "40",
-      "42",
-      "44"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/men formal/Formal_Shirts.webp",
     "image": "/images/men formal/Formal_Shirts.webp",
@@ -746,10 +746,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 324,
     "sizes": [
-      "38",
-      "40",
-      "42",
-      "44"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/men formal/Men-formal-outfit-2.webp",
     "image": "/images/men formal/Men-formal-outfit-2.webp",
@@ -791,10 +791,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 341,
     "sizes": [
-      "38",
-      "40",
-      "42",
-      "44"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/men formal/men-formal-shirts-688.jpg",
     "image": "/images/men formal/men-formal-shirts-688.jpg",
@@ -2538,10 +2538,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 91,
     "sizes": [
-      "30",
-      "32",
-      "34",
-      "36"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/try on pants/Shop-Khaki_2000x.webp",
     "image": "/images/try on pants/Shop-Khaki_2000x.webp",
@@ -2581,10 +2581,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 108,
     "sizes": [
-      "26",
-      "28",
-      "30",
-      "32"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/try on pants/download (1).webp",
     "image": "/images/try on pants/download (1).webp",
@@ -2625,10 +2625,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 125,
     "sizes": [
-      "30",
-      "32",
-      "34",
-      "36"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/try on pants/download (2).webp",
     "image": "/images/try on pants/download (2).webp",
@@ -2668,10 +2668,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 142,
     "sizes": [
-      "26",
-      "28",
-      "30",
-      "32"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/try on pants/download.webp",
     "image": "/images/try on pants/download.webp",
@@ -2711,10 +2711,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 159,
     "sizes": [
-      "30",
-      "32",
-      "34",
-      "36"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/try on pants/images.jpg",
     "image": "/images/try on pants/images.jpg",
@@ -2755,10 +2755,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 176,
     "sizes": [
-      "26",
-      "28",
-      "30",
-      "32"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/try on pants/shopping (1).webp",
     "image": "/images/try on pants/shopping (1).webp",
@@ -2798,10 +2798,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 193,
     "sizes": [
-      "30",
-      "32",
-      "34",
-      "36"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/try on pants/shopping (2).webp",
     "image": "/images/try on pants/shopping (2).webp",
@@ -2842,10 +2842,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 210,
     "sizes": [
-      "26",
-      "28",
-      "30",
-      "32"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/try on pants/shopping (3).webp",
     "image": "/images/try on pants/shopping (3).webp",
@@ -2886,10 +2886,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 227,
     "sizes": [
-      "30",
-      "32",
-      "34",
-      "36"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/try on pants/shopping (4).webp",
     "image": "/images/try on pants/shopping (4).webp",
@@ -2930,10 +2930,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 244,
     "sizes": [
-      "26",
-      "28",
-      "30",
-      "32"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/try on pants/shopping (5).webp",
     "image": "/images/try on pants/shopping (5).webp",
@@ -2973,10 +2973,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 261,
     "sizes": [
-      "30",
-      "32",
-      "34",
-      "36"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/try on pants/shopping (6).webp",
     "image": "/images/try on pants/shopping (6).webp",
@@ -3016,10 +3016,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 278,
     "sizes": [
-      "26",
-      "28",
-      "30",
-      "32"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/try on pants/shopping (7).webp",
     "image": "/images/try on pants/shopping (7).webp",
@@ -3060,10 +3060,10 @@ export const MOCK_PRODUCTS = [
     "rating": 4.3,
     "reviewsCount": 295,
     "sizes": [
-      "30",
-      "32",
-      "34",
-      "36"
+      "S",
+      "M",
+      "L",
+      "XL"
     ],
     "imageUrl": "/images/try on pants/shopping.webp",
     "image": "/images/try on pants/shopping.webp",

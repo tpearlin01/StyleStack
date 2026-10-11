@@ -123,14 +123,14 @@
   border-radius: 2px 0 0 2px;
 }
 
-/* Parcel Dropping Directly Into the Bed */
+/* Parcel Dropping Directly Into the Left Rear Bed */
 .truck-box {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
   background: #d97706;
   border-radius: 2px;
-  left: 10px;
+  left: 3px !important; /* Shifted left into the cargo bed opening */
   top: -24px;
   z-index: 6;
   box-shadow: inset 0 0 0 1px #b45309;
@@ -148,11 +148,11 @@
   }
   44% {
     opacity: 1;
-    transform: translateY(28px) scale(0.9); /* Lands flush on bed floor */
+    transform: translateY(28px) scale(0.9); /* Lands on bed floor */
   }
   50% {
-    opacity: 0; /* Vanishes inside the bed */
-    transform: translateY(30px) scale(0.7);
+    opacity: 0; /* Vanishes inside bed compartment */
+    transform: translateY(30px) scale(0.6);
   }
   100% {
     opacity: 0;
