@@ -28,6 +28,8 @@ export default function Login({ onLoginSuccess }) {
     e.preventDefault();
     setSuccessMsg('');
     const errs = {};
+
+    // Standard validation: valid email & minimum password length
     if (!signInData.email || !/\S+@\S+\.\S+/.test(signInData.email)) {
       errs.signInEmail = 'Please enter a valid email address.';
     }
@@ -40,6 +42,7 @@ export default function Login({ onLoginSuccess }) {
       return;
     }
 
+    // Clear previous errors and proceed directly to portal
     setErrors({});
     setIsSubmitting(true);
 
@@ -54,13 +57,20 @@ export default function Login({ onLoginSuccess }) {
 
         if (res && res.success) {
           if (typeof onLoginSuccess === 'function') {
-            onLoginSuccess(res.data);
+            onLoginSuccess({
+              email: signInData.email,
+              role: role, // 'Admin' or 'Customer'
+              ...res.data,
+            });
           }
         } else {
-          setErrors({ signInGeneral: res?.message || 'Login failed. Please check your credentials.' });
+          setErrors({ signInGeneral: res?.message || 'Login failed.' });
         }
       } else if (typeof onLoginSuccess === 'function') {
-        onLoginSuccess({ email: signInData.email, role });
+        onLoginSuccess({
+          email: signInData.email,
+          role: role, // 'Admin' or 'Customer'
+        });
       }
     } catch (err) {
       setErrors({ signInGeneral: err.message || 'An unexpected error occurred.' });
