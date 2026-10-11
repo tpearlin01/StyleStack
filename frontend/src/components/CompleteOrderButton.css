@@ -1,12 +1,14 @@
 /* CompleteOrderButton.css */
-.truck-order-btn {
+.order-truck-btn {
   position: relative;
-  width: 240px;
-  height: 52px;
-  background: #09090b;
+  width: 250px;
+  height: 54px;
+  background-color: #09090b;
   border: 1px solid #27272a;
   border-radius: 9999px;
   color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   overflow: hidden;
@@ -14,160 +16,161 @@
   align-items: center;
   justify-content: center;
   user-select: none;
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              background-color 0.4s ease,
-              border-color 0.4s ease,
-              box-shadow 0.3s ease;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
 
-.truck-order-btn:hover:not(:disabled) {
-  background: #18181b;
+.order-truck-btn:hover:not(:disabled) {
+  background-color: #18181b;
   border-color: #3f3f46;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
 }
 
-.truck-order-btn.animating {
-  width: 280px;
-  background: #18181b;
+/* Morph to animation track */
+.order-truck-btn.driving {
+  width: 300px;
+  background-color: #18181b;
   cursor: default;
   pointer-events: none;
 }
 
-.truck-order-btn.success {
-  width: 220px;
-  background: #10b981;
+/* Morph to success button */
+.order-truck-btn.done {
+  width: 200px;
+  background-color: #10b981;
   border-color: #059669;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
   cursor: default;
   pointer-events: none;
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
 }
 
-.btn-label {
+/* Text Visibility */
+.btn-text {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 15px;
-  letter-spacing: 0.01em;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  white-space: nowrap;
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-.default-label {
-  opacity: 1;
-}
-
-.animating .default-label,
-.success .default-label {
+.order-truck-btn.driving .default-text,
+.order-truck-btn.done .default-text {
   opacity: 0;
-  transform: translateY(-20px);
+  transform: translateY(-24px);
   position: absolute;
 }
 
-.success-label {
+.success-text {
   position: absolute;
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(24px);
   color: #ffffff;
 }
 
-.success .success-label {
+.order-truck-btn.done .success-text {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Scene */
-.truck-scene {
+.success-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Scene Track */
+.track-container {
   position: absolute;
   inset: 0;
   display: none;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
   pointer-events: none;
 }
 
-.animating .truck-scene {
+.order-truck-btn.driving .track-container {
   display: block;
 }
 
-/* Roadway Lines */
-.road-lines {
+/* Road Stripes */
+.road-stripes {
   position: absolute;
   bottom: 12px;
-  left: 20px;
-  right: 20px;
+  left: 0;
+  width: 200%;
   height: 2px;
-  background: repeating-linear-gradient(90deg, #71717a 0, #71717a 12px, transparent 12px, transparent 20px);
-  animation: moveRoad 0.35s linear infinite;
-  opacity: 0.85;
+  background: repeating-linear-gradient(90deg, #71717a 0, #71717a 14px, transparent 14px, transparent 26px);
+  animation: roadRun 0.4s linear infinite;
 }
 
-@keyframes moveRoad {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-20px); }
+@keyframes roadRun {
+  from { transform: translateX(0); }
+  to { transform: translateX(-26px); }
 }
 
-/* Package Drop */
-.package-box {
+/* Falling Box - drops into truck bed and travels out with the truck */
+.drop-parcel {
   position: absolute;
   width: 14px;
   height: 14px;
   background: #d97706;
   border-radius: 2px;
-  left: 62px;
-  top: -24px;
-  z-index: 2;
-  box-shadow: inset 0 0 0 1px #b45309;
-  animation: dropPackage 4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  left: 95px;
+  top: -20px;
+  z-index: 5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  animation: parcelDropSequence 4.2s cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
 
-@keyframes dropPackage {
+@keyframes parcelDropSequence {
   0% {
-    transform: translate(0, 0) scale(0.6);
+    transform: translate(0, 0);
     opacity: 0;
   }
-  15% {
+  12% {
     opacity: 1;
   }
-  28% {
-    transform: translate(0, 42px) scale(1.05);
+  24% {
+    transform: translate(0, 42px);
     opacity: 1;
   }
-  32% {
-    transform: translate(0, 42px) scale(1);
+  45% {
+    transform: translate(0, 42px);
     opacity: 1;
-  }
-  48% {
-    transform: translate(0, 42px) scale(1);
   }
   100% {
-    transform: translate(300px, 42px) scale(1);
+    transform: translate(265px, 42px);
     opacity: 1;
   }
 }
 
-/* Delivery Truck */
-.delivery-truck {
+/* Delivery Truck Driving Left to Right */
+.moving-truck {
   position: absolute;
-  width: 60px;
+  width: 62px;
   height: 32px;
   bottom: 14px;
-  left: 20px;
-  z-index: 3;
-  animation: driveOut 4s cubic-bezier(0.7, 0, 0.2, 1) forwards;
+  left: 0;
+  z-index: 4;
+  animation: truckDriveSequence 4.2s cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
 
-@keyframes driveOut {
-  0% { transform: translateX(-40px); }
-  22% { transform: translateX(30px); }  /* Pauses to receive package */
-  48% { transform: translateX(30px); }  /* Waits for door close & lights on */
-  100% { transform: translateX(320px); } /* Drives away offscreen */
+@keyframes truckDriveSequence {
+  0% {
+    transform: translateX(-70px);
+  }
+  25% {
+    transform: translateX(65px); /* Stops directly below parcel */
+  }
+  45% {
+    transform: translateX(65px); /* Waits for parcel drop */
+  }
+  100% {
+    transform: translateX(330px); /* Drives left to right out of button */
+  }
 }
 
-.truck-body {
+.truck-cargo {
   position: absolute;
   width: 38px;
-  height: 24px;
+  height: 22px;
   background: #f4f4f5;
   border-radius: 3px 0 0 3px;
   left: 0;
@@ -175,45 +178,10 @@
   box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.1);
 }
 
-.truck-bed {
-  position: absolute;
-  width: 22px;
-  height: 18px;
-  left: 3px;
-  top: 3px;
-  background: #3f3f46;
-  border-radius: 2px 0 0 2px;
-}
-
-.truck-door {
-  position: absolute;
-  width: 4px;
-  height: 20px;
-  left: 2px;
-  top: 2px;
-  background: #71717a;
-  border-radius: 1px;
-  transform-origin: top;
-  opacity: 0;
-  transform: scaleY(0);
-  animation: closeDoor 0.35s ease-out 1.2s forwards;
-}
-
-@keyframes closeDoor {
-  0% {
-    opacity: 0;
-    transform: scaleY(0);
-  }
-  100% {
-    opacity: 1;
-    transform: scaleY(1);
-  }
-}
-
-.truck-cabin {
+.truck-cab {
   position: absolute;
   width: 18px;
-  height: 20px;
+  height: 18px;
   background: #e4e4e7;
   right: 4px;
   bottom: 6px;
@@ -221,17 +189,17 @@
   box-shadow: inset 1px -1px 0 rgba(0, 0, 0, 0.1);
 }
 
-.truck-window {
+.cab-window {
   position: absolute;
-  width: 9px;
-  height: 8px;
-  background: #18181b;
-  right: 2px;
+  width: 8px;
+  height: 7px;
+  background: #27272a;
+  right: 3px;
   top: 3px;
   border-radius: 0 2px 0 0;
 }
 
-.truck-headlight {
+.cab-light {
   position: absolute;
   width: 4px;
   height: 4px;
@@ -239,41 +207,28 @@
   right: 0;
   bottom: 3px;
   border-radius: 50%;
-  opacity: 0;
-  box-shadow: none;
-  animation: turnOnHeadlight 0.3s ease-out 1.35s forwards;
+  box-shadow: 8px 0 12px 3px rgba(250, 204, 21, 0.9);
 }
 
-@keyframes turnOnHeadlight {
-  0% {
-    opacity: 0;
-    box-shadow: none;
-  }
-  100% {
-    opacity: 1;
-    box-shadow: 8px 0 14px 3px rgba(250, 204, 21, 0.95), 18px 0 22px 6px rgba(56, 189, 248, 0.6);
-  }
-}
-
-.truck-wheel {
+.wheel {
   position: absolute;
   width: 8px;
   height: 8px;
-  background: #18181b;
+  background: #09090b;
   border: 2px solid #a1a1aa;
   border-radius: 50%;
   bottom: 2px;
-  z-index: 4;
+  z-index: 6;
 }
 
-.wheel-back { left: 8px; }
-.wheel-front { right: 8px; }
+.wheel-left { left: 8px; }
+.wheel-right { right: 8px; }
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .delivery-truck,
-  .package-box,
-  .road-lines {
+  .moving-truck,
+  .drop-parcel,
+  .road-stripes {
     animation-duration: 0.1s !important;
   }
 }
