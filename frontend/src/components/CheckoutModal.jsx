@@ -30,16 +30,20 @@ import './CompleteOrderButton.css';
 // Self-contained embedded CompleteOrderButton component with zero external dependencies
 const CompleteOrderButton = ({
   onComplete,
-  onAnimationComplete,
   onClick,
   totalAmount,
   disabled = false,
   className = '',
   style = {},
 }) => {
-  const [stage, setStage] = useState('idle'); // 'idle' | 'loading-box' | 'door-closing' | 'driving' | 'done'
+  const [stage, setStage] = useState('idle'); // 'idle' | 'loading' | 'closing' | 'driving' | 'done'
 
-  const handleStartOrder = async (e) => {
+  // Reset stage if modal reopens or totalAmount changes
+  useEffect(() => {
+    setStage('idle');
+  }, [totalAmount]);
+
+  const handleClick = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
     if (e && e.stopPropagation) e.stopPropagation();
     if (stage !== 'idle' || disabled) return;
@@ -54,86 +58,68 @@ const CompleteOrderButton = ({
       }
     }
 
-    // Step 1: Shrink button to track, truck arrives, box drops into bed (0 - 1.2s)
-    setStage('loading-box');
+    setStage('loading');
 
-    // Step 2: Truck door closes & headlights turn on (1.2s - 2.0s)
+    // Box drops into truck (0s - 1.0s)
     setTimeout(() => {
-      setStage('door-closing');
-    }, 1200);
+      setStage('closing');
+    }, 1000);
 
-    // Step 3: Truck accelerates from left to right along the road (2.0s - 4.5s)
+    // Door closes & truck drives away (1.0s - 1.8s)
     setTimeout(() => {
       setStage('driving');
-    }, 2000);
+    }, 1800);
 
-    // Step 4: Button turns green and displays "Order Placed" (4.5s)
+    // "Order Placed" state (1.8s - 4.2s)
     setTimeout(() => {
       setStage('done');
 
-      // Step 5: After user clearly sees the green confirmation, open receipt printer modal
+      // Transition to thermal receipt (1.2s after done)
       setTimeout(() => {
         if (typeof onComplete === 'function') {
           onComplete();
         }
-        if (typeof onAnimationComplete === 'function') {
-          onAnimationComplete();
-        }
-      }, 1400);
-    }, 4500);
+      }, 1200);
+    }, 4200);
   };
 
   return (
-    <button
-      type="button"
-      onClick={handleStartOrder}
-      disabled={stage !== 'idle' || disabled}
-      className={`truck-btn ${stage} ${className}`}
-      style={style}
-      aria-label={stage === 'done' ? 'Order Placed' : 'Complete Order'}
-    >
-      {/* 1. Default Text */}
-      <span className="btn-text label-default">Complete Order</span>
+    <div className={`truck-btn-wrapper ${className}`} style={style}>
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={stage !== 'idle' || disabled}
+        className={`truck-btn ${stage}`}
+        aria-label={stage === 'done' ? 'Order Placed' : 'Complete Order'}
+      >
+        <span className="btn-label default-label">Complete Order</span>
 
-      {/* 2. Self-Contained Truck & Roadway Track */}
-      <div className="btn-track-scene" aria-hidden="true">
-        <div className="road-dashed"></div>
+        {/* Animation stage contained strictly within button */}
+        <div className="truck-stage" aria-hidden="true">
+          <div className="road-line"></div>
+          <div className="box-parcel"></div>
 
-        {/* Dropping Box */}
-        <div className="truck-parcel"></div>
-
-        {/* Truck Composite */}
-        <div className="truck-wrapper">
-          <div className="truck-body">
-            <div className="truck-cargo-bed"></div>
-            <div className="truck-tailgate"></div>
+          <div className="truck-unit">
+            <div className="truck-bed">
+              <div className="tailgate"></div>
+            </div>
+            <div className="truck-cabin">
+              <div className="cab-window"></div>
+              <div className="headlight"></div>
+            </div>
+            <div className="wheel wheel-front"></div>
+            <div className="wheel wheel-back"></div>
           </div>
-          <div className="truck-cabin">
-            <div className="truck-window"></div>
-            <div className="truck-headlight"></div>
-          </div>
-          <div className="truck-wheel wheel-left"></div>
-          <div className="truck-wheel wheel-right"></div>
         </div>
-      </div>
 
-      {/* 3. Success Green Pill Label */}
-      <span className="btn-text label-success">
-        Order Placed
-        <svg
-          viewBox="0 0 16 16"
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <polyline points="3 8 7 12 13 4" />
-        </svg>
-      </span>
-    </button>
+        <span className="btn-label success-label">
+          Order Placed
+          <svg className="check-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+            <path d="M3 8.5l3.5 3.5L13 4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </span>
+      </button>
+    </div>
   );
 };
 
@@ -216,15 +202,96 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
     invoicePaymentMethod.toLowerCase() !== 'cod'
   );
 
-  // Prefill email strictly from currentUser and reset errors when modal opens
+  // Cleanly reset modal states whenever modal opens or closes
   useEffect(() => {
-    if (isOpen) {
+    if (!isOpen) {
+      setStep(1);
+      setGeneratedInvoice(null);
+      setInvoiceOrder(null);
+      setFormError('');
+      setShowCardOtpModal(false);
+      setCardOtp('');
+      setOtpError('');
+    } else {
+      setStep(1);
       setEmail(activeUser?.email || 'customer@stylestack.com');
-      if (step === 1) {
-        setFormError('');
+      setFormError('');
+    }
+  }, [isOpen, activeUser?.email]);
+
+  function handleBackToHome() {
+    clearCart();
+    setStep(1);
+    setGeneratedInvoice(null);
+    setInvoiceOrder(null);
+    onClose();
+    const catalogEl = document.getElementById('catalog');
+    if (catalogEl) {
+      catalogEl.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  function handleTransitionToReceipt() {
+    setShowCardOtpModal(false);
+
+    const selectedPaymentMethod =
+      paymentMethod === 'CARD'
+        ? 'Credit / Debit Card (Online 3D-Secure Verified)'
+        : paymentMethod === 'UPI'
+        ? (upiMode === 'QR' ? 'Instant UPI (QR Code Scanned)' : `Instant UPI (${upiId || 'Verified'})`)
+        : 'Cash on Delivery (COD)';
+
+    const orderPayload = {
+      id: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
+      orderId: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
+      date: new Date().toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      }),
+      createdAt: new Date().toISOString(),
+      items: Array.isArray(cartItems) && cartItems.length > 0 ? cartItems.map((i) => ({ ...i })) : (invoiceOrder?.items || []),
+      subtotal: Number(subtotal || invoiceOrder?.subtotal || 0),
+      gstAmount: Number(gstAmount || invoiceOrder?.gstAmount || 0),
+      shippingFee: Number(shippingFee || invoiceOrder?.shippingFee || 0),
+      total: Number(displayedTotal || totalAmount || 0),
+      totalAmount: Number(displayedTotal || totalAmount || 0),
+      paymentMethod: selectedPaymentMethod,
+      customer: {
+        name: (fullName || '').trim() || 'Valued Customer',
+        email: (email || '').trim() || activeUser?.email || 'customer@stylestack.com',
+        address: (address || '').trim() || 'Standard Delivery Address',
+        city: city || 'Mumbai',
+        state: state || 'Maharashtra',
+        pincode: pincode || '400001',
+        paymentMethod: selectedPaymentMethod,
+      },
+      status: 'Placed',
+      estimatedDelivery: '3-4 Business Days',
+    };
+
+    const finalOrder = (invoiceOrder && invoiceOrder.id) ? { ...orderPayload, ...invoiceOrder } : orderPayload;
+
+    setInvoiceOrder(finalOrder);
+    setGeneratedInvoice(finalOrder);
+
+    if (typeof onOrderConfirmed === 'function') {
+      try {
+        onOrderConfirmed(finalOrder);
+      } catch (err) {
+        console.error('Error invoking onOrderConfirmed:', err);
       }
     }
-  }, [isOpen, activeUser?.email, step]);
+    // Cart clearing happens strictly after the animation completes and order is confirmed
+    clearCart();
+    setStep(2);
+  }
+
+  function handleOrderSuccess() {
+    handleTransitionToReceipt();
+  }
 
   if (!isOpen) return null;
 
@@ -383,65 +450,6 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
     }
   };
 
-  // Called strictly after the CompleteOrderButton 4.5s animation finishes
-  const handleTransitionToReceipt = () => {
-    setShowCardOtpModal(false);
-
-    const selectedPaymentMethod =
-      paymentMethod === 'CARD'
-        ? 'Credit / Debit Card (Online 3D-Secure Verified)'
-        : paymentMethod === 'UPI'
-        ? (upiMode === 'QR' ? 'Instant UPI (QR Code Scanned)' : `Instant UPI (${upiId || 'Verified'})`)
-        : 'Cash on Delivery (COD)';
-
-    const orderPayload = {
-      id: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
-      orderId: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
-      date: new Date().toLocaleDateString('en-IN', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-      }),
-      createdAt: new Date().toISOString(),
-      items: Array.isArray(cartItems) && cartItems.length > 0 ? cartItems.map((i) => ({ ...i })) : (invoiceOrder?.items || []),
-      subtotal: Number(subtotal || invoiceOrder?.subtotal || 0),
-      gstAmount: Number(gstAmount || invoiceOrder?.gstAmount || 0),
-      shippingFee: Number(shippingFee || invoiceOrder?.shippingFee || 0),
-      total: Number(displayedTotal || totalAmount || 0),
-      totalAmount: Number(displayedTotal || totalAmount || 0),
-      paymentMethod: selectedPaymentMethod,
-      customer: {
-        name: (fullName || '').trim() || 'Valued Customer',
-        email: (email || '').trim() || activeUser?.email || 'customer@stylestack.com',
-        address: (address || '').trim() || 'Standard Delivery Address',
-        city: city || 'Mumbai',
-        state: state || 'Maharashtra',
-        pincode: pincode || '400001',
-        paymentMethod: selectedPaymentMethod,
-      },
-      status: 'Placed',
-      estimatedDelivery: '3-4 Business Days',
-    };
-
-    const finalOrder = (invoiceOrder && invoiceOrder.id) ? { ...orderPayload, ...invoiceOrder } : orderPayload;
-
-    setInvoiceOrder(finalOrder);
-    setGeneratedInvoice(finalOrder);
-
-    if (typeof onOrderConfirmed === 'function') {
-      try {
-        onOrderConfirmed(finalOrder);
-      } catch (err) {
-        console.error('Error invoking onOrderConfirmed:', err);
-      }
-    }
-    // Cart clearing happens strictly after the animation completes and order is confirmed
-    clearCart();
-    setStep(2);
-  };
-
-  const handleOrderSuccess = handleTransitionToReceipt;
-
   // Handler for clicking CompleteOrderButton in the main checkout view
   const handleCompleteOrderClick = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
@@ -534,20 +542,6 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
 
   const handlePrint = () => {
     window.print();
-  };
-
-  const handleBackToHome = () => {
-    clearCart();
-    setStep(1);
-    setGeneratedInvoice(null);
-    setInvoiceOrder(null);
-    onClose();
-    const catalogEl = document.getElementById('catalog');
-    if (catalogEl) {
-      catalogEl.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
   };
 
   const handleModalClose = () => {
