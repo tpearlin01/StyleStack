@@ -6,15 +6,17 @@ export default function CompleteOrderButton({
   onAnimationComplete,
   onClick,
   disabled = false,
+  className = '',
+  style = {},
 }) {
   const [stage, setStage] = useState('idle'); // 'idle' | 'driving' | 'done'
 
   const handleClick = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+    if (e && e.preventDefault) e.preventDefault();
+    if (e && e.stopPropagation) e.stopPropagation();
     if (stage !== 'idle' || disabled) return;
 
-    if (onClick) {
+    if (typeof onClick === 'function') {
       try {
         const canProceed = await onClick(e);
         if (canProceed === false) return;
@@ -30,10 +32,10 @@ export default function CompleteOrderButton({
     setTimeout(() => {
       setStage('done');
 
-      // 2. Wait 1.2s so user clearly sees "Order Placed", then open Receipt modal
+      // 2. Wait 1.2s so user clearly sees "Order Placed", then trigger receipt modal
       setTimeout(() => {
-        const completion = onComplete || onAnimationComplete;
-        if (completion) completion();
+        if (typeof onComplete === 'function') onComplete();
+        if (typeof onAnimationComplete === 'function') onAnimationComplete();
       }, 1200);
     }, 4200);
   };
@@ -43,7 +45,9 @@ export default function CompleteOrderButton({
       type="button"
       onClick={handleClick}
       disabled={stage !== 'idle' || disabled}
-      className={`order-truck-btn ${stage}`}
+      className={`order-truck-btn ${stage} ${className}`}
+      style={style}
+      aria-label={stage === 'done' ? 'Order Placed' : 'Complete Order'}
     >
       {/* 1. Default text */}
       <span className="btn-text default-text">Complete Order</span>
