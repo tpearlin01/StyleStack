@@ -2,46 +2,41 @@
   min-height: 100vh;
   background-color: #08090d;
   background-image: 
-    radial-gradient(circle at 20% 20%, rgba(225, 29, 72, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 80% 80%, rgba(30, 27, 75, 0.25) 0%, transparent 50%);
+    radial-gradient(circle at 20% 20%, rgba(225, 29, 72, 0.09) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(30, 27, 75, 0.3) 0%, transparent 50%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 30px 20px;
+  padding: 24px 16px;
   font-family: inherit;
   color: #f1f5f9;
   position: relative;
   overflow-x: hidden;
 }
 
-/* Brand Header */
+/* 1. Header & Brand Refinements (Freestanding Scaled Logo & Bold Typography) */
 .auth-brand-header {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 20px;
-  user-select: none;
-}
-
-.auth-logo-badge {
-  width: 50px;
-  height: 50px;
-  border-radius: 14px;
-  background: #11131c;
-  border: 1px solid rgba(217, 119, 6, 0.4);
-  display: flex;
-  align-items: center;
   justify-content: center;
-  box-shadow: 4px 4px 10px #040508, -3px -3px 8px #1d2130;
-  padding: 6px;
+  gap: 16px;
+  margin-bottom: 22px;
+  user-select: none;
+  text-align: left;
 }
 
-.logo-monogram {
-  font-size: 22px;
-  font-weight: 800;
-  color: #f59e0b;
-  letter-spacing: -1px;
+/* Freestanding Monogram directly on canvas with warm glow, no enclosing card or border */
+.auth-brand-logo-img {
+  height: 60px;
+  width: auto;
+  filter: drop-shadow(0 6px 16px rgba(245, 158, 11, 0.4));
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.auth-brand-logo-img:hover {
+  transform: scale(1.06);
 }
 
 .auth-brand-text {
@@ -50,42 +45,46 @@
 }
 
 .brand-title {
-  font-size: 26px;
-  font-weight: 800;
+  font-size: 36px;
+  font-weight: 900;
   margin: 0;
-  letter-spacing: 0.5px;
+  letter-spacing: -0.5px;
   color: #ffffff;
-  line-height: 1.1;
+  line-height: 1.05;
+  text-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
 }
 
 .brand-tagline {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  margin: 3px 0 0 0;
-  color: #d97706;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 2.8px;
+  margin: 4px 0 0 0;
+  color: #f59e0b;
+  text-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
 }
 
-/* Role Switcher */
+/* Role Switcher with Glass Accent */
 .role-pill-switch {
   display: flex;
-  background: #0f1118;
-  padding: 4px;
+  background: rgba(15, 17, 24, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 3.5px;
   border-radius: 9999px;
-  border: 1px solid #1f2333;
-  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 22px;
   box-shadow: inset 2px 2px 5px #05060a, inset -2px -2px 5px #1a1e2c;
   position: relative;
   z-index: 10;
 }
 
 .role-btn {
-  padding: 8px 24px;
+  padding: 7px 22px;
   border-radius: 9999px;
   border: none;
   background: transparent;
   color: #94a3b8;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s ease;
@@ -94,20 +93,22 @@
 .role-btn.active {
   background: #e11d48;
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4);
+  box-shadow: 0 4px 14px rgba(225, 29, 72, 0.45);
 }
 
-/* Outer Embossed Box Container */
+/* 2. Compact Glassmorphic Auth Box (770px width, 480px min-height, Frosted Glass) */
 .embossed-auth-wrapper {
-  background: #131622;
+  background: rgba(18, 20, 30, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: 24px;
   position: relative;
   overflow: hidden;
-  width: 860px;
+  width: 770px;
   max-width: 100%;
-  min-height: 560px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 14px 14px 30px #040507, -8px -8px 24px #1c2030;
+  min-height: 480px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
 
 /* Form Panels */
@@ -120,7 +121,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 36px;
+  padding: 28px 32px;
   box-sizing: border-box;
 }
 
@@ -157,62 +158,62 @@
 }
 
 .panel-heading {
-  font-size: 26px;
+  font-size: 23px;
   font-weight: 700;
   color: #ffffff;
-  margin: 0 0 4px 0;
+  margin: 0 0 2px 0;
 }
 
 .panel-subheading {
-  font-size: 13px;
+  font-size: 12px;
   color: #94a3b8;
-  margin: 0 0 18px 0;
+  margin: 0 0 14px 0;
 }
 
 /* Alert Notification Badges */
 .auth-status-alert {
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 11.5px;
   font-weight: 500;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .auth-status-alert.error {
-  background: rgba(136, 19, 55, 0.3);
+  background: rgba(136, 19, 55, 0.35);
   border: 1px solid rgba(244, 63, 94, 0.4);
   color: #fda4af;
 }
 
 .auth-status-alert.success {
-  background: rgba(6, 78, 59, 0.3);
+  background: rgba(6, 78, 59, 0.35);
   border: 1px solid rgba(16, 185, 129, 0.4);
   color: #6ee7b7;
 }
 
-/* Inputs & Embossed Effect */
+/* Inputs & Embossed Inset Effect */
 .input-row-dual {
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
 .embossed-input-group {
-  margin-bottom: 12px;
+  margin-bottom: 9px;
   width: 100%;
 }
 
 .embossed-input-group input {
   width: 100%;
   box-sizing: border-box;
-  padding: 12px 16px;
-  background: #0b0d14;
+  padding: 10px 14px;
+  background: rgba(11, 13, 20, 0.85);
   border: 1px solid #1a1e2a;
-  border-radius: 12px;
+  border-radius: 11px;
   color: #f1f5f9;
-  font-size: 13.5px;
+  font-size: 13px;
   outline: none;
   box-shadow: inset 3px 3px 6px #06070a, inset -2px -2px 5px #1c2132;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -220,6 +221,7 @@
 
 .embossed-input-group input::placeholder {
   color: #64748b;
+  font-size: 12.5px;
 }
 
 .embossed-input-group input:focus {
@@ -233,9 +235,9 @@
 
 .field-error-msg {
   color: #fb7185;
-  font-size: 11.5px;
-  margin-top: 4px;
-  margin-bottom: 4px;
+  font-size: 11px;
+  margin-top: 3px;
+  margin-bottom: 3px;
   display: block;
 }
 
@@ -244,27 +246,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 11.5px;
   color: #94a3b8;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .auth-form-extras.terms-box {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .custom-check-label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   cursor: pointer;
   user-select: none;
 }
 
 .custom-check-label input {
   accent-color: #e11d48;
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
   cursor: pointer;
 }
 
@@ -283,15 +285,15 @@
   background: linear-gradient(135deg, #e11d48, #be123c);
   border: none;
   color: #ffffff;
-  padding: 13px;
-  border-radius: 12px;
-  font-size: 14px;
+  padding: 11.5px 16px;
+  border-radius: 11px;
+  font-size: 13.5px;
   font-weight: 700;
   letter-spacing: 0.3px;
   cursor: pointer;
   box-shadow: 4px 4px 14px rgba(225, 29, 72, 0.4), inset 1px 1px 2px rgba(255, 255, 255, 0.25);
   transition: transform 0.15s ease, filter 0.2s ease;
-  margin-top: 4px;
+  margin-top: 3px;
 }
 
 .embossed-action-btn:hover {
@@ -302,7 +304,7 @@
   transform: scale(0.98);
 }
 
-/* Sliding Overlay */
+/* Sliding Overlay Panels */
 .sliding-overlay-container {
   position: absolute;
   top: 0;
@@ -319,7 +321,7 @@
 }
 
 .sliding-overlay {
-  background: linear-gradient(135deg, #1e1b4b 0%, #831843 55%, #e11d48 100%);
+  background: linear-gradient(135deg, rgba(30, 27, 75, 0.95) 0%, rgba(131, 24, 67, 0.92) 55%, rgba(225, 29, 72, 0.95) 100%);
   position: relative;
   left: -100%;
   height: 100%;
@@ -338,7 +340,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  padding: 0 45px;
+  padding: 0 36px;
   text-align: center;
   top: 0;
   height: 100%;
@@ -365,27 +367,27 @@
 }
 
 .overlay-title {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 800;
   color: #ffffff;
-  margin: 0 0 12px 0;
-  letter-spacing: -0.5px;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.3px;
 }
 
 .overlay-desc {
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 12px;
+  line-height: 1.5;
   color: #e2e8f0;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 
 .embossed-ghost-btn {
   background: transparent;
   border: 1.5px solid #ffffff;
   color: #ffffff;
-  padding: 10px 32px;
+  padding: 8px 28px;
   border-radius: 9999px;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.25s ease;
@@ -401,9 +403,9 @@
 /* Mobile Switch Link */
 .mobile-switch-helper {
   display: none;
-  margin-top: 16px;
+  margin-top: 14px;
   text-align: center;
-  font-size: 13px;
+  font-size: 12.5px;
   color: #94a3b8;
 }
 
@@ -419,16 +421,22 @@
 
 /* Mobile responsive */
 @media (max-width: 768px) {
+  .auth-brand-logo-img {
+    height: 48px;
+  }
+  .brand-title {
+    font-size: 30px;
+  }
   .embossed-auth-wrapper {
     width: 100%;
-    min-height: 580px;
+    min-height: 520px;
   }
   .sliding-overlay-container {
     display: none;
   }
   .form-panel {
     width: 100%;
-    padding: 30px 20px;
+    padding: 24px 18px;
   }
   .embossed-auth-wrapper.sign-up-active .sign-in-panel {
     display: none;

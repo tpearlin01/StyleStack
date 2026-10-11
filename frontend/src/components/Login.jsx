@@ -125,11 +125,9 @@ export default function Login({ onLoginSuccess }) {
 
   return (
     <div className="auth-page-root">
-      {/* Brand Header with Monogram */}
+      {/* Brand Header with Freestanding Scaled Monogram */}
       <div className="auth-brand-header">
-        <div className="auth-logo-badge">
-          <BrandMonogram className="w-8 h-8" />
-        </div>
+        <BrandMonogram className="auth-brand-logo-img" />
         <div className="auth-brand-text">
           <h1 className="brand-title">StyleStack</h1>
           <p className="brand-tagline">DRESS &amp; CLOTHING HUB</p>
