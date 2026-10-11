@@ -95,72 +95,71 @@
   to { transform: translateX(-24px); }
 }
 
-/* Truck Assembly Movement */
+/* Truck Movement Across Button */
 .truck-assembly {
   position: absolute;
   width: 66px;
   height: 32px;
   bottom: 12px;
   left: 0;
-  animation: truckDriveSequence 3.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: truckDriveTimeline 3.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-@keyframes truckDriveSequence {
+@keyframes truckDriveTimeline {
   0% { transform: translateX(-80px); }
-  25% { transform: translateX(110px); } /* Parks center */
-  60% { transform: translateX(110px); } /* Stays still while box enters & door shuts */
-  100% { transform: translateX(330px); } /* Drives off right */
+  25% { transform: translateX(110px); } /* Parks at center */
+  60% { transform: translateX(110px); } /* Waits for drop & door shut */
+  100% { transform: translateX(330px); } /* Drives out right */
 }
 
-/* Bed Container */
+/* Bed Container (Left Side of Truck) */
 .truck-bed-container {
   position: absolute;
-  width: 38px;
+  width: 36px;
   height: 22px;
   left: 0;
   bottom: 6px;
   background: #f4f4f5;
   border-radius: 2px 0 0 2px;
-  overflow: visible;
 }
 
-/* Box dropping directly inside the truck cargo bed and disappearing */
+/* Parcel Dropping Directly Into the Bed */
 .truck-box {
   position: absolute;
   width: 14px;
   height: 14px;
   background: #d97706;
   border-radius: 2px;
-  left: 12px;
-  top: -30px;
+  left: 10px;
+  top: -24px;
   z-index: 6;
   box-shadow: inset 0 0 0 1px #b45309;
-  animation: boxDropAndPack 3.8s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+  animation: boxDropIntoBed 3.6s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
 }
 
-@keyframes boxDropAndPack {
+@keyframes boxDropIntoBed {
   0%, 25% {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
   30% {
     opacity: 1;
     transform: translateY(0);
   }
-  45% {
+  44% {
     opacity: 1;
-    transform: translateY(34px) scale(0.9); /* Lands inside the bed floor */
+    transform: translateY(28px) scale(0.9); /* Lands flush on bed floor */
   }
-  55% {
-    opacity: 0; /* Fully packed inside and hidden */
-    transform: translateY(36px) scale(0.7);
+  50% {
+    opacity: 0; /* Vanishes inside the bed */
+    transform: translateY(30px) scale(0.7);
   }
   100% {
     opacity: 0;
   }
 }
 
-/* Tailgate door that swings shut */
+/* Tailgate Door */
 .bed-door-tailgate {
   position: absolute;
   width: 3px;
@@ -169,15 +168,15 @@
   left: 0;
   bottom: 0;
   transform-origin: bottom center;
-  animation: tailgateClose 3.8s ease forwards;
+  animation: tailgateShut 3.6s ease forwards;
 }
 
-@keyframes tailgateClose {
-  0%, 45% {
-    transform: rotate(-90deg); /* Open while box drops */
+@keyframes tailgateShut {
+  0%, 46% {
+    transform: rotate(-90deg); /* Open while parcel drops */
   }
-  58%, 100% {
-    transform: rotate(0deg); /* Snaps shut */
+  56%, 100% {
+    transform: rotate(0deg); /* Closes shut over the compartment */
   }
 }
 
@@ -186,7 +185,7 @@
   position: absolute;
   width: 20px;
   height: 18px;
-  right: 6px;
+  right: 8px;
   bottom: 6px;
   background: #e4e4e7;
   border-radius: 0 4px 2px 0;
@@ -210,21 +209,21 @@
   right: 0;
   bottom: 3px;
   border-radius: 50%;
-  animation: headlampBeam 3.8s ease forwards;
+  animation: headlampGlow 3.6s ease forwards;
 }
 
-@keyframes headlampBeam {
-  0%, 55% {
+@keyframes headlampGlow {
+  0%, 54% {
     opacity: 0.2;
     box-shadow: none;
   }
-  60%, 100% {
+  58%, 100% {
     opacity: 1;
-    box-shadow: 10px 0 16px 4px rgba(250, 204, 21, 0.95); /* Headlights turn on after door shuts */
+    box-shadow: 10px 0 16px 4px rgba(250, 204, 21, 0.95); /* Glows when ready to move */
   }
 }
 
-/* Wheels */
+/* Tires */
 .truck-tire {
   position: absolute;
   width: 9px;
@@ -237,4 +236,4 @@
 }
 
 .tire-rear { left: 8px; }
-.tire-front { right: 10px; }
+.tire-front { right: 12px; }

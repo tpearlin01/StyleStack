@@ -16,8 +16,8 @@ export default function CompleteOrderButton({
   }, [totalAmount]);
 
   const handleClick = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+    if (e && e.preventDefault) e.preventDefault();
+    if (e && e.stopPropagation) e.stopPropagation();
     if (stage !== 'idle' || disabled) return;
 
     if (typeof onClick === 'function') {
@@ -32,15 +32,15 @@ export default function CompleteOrderButton({
 
     setStage('running');
 
-    // 1. Full sequence runs via CSS keyframes (3.8s)
+    // 1. Full animation sequence duration (3.6s)
     setTimeout(() => {
       setStage('done');
 
-      // 2. Transition to receipt modal after green state is clearly seen
+      // 2. Allow user to see "Order Placed" before receipt opens
       setTimeout(() => {
         if (typeof onComplete === 'function') onComplete();
       }, 1200);
-    }, 3800);
+    }, 3600);
   };
 
   return (
@@ -54,17 +54,16 @@ export default function CompleteOrderButton({
       >
         <span className="btn-label-text default-label">Complete Order</span>
 
-        {/* Scene Container */}
+        {/* Viewport scene */}
         <div className="truck-viewport" aria-hidden="true">
           <div className="road-stripes"></div>
 
-          {/* Truck with box nested inside its bed */}
+          {/* Truck Assembly */}
           <div className="truck-assembly">
             <div className="truck-bed-container">
-              {/* Box drops right into here, then disappears inside */}
+              {/* Parcel box drops directly into this bed */}
               <div className="truck-box"></div>
-              {/* Bed walls */}
-              <div className="bed-wall-back"></div>
+              <div className="bed-wall-floor"></div>
               <div className="bed-door-tailgate"></div>
             </div>
 
