@@ -209,13 +209,11 @@ const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose })
     <div className="printer-overlay">
       <div className="printer-stage">
         
-        {/* 1. GREEN PAYMENT CONFIRMATION PILL (Only for Online Payments) */}
-        {isPaidOnline && (
-          <div className="payment-confirmation-pill">
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-            <span>Payment Received Successfully! Thank you for your payment.</span>
-          </div>
-        )}
+        {/* 1. GREEN PAYMENT CONFIRMATION PILL */}
+        <div className="payment-confirmation-pill">
+          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+          <span>Payment Received Successfully! Thank you for your payment.</span>
+        </div>
 
         {/* 2. SLEEK POS THERMAL PRINTER HARDWARE FIXTURE */}
         <div className="printer-hardware">

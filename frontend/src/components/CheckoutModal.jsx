@@ -820,10 +820,12 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
               </div>
 
               <CompleteOrderButton
+                totalAmount={totalAmount}
                 defaultText="Complete Order"
                 successText="Order Placed"
                 disabled={isSubmitting || isUpiVerifying}
                 onClick={handleCompleteOrderClick}
+                onComplete={handleOrderAnimationComplete}
                 onAnimationComplete={handleOrderAnimationComplete}
               />
             </div>
@@ -934,6 +936,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
                     successText="Order Placed"
                     disabled={isCardVerifying}
                     onClick={handleCardOtpAnimationStart}
+                    onComplete={handleOrderAnimationComplete}
                     onAnimationComplete={handleOrderAnimationComplete}
                     style={{ flex: 1, height: '48px' }}
                   />
