@@ -48,7 +48,7 @@ export const HeroBanner = ({ onShopNow }) => {
           <div className="grid grid-cols-3 gap-4 pt-8 border-t border-slate-800/80 text-xs font-medium text-slate-300">
             <div className="flex items-center gap-2">
               <Truck className="w-4 h-4 text-rose-400 shrink-0" />
-              <span>Free Shipping &gt; ₹1,999</span>
+              <span>Free Shipping &gt; ₹799</span>
             </div>
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-rose-400 shrink-0" />

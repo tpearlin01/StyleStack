@@ -22,7 +22,22 @@ export const CartProvider = ({ children }) => {
       try {
         const saved = localStorage.getItem(cartKey);
         const parsed = saved ? JSON.parse(saved) : [];
-        setCartItems(Array.isArray(parsed) ? parsed : []);
+        const normalized = Array.isArray(parsed)
+          ? parsed.map((item) => {
+              let price = Number(item.price) || 499;
+              if (price > 999 || price < 400) {
+                price = Math.max(400, Math.min(999, Math.round(400 + ((price - 699) / (6659 - 699)) * (999 - 400))));
+              }
+              return {
+                ...item,
+                price,
+                originalPrice: item.originalPrice
+                  ? Math.max(price + 200, Math.min(1499, Math.round(price * 1.35)))
+                  : Math.round(price * 1.35),
+              };
+            })
+          : [];
+        setCartItems(normalized);
       } catch (e) {
         console.error('Error loading per-user cart', e);
         setCartItems([]);
@@ -125,11 +140,11 @@ export const CartProvider = ({ children }) => {
   };
 
   // Calculations
-  const totalItemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const totalItemCount = cartItems.reduce((acc, item) => acc + (Number(item.quantity) || 1), 0);
+  const subtotal = cartItems.reduce((acc, item) => acc + (Number(item.price) * (Number(item.quantity) || 1)), 0);
   const gstAmount = Math.round(subtotal * 0.05); // 5% GST
-  const shippingFee = subtotal > 0 && subtotal < 1999 ? 99 : 0; // Free shipping over 1999
-  const totalAmount = subtotal + gstAmount + shippingFee;
+  const shippingFee = subtotal === 0 ? 0 : (subtotal > 799 ? 0 : 49); // Free shipping over ₹799, otherwise ₹49
+  const totalAmount = Math.round(subtotal + gstAmount + shippingFee);
 
   return (
     <CartContext.Provider

@@ -50,9 +50,9 @@ export const MOCK_PRODUCTS = [
       "reversible",
       "belt"
     ],
-    "price": 999,
-    "originalPrice": 1249,
-    "discountPercent": 20,
+    "price": 449,
+    "originalPrice": 849,
+    "discountPercent": 47,
     "rating": 4.3,
     "reviewsCount": 52,
     "sizes": [
@@ -91,9 +91,9 @@ export const MOCK_PRODUCTS = [
       "chrono",
       "watch"
     ],
-    "price": 1129,
-    "originalPrice": 1505,
-    "discountPercent": 25,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 69,
     "sizes": [
@@ -132,9 +132,9 @@ export const MOCK_PRODUCTS = [
       "aviator",
       "sunglasses"
     ],
-    "price": 1259,
-    "originalPrice": 1799,
-    "discountPercent": 30,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 86,
     "sizes": [
@@ -173,9 +173,9 @@ export const MOCK_PRODUCTS = [
       "acetate",
       "sunglasses"
     ],
-    "price": 1389,
-    "originalPrice": 2137,
-    "discountPercent": 35,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 103,
     "sizes": [
@@ -214,9 +214,9 @@ export const MOCK_PRODUCTS = [
       "cardholder",
       "wallet"
     ],
-    "price": 1519,
-    "originalPrice": 2532,
-    "discountPercent": 40,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 120,
     "sizes": [
@@ -258,9 +258,9 @@ export const MOCK_PRODUCTS = [
       "bar",
       "set"
     ],
-    "price": 1649,
-    "originalPrice": 2998,
-    "discountPercent": 45,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 137,
     "sizes": [
@@ -301,9 +301,9 @@ export const MOCK_PRODUCTS = [
       "silver",
       "clasp"
     ],
-    "price": 1779,
-    "originalPrice": 2224,
-    "discountPercent": 20,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 154,
     "sizes": [
@@ -343,9 +343,9 @@ export const MOCK_PRODUCTS = [
       "messenger",
       "pouch"
     ],
-    "price": 1909,
-    "originalPrice": 2545,
-    "discountPercent": 25,
+    "price": 599,
+    "originalPrice": 1049,
+    "discountPercent": 43,
     "rating": 4.3,
     "reviewsCount": 171,
     "sizes": [
@@ -384,9 +384,9 @@ export const MOCK_PRODUCTS = [
       "passport",
       "folio"
     ],
-    "price": 2039,
-    "originalPrice": 2913,
-    "discountPercent": 30,
+    "price": 599,
+    "originalPrice": 1049,
+    "discountPercent": 43,
     "rating": 4.3,
     "reviewsCount": 188,
     "sizes": [
@@ -426,9 +426,9 @@ export const MOCK_PRODUCTS = [
       "leather",
       "belt"
     ],
-    "price": 2169,
-    "originalPrice": 3337,
-    "discountPercent": 35,
+    "price": 599,
+    "originalPrice": 1049,
+    "discountPercent": 43,
     "rating": 4.3,
     "reviewsCount": 205,
     "sizes": [
@@ -468,9 +468,9 @@ export const MOCK_PRODUCTS = [
       "tuxedo",
       "blazer"
     ],
-    "price": 2499,
-    "originalPrice": 2940,
-    "discountPercent": 15,
+    "price": 699,
+    "originalPrice": 1149,
+    "discountPercent": 39,
     "rating": 4.3,
     "reviewsCount": 222,
     "sizes": [
@@ -514,9 +514,9 @@ export const MOCK_PRODUCTS = [
       "dress",
       "shirt"
     ],
-    "price": 2849,
-    "originalPrice": 3561,
-    "discountPercent": 20,
+    "price": 749,
+    "originalPrice": 1199,
+    "discountPercent": 38,
     "rating": 4.3,
     "reviewsCount": 239,
     "sizes": [
@@ -560,9 +560,9 @@ export const MOCK_PRODUCTS = [
       "formal",
       "blazer"
     ],
-    "price": 3199,
-    "originalPrice": 4265,
-    "discountPercent": 25,
+    "price": 749,
+    "originalPrice": 1199,
+    "discountPercent": 38,
     "rating": 4.3,
     "reviewsCount": 256,
     "sizes": [
@@ -604,9 +604,9 @@ export const MOCK_PRODUCTS = [
       "suit",
       "ensemble"
     ],
-    "price": 3549,
-    "originalPrice": 5070,
-    "discountPercent": 30,
+    "price": 799,
+    "originalPrice": 1249,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 273,
     "sizes": [
@@ -649,8 +649,8 @@ export const MOCK_PRODUCTS = [
       "formal",
       "shirt"
     ],
-    "price": 3899,
-    "originalPrice": 5998,
+    "price": 849,
+    "originalPrice": 1299,
     "discountPercent": 35,
     "rating": 4.3,
     "reviewsCount": 290,
@@ -695,9 +695,9 @@ export const MOCK_PRODUCTS = [
       "formal",
       "shirt"
     ],
-    "price": 4249,
-    "originalPrice": 4999,
-    "discountPercent": 15,
+    "price": 899,
+    "originalPrice": 1399,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 307,
     "sizes": [
@@ -740,9 +740,9 @@ export const MOCK_PRODUCTS = [
       "business",
       "suit"
     ],
-    "price": 4599,
-    "originalPrice": 5749,
-    "discountPercent": 20,
+    "price": 899,
+    "originalPrice": 1399,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 324,
     "sizes": [
@@ -785,9 +785,9 @@ export const MOCK_PRODUCTS = [
       "business",
       "shirt"
     ],
-    "price": 4949,
-    "originalPrice": 6599,
-    "discountPercent": 25,
+    "price": 949,
+    "originalPrice": 1449,
+    "discountPercent": 35,
     "rating": 4.3,
     "reviewsCount": 341,
     "sizes": [
@@ -830,9 +830,9 @@ export const MOCK_PRODUCTS = [
       "kurta",
       "ensemble"
     ],
-    "price": 2999,
-    "originalPrice": 3749,
-    "discountPercent": 20,
+    "price": 749,
+    "originalPrice": 1199,
+    "discountPercent": 38,
     "rating": 4.3,
     "reviewsCount": 48,
     "sizes": [
@@ -873,9 +873,9 @@ export const MOCK_PRODUCTS = [
       "jacquard",
       "sherwani"
     ],
-    "price": 3449,
-    "originalPrice": 4599,
-    "discountPercent": 25,
+    "price": 799,
+    "originalPrice": 1249,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 65,
     "sizes": [
@@ -919,9 +919,9 @@ export const MOCK_PRODUCTS = [
       "pocket",
       "square"
     ],
-    "price": 3899,
-    "originalPrice": 5570,
-    "discountPercent": 30,
+    "price": 799,
+    "originalPrice": 1249,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 82,
     "sizes": [
@@ -964,8 +964,8 @@ export const MOCK_PRODUCTS = [
       "kurta",
       "set"
     ],
-    "price": 4349,
-    "originalPrice": 6691,
+    "price": 849,
+    "originalPrice": 1299,
     "discountPercent": 35,
     "rating": 4.3,
     "reviewsCount": 99,
@@ -1010,9 +1010,9 @@ export const MOCK_PRODUCTS = [
       "mandarin",
       "collar"
     ],
-    "price": 4799,
-    "originalPrice": 7998,
-    "discountPercent": 40,
+    "price": 849,
+    "originalPrice": 1299,
+    "discountPercent": 35,
     "rating": 4.3,
     "reviewsCount": 116,
     "sizes": [
@@ -1056,9 +1056,9 @@ export const MOCK_PRODUCTS = [
       "celebration",
       "kurta"
     ],
-    "price": 5249,
-    "originalPrice": 6561,
-    "discountPercent": 20,
+    "price": 899,
+    "originalPrice": 1399,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 133,
     "sizes": [
@@ -1102,9 +1102,9 @@ export const MOCK_PRODUCTS = [
       "pajama",
       "set"
     ],
-    "price": 5699,
-    "originalPrice": 7599,
-    "discountPercent": 25,
+    "price": 949,
+    "originalPrice": 1449,
+    "discountPercent": 35,
     "rating": 4.3,
     "reviewsCount": 150,
     "sizes": [
@@ -1147,9 +1147,9 @@ export const MOCK_PRODUCTS = [
       "summer",
       "tee"
     ],
-    "price": 799,
-    "originalPrice": 1065,
-    "discountPercent": 25,
+    "price": 449,
+    "originalPrice": 849,
+    "discountPercent": 47,
     "rating": 4.3,
     "reviewsCount": 167,
     "sizes": [
@@ -1193,9 +1193,9 @@ export const MOCK_PRODUCTS = [
       "cotton",
       "tee"
     ],
-    "price": 889,
-    "originalPrice": 1270,
-    "discountPercent": 30,
+    "price": 449,
+    "originalPrice": 849,
+    "discountPercent": 47,
     "rating": 4.3,
     "reviewsCount": 184,
     "sizes": [
@@ -1239,9 +1239,9 @@ export const MOCK_PRODUCTS = [
       "crewneck",
       "t-shirt"
     ],
-    "price": 979,
-    "originalPrice": 1506,
-    "discountPercent": 35,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 201,
     "sizes": [
@@ -1285,9 +1285,9 @@ export const MOCK_PRODUCTS = [
       "everyday",
       "tee"
     ],
-    "price": 1069,
-    "originalPrice": 1782,
-    "discountPercent": 40,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 218,
     "sizes": [
@@ -1332,9 +1332,9 @@ export const MOCK_PRODUCTS = [
       "crew",
       "tee"
     ],
-    "price": 1159,
-    "originalPrice": 2107,
-    "discountPercent": 45,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 235,
     "sizes": [
@@ -1378,9 +1378,9 @@ export const MOCK_PRODUCTS = [
       "slub",
       "tee"
     ],
-    "price": 1249,
-    "originalPrice": 1665,
-    "discountPercent": 25,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 252,
     "sizes": [
@@ -1423,9 +1423,9 @@ export const MOCK_PRODUCTS = [
       "summer",
       "tee"
     ],
-    "price": 1339,
-    "originalPrice": 1913,
-    "discountPercent": 30,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 269,
     "sizes": [
@@ -1468,9 +1468,9 @@ export const MOCK_PRODUCTS = [
       "resort",
       "t-shirt"
     ],
-    "price": 1429,
-    "originalPrice": 2198,
-    "discountPercent": 35,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 286,
     "sizes": [
@@ -1515,9 +1515,9 @@ export const MOCK_PRODUCTS = [
       "maxi",
       "sundress"
     ],
-    "price": 1799,
-    "originalPrice": 2249,
-    "discountPercent": 20,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 303,
     "sizes": [
@@ -1561,9 +1561,9 @@ export const MOCK_PRODUCTS = [
       "midi",
       "dress"
     ],
-    "price": 2019,
-    "originalPrice": 2692,
-    "discountPercent": 25,
+    "price": 599,
+    "originalPrice": 1049,
+    "discountPercent": 43,
     "rating": 4.3,
     "reviewsCount": 320,
     "sizes": [
@@ -1607,9 +1607,9 @@ export const MOCK_PRODUCTS = [
       "swing",
       "dress"
     ],
-    "price": 2239,
-    "originalPrice": 3199,
-    "discountPercent": 30,
+    "price": 649,
+    "originalPrice": 1099,
+    "discountPercent": 41,
     "rating": 4.3,
     "reviewsCount": 337,
     "sizes": [
@@ -1654,9 +1654,9 @@ export const MOCK_PRODUCTS = [
       "wrap",
       "dress"
     ],
-    "price": 2459,
-    "originalPrice": 3783,
-    "discountPercent": 35,
+    "price": 699,
+    "originalPrice": 1149,
+    "discountPercent": 39,
     "rating": 4.3,
     "reviewsCount": 44,
     "sizes": [
@@ -1699,9 +1699,9 @@ export const MOCK_PRODUCTS = [
       "sun",
       "dress"
     ],
-    "price": 2679,
-    "originalPrice": 4465,
-    "discountPercent": 40,
+    "price": 699,
+    "originalPrice": 1149,
+    "discountPercent": 39,
     "rating": 4.3,
     "reviewsCount": 61,
     "sizes": [
@@ -1745,9 +1745,9 @@ export const MOCK_PRODUCTS = [
       "shirt",
       "dress"
     ],
-    "price": 2899,
-    "originalPrice": 5271,
-    "discountPercent": 45,
+    "price": 749,
+    "originalPrice": 1199,
+    "discountPercent": 38,
     "rating": 4.3,
     "reviewsCount": 78,
     "sizes": [
@@ -1791,9 +1791,9 @@ export const MOCK_PRODUCTS = [
       "cocktail",
       "sundress"
     ],
-    "price": 3119,
-    "originalPrice": 3899,
-    "discountPercent": 20,
+    "price": 799,
+    "originalPrice": 1249,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 95,
     "sizes": [
@@ -1838,9 +1838,9 @@ export const MOCK_PRODUCTS = [
       "midi",
       "dress"
     ],
-    "price": 3339,
-    "originalPrice": 4452,
-    "discountPercent": 25,
+    "price": 849,
+    "originalPrice": 1299,
+    "discountPercent": 35,
     "rating": 4.3,
     "reviewsCount": 112,
     "sizes": [
@@ -1882,9 +1882,9 @@ export const MOCK_PRODUCTS = [
       "snapback",
       "cap"
     ],
-    "price": 699,
-    "originalPrice": 874,
-    "discountPercent": 20,
+    "price": 419,
+    "originalPrice": 799,
+    "discountPercent": 48,
     "rating": 4.3,
     "reviewsCount": 129,
     "sizes": [
@@ -1923,9 +1923,9 @@ export const MOCK_PRODUCTS = [
       "dad",
       "cap"
     ],
-    "price": 779,
-    "originalPrice": 1039,
-    "discountPercent": 25,
+    "price": 419,
+    "originalPrice": 799,
+    "discountPercent": 48,
     "rating": 4.3,
     "reviewsCount": 146,
     "sizes": [
@@ -1963,9 +1963,9 @@ export const MOCK_PRODUCTS = [
       "5-panel",
       "cap"
     ],
-    "price": 859,
-    "originalPrice": 1227,
-    "discountPercent": 30,
+    "price": 449,
+    "originalPrice": 849,
+    "discountPercent": 47,
     "rating": 4.3,
     "reviewsCount": 163,
     "sizes": [
@@ -2003,9 +2003,9 @@ export const MOCK_PRODUCTS = [
       "trucker",
       "hat"
     ],
-    "price": 939,
-    "originalPrice": 1445,
-    "discountPercent": 35,
+    "price": 449,
+    "originalPrice": 849,
+    "discountPercent": 47,
     "rating": 4.3,
     "reviewsCount": 180,
     "sizes": [
@@ -2043,9 +2043,9 @@ export const MOCK_PRODUCTS = [
       "running",
       "cap"
     ],
-    "price": 1019,
-    "originalPrice": 1698,
-    "discountPercent": 40,
+    "price": 449,
+    "originalPrice": 849,
+    "discountPercent": 47,
     "rating": 4.3,
     "reviewsCount": 197,
     "sizes": [
@@ -2084,9 +2084,9 @@ export const MOCK_PRODUCTS = [
       "baseball",
       "cap"
     ],
-    "price": 1099,
-    "originalPrice": 1374,
-    "discountPercent": 20,
+    "price": 449,
+    "originalPrice": 849,
+    "discountPercent": 47,
     "rating": 4.3,
     "reviewsCount": 214,
     "sizes": [
@@ -2125,9 +2125,9 @@ export const MOCK_PRODUCTS = [
       "brim",
       "snapback"
     ],
-    "price": 1179,
-    "originalPrice": 1572,
-    "discountPercent": 25,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 231,
     "sizes": [
@@ -2166,9 +2166,9 @@ export const MOCK_PRODUCTS = [
       "curve-brim",
       "hat"
     ],
-    "price": 1259,
-    "originalPrice": 1799,
-    "discountPercent": 30,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 248,
     "sizes": [
@@ -2207,9 +2207,9 @@ export const MOCK_PRODUCTS = [
       "dad",
       "cap"
     ],
-    "price": 1339,
-    "originalPrice": 2060,
-    "discountPercent": 35,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 265,
     "sizes": [
@@ -2247,9 +2247,9 @@ export const MOCK_PRODUCTS = [
       "street",
       "cap"
     ],
-    "price": 1419,
-    "originalPrice": 2365,
-    "discountPercent": 40,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 282,
     "sizes": [
@@ -2288,9 +2288,9 @@ export const MOCK_PRODUCTS = [
       "baseball",
       "cap"
     ],
-    "price": 1499,
-    "originalPrice": 1874,
-    "discountPercent": 20,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 299,
     "sizes": [
@@ -2329,9 +2329,9 @@ export const MOCK_PRODUCTS = [
       "sun",
       "cap"
     ],
-    "price": 1579,
-    "originalPrice": 2105,
-    "discountPercent": 25,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 316,
     "sizes": [
@@ -2369,9 +2369,9 @@ export const MOCK_PRODUCTS = [
       "tactical",
       "strapback"
     ],
-    "price": 1659,
-    "originalPrice": 2370,
-    "discountPercent": 30,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 333,
     "sizes": [
@@ -2410,9 +2410,9 @@ export const MOCK_PRODUCTS = [
       "baseball",
       "cap"
     ],
-    "price": 739,
-    "originalPrice": 1137,
-    "discountPercent": 35,
+    "price": 419,
+    "originalPrice": 799,
+    "discountPercent": 48,
     "rating": 4.3,
     "reviewsCount": 40,
     "sizes": [
@@ -2451,9 +2451,9 @@ export const MOCK_PRODUCTS = [
       "street",
       "cap"
     ],
-    "price": 819,
-    "originalPrice": 1365,
-    "discountPercent": 40,
+    "price": 449,
+    "originalPrice": 849,
+    "discountPercent": 47,
     "rating": 4.3,
     "reviewsCount": 57,
     "sizes": [
@@ -2491,9 +2491,9 @@ export const MOCK_PRODUCTS = [
       "cotton",
       "cap"
     ],
-    "price": 899,
-    "originalPrice": 1124,
-    "discountPercent": 20,
+    "price": 449,
+    "originalPrice": 849,
+    "discountPercent": 47,
     "rating": 4.3,
     "reviewsCount": 74,
     "sizes": [
@@ -2532,9 +2532,9 @@ export const MOCK_PRODUCTS = [
       "flannel",
       "trousers"
     ],
-    "price": 1499,
-    "originalPrice": 1874,
-    "discountPercent": 20,
+    "price": 599,
+    "originalPrice": 1049,
+    "discountPercent": 43,
     "rating": 4.3,
     "reviewsCount": 91,
     "sizes": [
@@ -2575,9 +2575,9 @@ export const MOCK_PRODUCTS = [
       "slim-fit",
       "chinos"
     ],
-    "price": 1649,
-    "originalPrice": 2199,
-    "discountPercent": 25,
+    "price": 599,
+    "originalPrice": 1049,
+    "discountPercent": 43,
     "rating": 4.3,
     "reviewsCount": 108,
     "sizes": [
@@ -2619,9 +2619,9 @@ export const MOCK_PRODUCTS = [
       "cargo",
       "pants"
     ],
-    "price": 1799,
-    "originalPrice": 2570,
-    "discountPercent": 30,
+    "price": 649,
+    "originalPrice": 1099,
+    "discountPercent": 41,
     "rating": 4.3,
     "reviewsCount": 125,
     "sizes": [
@@ -2662,9 +2662,9 @@ export const MOCK_PRODUCTS = [
       "linen",
       "slacks"
     ],
-    "price": 1949,
-    "originalPrice": 2998,
-    "discountPercent": 35,
+    "price": 649,
+    "originalPrice": 1099,
+    "discountPercent": 41,
     "rating": 4.3,
     "reviewsCount": 142,
     "sizes": [
@@ -2705,9 +2705,9 @@ export const MOCK_PRODUCTS = [
       "straight-leg",
       "chinos"
     ],
-    "price": 2099,
-    "originalPrice": 3498,
-    "discountPercent": 40,
+    "price": 749,
+    "originalPrice": 1199,
+    "discountPercent": 38,
     "rating": 4.3,
     "reviewsCount": 159,
     "sizes": [
@@ -2749,9 +2749,9 @@ export const MOCK_PRODUCTS = [
       "cargo",
       "joggers"
     ],
-    "price": 2249,
-    "originalPrice": 2811,
-    "discountPercent": 20,
+    "price": 749,
+    "originalPrice": 1199,
+    "discountPercent": 38,
     "rating": 4.3,
     "reviewsCount": 176,
     "sizes": [
@@ -2792,9 +2792,9 @@ export const MOCK_PRODUCTS = [
       "twill",
       "trousers"
     ],
-    "price": 2399,
-    "originalPrice": 3199,
-    "discountPercent": 25,
+    "price": 799,
+    "originalPrice": 1249,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 193,
     "sizes": [
@@ -2836,9 +2836,9 @@ export const MOCK_PRODUCTS = [
       "business",
       "pants"
     ],
-    "price": 2549,
-    "originalPrice": 3641,
-    "discountPercent": 30,
+    "price": 799,
+    "originalPrice": 1249,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 210,
     "sizes": [
@@ -2880,9 +2880,9 @@ export const MOCK_PRODUCTS = [
       "lounge",
       "trousers"
     ],
-    "price": 2699,
-    "originalPrice": 4152,
-    "discountPercent": 35,
+    "price": 899,
+    "originalPrice": 1399,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 227,
     "sizes": [
@@ -2924,9 +2924,9 @@ export const MOCK_PRODUCTS = [
       "dress",
       "pants"
     ],
-    "price": 2849,
-    "originalPrice": 4748,
-    "discountPercent": 40,
+    "price": 899,
+    "originalPrice": 1399,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 244,
     "sizes": [
@@ -2967,9 +2967,9 @@ export const MOCK_PRODUCTS = [
       "easy",
       "trousers"
     ],
-    "price": 1499,
-    "originalPrice": 1874,
-    "discountPercent": 20,
+    "price": 599,
+    "originalPrice": 1049,
+    "discountPercent": 43,
     "rating": 4.3,
     "reviewsCount": 261,
     "sizes": [
@@ -3010,9 +3010,9 @@ export const MOCK_PRODUCTS = [
       "minimalist",
       "trousers"
     ],
-    "price": 1649,
-    "originalPrice": 2199,
-    "discountPercent": 25,
+    "price": 599,
+    "originalPrice": 1049,
+    "discountPercent": 43,
     "rating": 4.3,
     "reviewsCount": 278,
     "sizes": [
@@ -3054,9 +3054,9 @@ export const MOCK_PRODUCTS = [
       "tailored",
       "pants"
     ],
-    "price": 1799,
-    "originalPrice": 2570,
-    "discountPercent": 30,
+    "price": 649,
+    "originalPrice": 1099,
+    "discountPercent": 41,
     "rating": 4.3,
     "reviewsCount": 295,
     "sizes": [
@@ -3097,9 +3097,9 @@ export const MOCK_PRODUCTS = [
       "relaxed",
       "shirt"
     ],
-    "price": 999,
-    "originalPrice": 1249,
-    "discountPercent": 20,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 312,
     "sizes": [
@@ -3141,9 +3141,9 @@ export const MOCK_PRODUCTS = [
       "graphic",
       "tee"
     ],
-    "price": 1109,
-    "originalPrice": 1479,
-    "discountPercent": 25,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 329,
     "sizes": [
@@ -3184,9 +3184,9 @@ export const MOCK_PRODUCTS = [
       "summer",
       "shirt"
     ],
-    "price": 1219,
-    "originalPrice": 1741,
-    "discountPercent": 30,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 36,
     "sizes": [
@@ -3227,9 +3227,9 @@ export const MOCK_PRODUCTS = [
       "boxy",
       "tee"
     ],
-    "price": 1329,
-    "originalPrice": 2045,
-    "discountPercent": 35,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 53,
     "sizes": [
@@ -3269,9 +3269,9 @@ export const MOCK_PRODUCTS = [
       "workwear",
       "over-shirt"
     ],
-    "price": 1439,
-    "originalPrice": 2398,
-    "discountPercent": 40,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 70,
     "sizes": [
@@ -3312,9 +3312,9 @@ export const MOCK_PRODUCTS = [
       "nautical",
       "top"
     ],
-    "price": 1549,
-    "originalPrice": 1936,
-    "discountPercent": 20,
+    "price": 599,
+    "originalPrice": 1049,
+    "discountPercent": 43,
     "rating": 4.3,
     "reviewsCount": 87,
     "sizes": [
@@ -3355,9 +3355,9 @@ export const MOCK_PRODUCTS = [
       "jersey",
       "tee"
     ],
-    "price": 1659,
-    "originalPrice": 2212,
-    "discountPercent": 25,
+    "price": 599,
+    "originalPrice": 1049,
+    "discountPercent": 43,
     "rating": 4.3,
     "reviewsCount": 104,
     "sizes": [
@@ -3397,9 +3397,9 @@ export const MOCK_PRODUCTS = [
       "camp",
       "shirt"
     ],
-    "price": 1769,
-    "originalPrice": 2527,
-    "discountPercent": 30,
+    "price": 649,
+    "originalPrice": 1099,
+    "discountPercent": 41,
     "rating": 4.3,
     "reviewsCount": 121,
     "sizes": [
@@ -3439,9 +3439,9 @@ export const MOCK_PRODUCTS = [
       "distressed",
       "crewneck"
     ],
-    "price": 1879,
-    "originalPrice": 2891,
-    "discountPercent": 35,
+    "price": 649,
+    "originalPrice": 1099,
+    "discountPercent": 41,
     "rating": 4.3,
     "reviewsCount": 138,
     "sizes": [
@@ -3481,9 +3481,9 @@ export const MOCK_PRODUCTS = [
       "casual",
       "shirt"
     ],
-    "price": 1989,
-    "originalPrice": 3315,
-    "discountPercent": 40,
+    "price": 699,
+    "originalPrice": 1149,
+    "discountPercent": 39,
     "rating": 4.3,
     "reviewsCount": 155,
     "sizes": [
@@ -3524,9 +3524,9 @@ export const MOCK_PRODUCTS = [
       "short-sleeve",
       "top"
     ],
-    "price": 2099,
-    "originalPrice": 2624,
-    "discountPercent": 20,
+    "price": 699,
+    "originalPrice": 1149,
+    "discountPercent": 39,
     "rating": 4.3,
     "reviewsCount": 172,
     "sizes": [
@@ -3567,9 +3567,9 @@ export const MOCK_PRODUCTS = [
       "cotton",
       "tee"
     ],
-    "price": 1009,
-    "originalPrice": 1345,
-    "discountPercent": 25,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 189,
     "sizes": [
@@ -3610,9 +3610,9 @@ export const MOCK_PRODUCTS = [
       "essential",
       "tee"
     ],
-    "price": 1119,
-    "originalPrice": 1599,
-    "discountPercent": 30,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 206,
     "sizes": [
@@ -3657,9 +3657,9 @@ export const MOCK_PRODUCTS = [
       "drops",
       "set"
     ],
-    "price": 899,
-    "originalPrice": 1124,
-    "discountPercent": 20,
+    "price": 449,
+    "originalPrice": 849,
+    "discountPercent": 47,
     "rating": 4.3,
     "reviewsCount": 223,
     "sizes": [
@@ -3698,9 +3698,9 @@ export const MOCK_PRODUCTS = [
       "enamel",
       "jhumkas"
     ],
-    "price": 1019,
-    "originalPrice": 1359,
-    "discountPercent": 25,
+    "price": 449,
+    "originalPrice": 849,
+    "discountPercent": 47,
     "rating": 4.3,
     "reviewsCount": 240,
     "sizes": [
@@ -3740,9 +3740,9 @@ export const MOCK_PRODUCTS = [
       "hoop",
       "earrings"
     ],
-    "price": 1139,
-    "originalPrice": 1627,
-    "discountPercent": 30,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 257,
     "sizes": [
@@ -3782,9 +3782,9 @@ export const MOCK_PRODUCTS = [
       "bridal",
       "potli"
     ],
-    "price": 1259,
-    "originalPrice": 1937,
-    "discountPercent": 35,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 274,
     "sizes": [
@@ -3824,9 +3824,9 @@ export const MOCK_PRODUCTS = [
       "tote",
       "bag"
     ],
-    "price": 1379,
-    "originalPrice": 2298,
-    "discountPercent": 40,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 291,
     "sizes": [
@@ -3865,9 +3865,9 @@ export const MOCK_PRODUCTS = [
       "cat-eye",
       "sunglasses"
     ],
-    "price": 1499,
-    "originalPrice": 2725,
-    "discountPercent": 45,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 308,
     "sizes": [
@@ -3907,9 +3907,9 @@ export const MOCK_PRODUCTS = [
       "cuff",
       "bangle"
     ],
-    "price": 1619,
-    "originalPrice": 2024,
-    "discountPercent": 20,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 325,
     "sizes": [
@@ -3949,9 +3949,9 @@ export const MOCK_PRODUCTS = [
       "layered",
       "choker"
     ],
-    "price": 1739,
-    "originalPrice": 2319,
-    "discountPercent": 25,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 342,
     "sizes": [
@@ -3991,9 +3991,9 @@ export const MOCK_PRODUCTS = [
       "party",
       "clutch"
     ],
-    "price": 1859,
-    "originalPrice": 2656,
-    "discountPercent": 30,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 49,
     "sizes": [
@@ -4033,9 +4033,9 @@ export const MOCK_PRODUCTS = [
       "gold",
       "necklace"
     ],
-    "price": 1979,
-    "originalPrice": 3045,
-    "discountPercent": 35,
+    "price": 599,
+    "originalPrice": 1049,
+    "discountPercent": 43,
     "rating": 4.3,
     "reviewsCount": 66,
     "sizes": [
@@ -4075,9 +4075,9 @@ export const MOCK_PRODUCTS = [
       "saddle",
       "bag"
     ],
-    "price": 2099,
-    "originalPrice": 3498,
-    "discountPercent": 40,
+    "price": 599,
+    "originalPrice": 1049,
+    "discountPercent": 43,
     "rating": 4.3,
     "reviewsCount": 83,
     "sizes": [
@@ -4117,9 +4117,9 @@ export const MOCK_PRODUCTS = [
       "evening",
       "earrings"
     ],
-    "price": 2219,
-    "originalPrice": 4035,
-    "discountPercent": 45,
+    "price": 599,
+    "originalPrice": 1049,
+    "discountPercent": 43,
     "rating": 4.3,
     "reviewsCount": 100,
     "sizes": [
@@ -4160,9 +4160,9 @@ export const MOCK_PRODUCTS = [
       "&",
       "brooch"
     ],
-    "price": 2339,
-    "originalPrice": 2924,
-    "discountPercent": 20,
+    "price": 649,
+    "originalPrice": 1099,
+    "discountPercent": 41,
     "rating": 4.3,
     "reviewsCount": 117,
     "sizes": [
@@ -4202,9 +4202,9 @@ export const MOCK_PRODUCTS = [
       "chain",
       "bracelet"
     ],
-    "price": 2459,
-    "originalPrice": 3279,
-    "discountPercent": 25,
+    "price": 649,
+    "originalPrice": 1099,
+    "discountPercent": 41,
     "rating": 4.3,
     "reviewsCount": 134,
     "sizes": [
@@ -4244,9 +4244,9 @@ export const MOCK_PRODUCTS = [
       "knot",
       "clutch"
     ],
-    "price": 2579,
-    "originalPrice": 3684,
-    "discountPercent": 30,
+    "price": 649,
+    "originalPrice": 1099,
+    "discountPercent": 41,
     "rating": 4.3,
     "reviewsCount": 151,
     "sizes": [
@@ -4287,9 +4287,9 @@ export const MOCK_PRODUCTS = [
       "drop",
       "earrings"
     ],
-    "price": 2699,
-    "originalPrice": 4152,
-    "discountPercent": 35,
+    "price": 699,
+    "originalPrice": 1149,
+    "discountPercent": 39,
     "rating": 4.3,
     "reviewsCount": 168,
     "sizes": [
@@ -4328,9 +4328,9 @@ export const MOCK_PRODUCTS = [
       "crossbody",
       "bag"
     ],
-    "price": 2819,
-    "originalPrice": 4698,
-    "discountPercent": 40,
+    "price": 699,
+    "originalPrice": 1149,
+    "discountPercent": 39,
     "rating": 4.3,
     "reviewsCount": 185,
     "sizes": [
@@ -4370,9 +4370,9 @@ export const MOCK_PRODUCTS = [
       "bracelet",
       "set"
     ],
-    "price": 2939,
-    "originalPrice": 5344,
-    "discountPercent": 45,
+    "price": 699,
+    "originalPrice": 1149,
+    "discountPercent": 39,
     "rating": 4.3,
     "reviewsCount": 202,
     "sizes": [
@@ -4412,9 +4412,9 @@ export const MOCK_PRODUCTS = [
       "strap",
       "watch"
     ],
-    "price": 3059,
-    "originalPrice": 3824,
-    "discountPercent": 20,
+    "price": 749,
+    "originalPrice": 1199,
+    "discountPercent": 38,
     "rating": 4.3,
     "reviewsCount": 219,
     "sizes": [
@@ -4455,9 +4455,9 @@ export const MOCK_PRODUCTS = [
       "bangle",
       "pair"
     ],
-    "price": 3179,
-    "originalPrice": 4239,
-    "discountPercent": 25,
+    "price": 749,
+    "originalPrice": 1199,
+    "discountPercent": 38,
     "rating": 4.3,
     "reviewsCount": 236,
     "sizes": [
@@ -4498,9 +4498,9 @@ export const MOCK_PRODUCTS = [
       "shoulder",
       "bag"
     ],
-    "price": 899,
-    "originalPrice": 1284,
-    "discountPercent": 30,
+    "price": 449,
+    "originalPrice": 849,
+    "discountPercent": 47,
     "rating": 4.3,
     "reviewsCount": 253,
     "sizes": [
@@ -4538,9 +4538,9 @@ export const MOCK_PRODUCTS = [
       "co-ord",
       "set"
     ],
-    "price": 2499,
-    "originalPrice": 2940,
-    "discountPercent": 15,
+    "price": 699,
+    "originalPrice": 1149,
+    "discountPercent": 39,
     "rating": 4.3,
     "reviewsCount": 270,
     "sizes": [
@@ -4581,9 +4581,9 @@ export const MOCK_PRODUCTS = [
       "peak-lapel",
       "blazer"
     ],
-    "price": 2849,
-    "originalPrice": 3561,
-    "discountPercent": 20,
+    "price": 749,
+    "originalPrice": 1199,
+    "discountPercent": 38,
     "rating": 4.3,
     "reviewsCount": 287,
     "sizes": [
@@ -4626,9 +4626,9 @@ export const MOCK_PRODUCTS = [
       "midi",
       "dress"
     ],
-    "price": 3199,
-    "originalPrice": 4265,
-    "discountPercent": 25,
+    "price": 749,
+    "originalPrice": 1199,
+    "discountPercent": 38,
     "rating": 4.3,
     "reviewsCount": 304,
     "sizes": [
@@ -4671,9 +4671,9 @@ export const MOCK_PRODUCTS = [
       "workwear",
       "dress"
     ],
-    "price": 3549,
-    "originalPrice": 5070,
-    "discountPercent": 30,
+    "price": 799,
+    "originalPrice": 1249,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 321,
     "sizes": [
@@ -4717,9 +4717,9 @@ export const MOCK_PRODUCTS = [
       "anarkali",
       "gown"
     ],
-    "price": 3299,
-    "originalPrice": 4399,
-    "discountPercent": 25,
+    "price": 749,
+    "originalPrice": 1199,
+    "discountPercent": 38,
     "rating": 4.3,
     "reviewsCount": 338,
     "sizes": [
@@ -4762,9 +4762,9 @@ export const MOCK_PRODUCTS = [
       "woven",
       "saree"
     ],
-    "price": 3719,
-    "originalPrice": 5313,
-    "discountPercent": 30,
+    "price": 799,
+    "originalPrice": 1249,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 45,
     "sizes": [
@@ -4807,8 +4807,8 @@ export const MOCK_PRODUCTS = [
       "kurti",
       "set"
     ],
-    "price": 4139,
-    "originalPrice": 6368,
+    "price": 849,
+    "originalPrice": 1299,
     "discountPercent": 35,
     "rating": 4.3,
     "reviewsCount": 62,
@@ -4852,9 +4852,9 @@ export const MOCK_PRODUCTS = [
       "sharara",
       "suit"
     ],
-    "price": 4559,
-    "originalPrice": 7598,
-    "discountPercent": 40,
+    "price": 849,
+    "originalPrice": 1299,
+    "discountPercent": 35,
     "rating": 4.3,
     "reviewsCount": 79,
     "sizes": [
@@ -4898,9 +4898,9 @@ export const MOCK_PRODUCTS = [
       "anarkali",
       "set"
     ],
-    "price": 4979,
-    "originalPrice": 9053,
-    "discountPercent": 45,
+    "price": 899,
+    "originalPrice": 1399,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 96,
     "sizes": [
@@ -4943,9 +4943,9 @@ export const MOCK_PRODUCTS = [
       "lehenga",
       "choli"
     ],
-    "price": 5399,
-    "originalPrice": 7199,
-    "discountPercent": 25,
+    "price": 899,
+    "originalPrice": 1399,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 113,
     "sizes": [
@@ -4989,9 +4989,9 @@ export const MOCK_PRODUCTS = [
       "kurta",
       "set"
     ],
-    "price": 5819,
-    "originalPrice": 8313,
-    "discountPercent": 30,
+    "price": 949,
+    "originalPrice": 1449,
+    "discountPercent": 35,
     "rating": 4.3,
     "reviewsCount": 130,
     "sizes": [
@@ -5037,8 +5037,8 @@ export const MOCK_PRODUCTS = [
       "zari",
       "border"
     ],
-    "price": 6239,
-    "originalPrice": 9598,
+    "price": 949,
+    "originalPrice": 1449,
     "discountPercent": 35,
     "rating": 4.3,
     "reviewsCount": 147,
@@ -5084,9 +5084,9 @@ export const MOCK_PRODUCTS = [
       "kurta",
       "ensemble"
     ],
-    "price": 6659,
-    "originalPrice": 11098,
-    "discountPercent": 40,
+    "price": 999,
+    "originalPrice": 1499,
+    "discountPercent": 33,
     "rating": 4.3,
     "reviewsCount": 164,
     "sizes": [
@@ -5130,9 +5130,9 @@ export const MOCK_PRODUCTS = [
       "crewneck",
       "tee"
     ],
-    "price": 799,
-    "originalPrice": 999,
-    "discountPercent": 20,
+    "price": 449,
+    "originalPrice": 849,
+    "discountPercent": 47,
     "rating": 4.3,
     "reviewsCount": 181,
     "sizes": [
@@ -5175,9 +5175,9 @@ export const MOCK_PRODUCTS = [
       "casual",
       "tee"
     ],
-    "price": 879,
-    "originalPrice": 1172,
-    "discountPercent": 25,
+    "price": 449,
+    "originalPrice": 849,
+    "discountPercent": 47,
     "rating": 4.3,
     "reviewsCount": 198,
     "sizes": [
@@ -5220,9 +5220,9 @@ export const MOCK_PRODUCTS = [
       "drop-shoulder",
       "tee"
     ],
-    "price": 959,
-    "originalPrice": 1370,
-    "discountPercent": 30,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 215,
     "sizes": [
@@ -5266,9 +5266,9 @@ export const MOCK_PRODUCTS = [
       "boxy",
       "tee"
     ],
-    "price": 1039,
-    "originalPrice": 1598,
-    "discountPercent": 35,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 232,
     "sizes": [
@@ -5311,9 +5311,9 @@ export const MOCK_PRODUCTS = [
       "bio-wash",
       "tee"
     ],
-    "price": 1119,
-    "originalPrice": 1865,
-    "discountPercent": 40,
+    "price": 499,
+    "originalPrice": 899,
+    "discountPercent": 44,
     "rating": 4.3,
     "reviewsCount": 249,
     "sizes": [
@@ -5355,9 +5355,9 @@ export const MOCK_PRODUCTS = [
       "boyfriend",
       "t-shirt"
     ],
-    "price": 1199,
-    "originalPrice": 2180,
-    "discountPercent": 45,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 266,
     "sizes": [
@@ -5400,9 +5400,9 @@ export const MOCK_PRODUCTS = [
       "graphic",
       "tee"
     ],
-    "price": 1279,
-    "originalPrice": 1599,
-    "discountPercent": 20,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 283,
     "sizes": [
@@ -5446,9 +5446,9 @@ export const MOCK_PRODUCTS = [
       "cotton",
       "tee"
     ],
-    "price": 1359,
-    "originalPrice": 1812,
-    "discountPercent": 25,
+    "price": 549,
+    "originalPrice": 949,
+    "discountPercent": 42,
     "rating": 4.3,
     "reviewsCount": 300,
     "sizes": [
@@ -5492,9 +5492,9 @@ export const MOCK_PRODUCTS = [
       "black",
       "tee"
     ],
-    "price": 1439,
-    "originalPrice": 2056,
-    "discountPercent": 30,
+    "price": 599,
+    "originalPrice": 1049,
+    "discountPercent": 43,
     "rating": 4.3,
     "reviewsCount": 317,
     "sizes": [
@@ -5539,9 +5539,9 @@ export const MOCK_PRODUCTS = [
       "trench",
       "coat"
     ],
-    "price": 2999,
-    "originalPrice": 3749,
-    "discountPercent": 20,
+    "price": 699,
+    "originalPrice": 1149,
+    "discountPercent": 39,
     "rating": 4.3,
     "reviewsCount": 334,
     "sizes": [
@@ -5585,9 +5585,9 @@ export const MOCK_PRODUCTS = [
       "winter",
       "jacket"
     ],
-    "price": 3379,
-    "originalPrice": 4505,
-    "discountPercent": 25,
+    "price": 749,
+    "originalPrice": 1199,
+    "discountPercent": 38,
     "rating": 4.3,
     "reviewsCount": 41,
     "sizes": [
@@ -5631,9 +5631,9 @@ export const MOCK_PRODUCTS = [
       "knit",
       "sweater"
     ],
-    "price": 3759,
-    "originalPrice": 5370,
-    "discountPercent": 30,
+    "price": 799,
+    "originalPrice": 1249,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 58,
     "sizes": [
@@ -5676,8 +5676,8 @@ export const MOCK_PRODUCTS = [
       "wool",
       "cardigan"
     ],
-    "price": 4139,
-    "originalPrice": 6368,
+    "price": 849,
+    "originalPrice": 1299,
     "discountPercent": 35,
     "rating": 4.3,
     "reviewsCount": 75,
@@ -5722,9 +5722,9 @@ export const MOCK_PRODUCTS = [
       "puffer",
       "jacket"
     ],
-    "price": 4519,
-    "originalPrice": 7532,
-    "discountPercent": 40,
+    "price": 899,
+    "originalPrice": 1399,
+    "discountPercent": 36,
     "rating": 4.3,
     "reviewsCount": 92,
     "sizes": [
@@ -5767,9 +5767,9 @@ export const MOCK_PRODUCTS = [
       "belted",
       "overcoat"
     ],
-    "price": 4899,
-    "originalPrice": 6124,
-    "discountPercent": 20,
+    "price": 949,
+    "originalPrice": 1449,
+    "discountPercent": 35,
     "rating": 4.3,
     "reviewsCount": 109,
     "sizes": [
@@ -5815,9 +5815,9 @@ export const MOCK_PRODUCTS = [
       "storm",
       "flap"
     ],
-    "price": 5279,
-    "originalPrice": 7039,
-    "discountPercent": 25,
+    "price": 999,
+    "originalPrice": 1499,
+    "discountPercent": 33,
     "rating": 4.3,
     "reviewsCount": 126,
     "sizes": [

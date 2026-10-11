@@ -19,7 +19,7 @@ const INITIAL_MOCK_ORDERS = [
         id: 'prod-w-trad-1',
         name: 'Embroidered Royal Anarkali Set',
         category: 'Festive / Traditional',
-        price: 4799,
+        price: 899,
         selectedSize: 'M',
         quantity: 1,
         imageUrl: '/images/women tarditional dress/1183653B-EA4C-4D27-A91A-900C61473B85_600x.webp',
@@ -28,16 +28,16 @@ const INITIAL_MOCK_ORDERS = [
         id: 'prod-w-acc-1',
         name: 'Artisan Gold-Plated Statement Earrings & Choker',
         category: 'Accessories',
-        price: 1499,
+        price: 499,
         selectedSize: 'Free Size',
         quantity: 1,
         imageUrl: '/images/women accessories/images (1).jpg',
       }
     ],
-    subtotal: 6298,
-    gstAmount: 315,
+    subtotal: 1398,
+    gstAmount: 70,
     shippingFee: 0,
-    totalAmount: 6613,
+    totalAmount: 1468,
     status: 'Delivered',
   },
   {
@@ -56,16 +56,16 @@ const INITIAL_MOCK_ORDERS = [
         id: 'prod-m-form-1',
         name: 'Bespoke Slim-Fit Tuxedo Jacket',
         category: 'Formals',
-        price: 5499,
+        price: 949,
         selectedSize: 'L',
         quantity: 1,
         imageUrl: '/images/men formal/-473Wx593H-469514972-black-MODEL.avif',
       }
     ],
-    subtotal: 5499,
-    gstAmount: 275,
+    subtotal: 949,
+    gstAmount: 47,
     shippingFee: 0,
-    totalAmount: 5774,
+    totalAmount: 996,
     status: 'Dispatched',
   }
 ];
@@ -85,23 +85,35 @@ export const apiService = {
 
     let catalog = MOCK_PRODUCTS;
     try {
-      const stored = localStorage.getItem('stylestack_catalog_v10');
+      const stored = localStorage.getItem('stylestack_catalog_v11');
       if (stored) {
         catalog = JSON.parse(stored);
       } else {
         catalog = MOCK_PRODUCTS;
-        localStorage.setItem('stylestack_catalog_v10', JSON.stringify(MOCK_PRODUCTS));
+        localStorage.setItem('stylestack_catalog_v11', JSON.stringify(MOCK_PRODUCTS));
       }
     } catch (e) {
       console.error('Error reading catalog', e);
     }
 
-    // Standardize sizes to ensure no legacy numeric sizes persist
+    // Standardize sizes and ensure reasonable pricing range (₹400 - ₹999)
     catalog = catalog.map((p) => {
-      if (Array.isArray(p.sizes) && p.sizes.some((s) => /^\d+$/.test(s))) {
-        return { ...p, sizes: ['S', 'M', 'L', 'XL'] };
+      let price = Number(p.price) || 499;
+      if (price > 999 || price < 400) {
+        price = Math.max(400, Math.min(999, Math.round(400 + ((price - 699) / (6659 - 699)) * (999 - 400))));
       }
-      return p;
+      const originalPrice = p.originalPrice && p.originalPrice > price
+        ? Math.min(1499, Math.max(799, p.originalPrice > 1499 ? Math.round(price * 1.35) : p.originalPrice))
+        : Math.min(1499, Math.round(price * 1.35));
+      const sizes = Array.isArray(p.sizes) && p.sizes.some((s) => /^\d+$/.test(s))
+        ? ['S', 'M', 'L', 'XL']
+        : p.sizes;
+      return {
+        ...p,
+        price,
+        originalPrice,
+        sizes,
+      };
     });
 
     let result = [...catalog];
@@ -251,10 +263,10 @@ export const apiService = {
     };
 
     try {
-      const stored = localStorage.getItem('stylestack_catalog_v10');
+      const stored = localStorage.getItem('stylestack_catalog_v11');
       const catalog = stored ? JSON.parse(stored) : [...MOCK_PRODUCTS];
       const updatedCatalog = [newProduct, ...catalog];
-      localStorage.setItem('stylestack_catalog_v10', JSON.stringify(updatedCatalog));
+      localStorage.setItem('stylestack_catalog_v11', JSON.stringify(updatedCatalog));
     } catch (e) {
       console.error('Error saving new product', e);
     }

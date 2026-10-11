@@ -125,7 +125,7 @@ export const Navbar = ({
       {/* Top Announcement Banner */}
       <div className="bg-slate-900 text-slate-200 text-xs py-1.5 px-4 text-center font-medium flex items-center justify-center gap-2 border-b border-slate-800">
         <Sparkles className="w-3.5 h-3.5 text-rose-400 animate-pulse" />
-        <span>Festive Fashion Edition — Enjoy 20% OFF on Traditional Wear + Free Shipping &gt; ₹1,999!</span>
+        <span>Festive Fashion Edition — Enjoy 20% OFF on Traditional Wear + Free Shipping &gt; ₹799!</span>
         <span className="hidden sm:inline-block bg-rose-600 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ml-2">
           Code: FESTIVE20
         </span>

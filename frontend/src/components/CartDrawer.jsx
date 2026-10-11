@@ -164,9 +164,9 @@ export const CartDrawer = ({ onOpenCheckoutModal }) => {
                     )}
                   </span>
                 </div>
-                {subtotal < 1999 && (
+                {subtotal > 0 && subtotal < 799 && (
                   <p className="text-[10px] text-amber-700 bg-amber-50 p-2 rounded-lg border border-amber-200">
-                    Add ₹{(1999 - subtotal).toLocaleString('en-IN')} more to unlock FREE Express Shipping!
+                    Add ₹{(799 - subtotal).toLocaleString('en-IN')} more to unlock FREE Express Shipping!
                   </p>
                 )}
                 <div className="border-t border-slate-200 pt-3 flex justify-between items-baseline text-base font-extrabold text-slate-900">
