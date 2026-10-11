@@ -39,7 +39,7 @@ export class ReceiptErrorBoundary extends Component {
               <p className="text-xs text-zinc-400">
                 {String(this.props.order?.paymentMethod || this.props.invoice?.paymentMethod || '').toLowerCase().includes('cash') ||
                 String(this.props.order?.paymentMethod || this.props.invoice?.paymentMethod || '').toLowerCase() === 'cod'
-                  ? 'Order placed with Cash on Delivery! Pay upon arrival.'
+                  ? 'Order Placed with Cash on Delivery!'
                   : 'Payment received successfully. Thank you for shopping with StyleStack.'}
               </p>
               <button
@@ -217,7 +217,7 @@ const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose })
         {isCod ? (
           <div className="payment-confirmation-pill cod bg-amber-950/40 border border-amber-600/40 text-amber-300 px-4 py-3 rounded-xl flex items-center justify-center gap-2.5 mb-6 text-[13px] font-semibold shadow-lg text-center">
             <Clock className="w-5 h-5 text-amber-400 shrink-0" />
-            <span>Order Placed with Cash on Delivery! Pay upon arrival.</span>
+            <span>Order Placed with Cash on Delivery!</span>
           </div>
         ) : (
           <div className="payment-confirmation-pill bg-emerald-950/40 border border-emerald-600/40 text-emerald-300 px-4 py-3 rounded-xl flex items-center justify-center gap-2.5 mb-6 text-[13px] font-semibold shadow-lg text-center">
