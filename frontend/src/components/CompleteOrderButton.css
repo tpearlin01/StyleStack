@@ -1,275 +1,279 @@
 /* CompleteOrderButton.css */
-.order-button {
-  --primary: #09090b;
-  --primary-hover: #18181b;
-  --success: #10b981;
-  --white: #ffffff;
-  --width: 280px;
-  --height: 56px;
-
-  width: var(--width);
-  height: var(--height);
-  background: var(--primary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 28px;
+.truck-order-btn {
+  position: relative;
+  width: 240px;
+  height: 52px;
+  background: #09090b;
+  border: 1px solid #27272a;
+  border-radius: 9999px;
+  color: #ffffff;
+  font-weight: 600;
   cursor: pointer;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              background 0.3s ease,
-              border-color 0.3s ease,
-              border-radius 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.3s ease;
-  overflow: hidden;
-  outline: none;
   user-select: none;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.4s ease,
+              border-color 0.4s ease,
+              box-shadow 0.3s ease;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
 }
 
-.order-button:hover:not(:disabled) {
-  background: var(--primary-hover);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+.truck-order-btn:hover:not(:disabled) {
+  background: #18181b;
+  border-color: #3f3f46;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
 }
 
-.order-button.active {
-  width: 56px;
-  border-radius: 50%;
+.truck-order-btn.animating {
+  width: 280px;
+  background: #18181b;
   cursor: default;
   pointer-events: none;
 }
 
-.order-button.success {
-  background: var(--success);
+.truck-order-btn.success {
+  width: 220px;
+  background: #10b981;
   border-color: #059669;
-  width: 190px;
-  border-radius: 28px;
   cursor: default;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
 }
 
-.order-button span {
-  color: var(--white);
-  font-size: 15px;
-  font-weight: 600;
+.btn-label {
   display: flex;
   align-items: center;
   gap: 8px;
+  font-size: 15px;
   letter-spacing: 0.01em;
   transition: opacity 0.3s ease, transform 0.3s ease;
   white-space: nowrap;
 }
 
-.order-button span.default {
+.default-label {
+  opacity: 1;
+}
+
+.animating .default-label,
+.success .default-label {
+  opacity: 0;
+  transform: translateY(-20px);
+  position: absolute;
+}
+
+.success-label {
+  position: absolute;
+  opacity: 0;
+  transform: translateY(20px);
+  color: #ffffff;
+}
+
+.success .success-label {
   opacity: 1;
   transform: translateY(0);
 }
 
-.order-button.active span.default {
-  opacity: 0;
-  transform: translateY(-10px);
-}
-
-.order-button span.success {
+/* Scene */
+.truck-scene {
   position: absolute;
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.order-button.success span.default {
-  opacity: 0;
-  transform: translateY(-10px);
-}
-
-.order-button.success span.success {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.order-button span svg {
-  width: 16px;
-  height: 16px;
-  stroke: var(--white);
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  fill: none;
-}
-
-.truck {
-  position: absolute;
-  width: 50px;
-  height: 28px;
-  top: 14px;
-  left: -60px;
-  display: flex;
-  opacity: 0;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
 }
 
-.order-button.active .truck {
-  opacity: 1;
-  animation: driveTruck 4.5s cubic-bezier(0.7, 0, 0.2, 1) forwards;
+.animating .truck-scene {
+  display: block;
 }
 
-.truck div {
+/* Roadway Lines */
+.road-lines {
   position: absolute;
+  bottom: 12px;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #71717a 0, #71717a 12px, transparent 12px, transparent 20px);
+  animation: moveRoad 0.35s linear infinite;
+  opacity: 0.85;
 }
 
-.truck .back {
-  width: 32px;
-  height: 26px;
-  background: #ffffff;
-  border-radius: 4px;
-  box-shadow: inset -2px -2px 0 rgba(0, 0, 0, 0.1);
+@keyframes moveRoad {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-20px); }
 }
 
-.truck .front {
-  width: 16px;
+/* Package Drop */
+.package-box {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #d97706;
+  border-radius: 2px;
+  left: 62px;
+  top: -24px;
+  z-index: 2;
+  box-shadow: inset 0 0 0 1px #b45309;
+  animation: dropPackage 4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes dropPackage {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  28% {
+    transform: translate(0, 42px) scale(1.05);
+    opacity: 1;
+  }
+  32% {
+    transform: translate(0, 42px) scale(1);
+    opacity: 1;
+  }
+  48% {
+    transform: translate(0, 42px) scale(1);
+  }
+  100% {
+    transform: translate(300px, 42px) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Delivery Truck */
+.delivery-truck {
+  position: absolute;
+  width: 60px;
+  height: 32px;
+  bottom: 14px;
+  left: 20px;
+  z-index: 3;
+  animation: driveOut 4s cubic-bezier(0.7, 0, 0.2, 1) forwards;
+}
+
+@keyframes driveOut {
+  0% { transform: translateX(-40px); }
+  22% { transform: translateX(30px); }  /* Pauses to receive package */
+  48% { transform: translateX(30px); }  /* Waits for door close & lights on */
+  100% { transform: translateX(320px); } /* Drives away offscreen */
+}
+
+.truck-body {
+  position: absolute;
+  width: 38px;
+  height: 24px;
+  background: #f4f4f5;
+  border-radius: 3px 0 0 3px;
+  left: 0;
+  bottom: 6px;
+  box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.truck-bed {
+  position: absolute;
+  width: 22px;
   height: 18px;
-  background: #ffffff;
-  right: 2px;
-  top: 8px;
-  border-radius: 0 4px 4px 0;
+  left: 3px;
+  top: 3px;
+  background: #3f3f46;
+  border-radius: 2px 0 0 2px;
+}
+
+.truck-door {
+  position: absolute;
+  width: 4px;
+  height: 20px;
+  left: 2px;
+  top: 2px;
+  background: #71717a;
+  border-radius: 1px;
+  transform-origin: top;
+  opacity: 0;
+  transform: scaleY(0);
+  animation: closeDoor 0.35s ease-out 1.2s forwards;
+}
+
+@keyframes closeDoor {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+.truck-cabin {
+  position: absolute;
+  width: 18px;
+  height: 20px;
+  background: #e4e4e7;
+  right: 4px;
+  bottom: 6px;
+  border-radius: 0 4px 2px 0;
   box-shadow: inset 1px -1px 0 rgba(0, 0, 0, 0.1);
 }
 
-.truck .window {
-  width: 10px;
-  height: 7px;
-  background: #18181b;
-  top: 3px;
-  right: 2px;
-  border-radius: 2px;
-}
-
-.truck .light {
-  width: 3px;
-  height: 3px;
-  background: #fbbf24;
-  right: 0;
-  border-radius: 1px;
-}
-
-.truck .light.top {
-  top: 10px;
-}
-
-.truck .light.bottom {
-  top: 18px;
-}
-
-/* Wheels */
-.truck::before,
-.truck::after {
-  content: '';
+.truck-window {
   position: absolute;
-  bottom: -3px;
+  width: 9px;
+  height: 8px;
+  background: #18181b;
+  right: 2px;
+  top: 3px;
+  border-radius: 0 2px 0 0;
+}
+
+.truck-headlight {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #facc15;
+  right: 0;
+  bottom: 3px;
+  border-radius: 50%;
+  opacity: 0;
+  box-shadow: none;
+  animation: turnOnHeadlight 0.3s ease-out 1.35s forwards;
+}
+
+@keyframes turnOnHeadlight {
+  0% {
+    opacity: 0;
+    box-shadow: none;
+  }
+  100% {
+    opacity: 1;
+    box-shadow: 8px 0 14px 3px rgba(250, 204, 21, 0.95), 18px 0 22px 6px rgba(56, 189, 248, 0.6);
+  }
+}
+
+.truck-wheel {
+  position: absolute;
   width: 8px;
   height: 8px;
-  background: #27272a;
-  border: 2px solid #ffffff;
+  background: #18181b;
+  border: 2px solid #a1a1aa;
   border-radius: 50%;
-  z-index: 2;
+  bottom: 2px;
+  z-index: 4;
 }
 
-.truck::before {
-  left: 6px;
-}
+.wheel-back { left: 8px; }
+.wheel-front { right: 8px; }
 
-.truck::after {
-  right: 8px;
-}
-
-/* Box loaded into the truck */
-.truck .box {
-  width: 22px;
-  height: 18px;
-  background: #d97706;
-  border: 1px solid #b45309;
-  top: 4px;
-  left: 5px;
-  border-radius: 2px;
-  opacity: 0;
-  transform: translateY(-24px) scale(0.6);
-  z-index: 1;
-}
-
-.order-button.active .truck .box {
-  animation: loadBox 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s forwards;
-}
-
-@keyframes loadBox {
-  0% {
-    transform: translateY(-24px) scale(0.6);
-    opacity: 0;
-  }
-  60% {
-    transform: translateY(2px) scale(1.05);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes driveTruck {
-  0% {
-    transform: translateX(0);
-  }
-  15% {
-    transform: translateX(62px);
-  }
-  32% {
-    transform: translateX(62px);
-  }
-  100% {
-    transform: translateX(340px);
-  }
-}
-
-.lines {
-  position: absolute;
-  width: 80px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
-  bottom: 12px;
-  left: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.order-button.active .lines {
-  animation: moveLines 0.5s linear infinite 1.4s;
-}
-
-@keyframes moveLines {
-  0% {
-    transform: translateX(-30px);
-    opacity: 0;
-  }
-  50% {
-    opacity: 0.8;
-  }
-  100% {
-    transform: translateX(30px);
-    opacity: 0;
-  }
-}
-
-/* Accessibility: respects prefers-reduced-motion */
+/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .order-button.active .truck {
-    animation-duration: 0.1s;
-  }
-  .order-button.active .truck .box {
-    animation-duration: 0.1s;
-  }
-  .order-button.active .lines {
-    animation: none;
-    opacity: 0;
+  .delivery-truck,
+  .package-box,
+  .road-lines {
+    animation-duration: 0.1s !important;
   }
 }
