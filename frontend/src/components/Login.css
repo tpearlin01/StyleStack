@@ -209,14 +209,26 @@
   width: 100%;
   box-sizing: border-box;
   padding: 10px 14px;
-  background: rgba(11, 13, 20, 0.85);
+  background-color: #0b0c13 !important;
   border: 1px solid #1a1e2a;
   border-radius: 11px;
-  color: #f1f5f9;
+  color: #f1f5f9 !important;
   font-size: 13px;
   outline: none;
   box-shadow: inset 3px 3px 6px #06070a, inset -2px -2px 5px #1c2132;
   transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Override browser default white autofill background */
+.embossed-input-group input:-webkit-autofill,
+.embossed-input-group input:-webkit-autofill:hover, 
+.embossed-input-group input:-webkit-autofill:focus, 
+.embossed-input-group input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #0b0c13 inset !important;
+  -webkit-text-fill-color: #f1f5f9 !important;
+  box-shadow: 0 0 0 1000px #0b0c13 inset !important;
+  caret-color: #f1f5f9 !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .embossed-input-group input::placeholder {
