@@ -4,26 +4,31 @@ import './CompleteOrderButton.css';
 /**
  * CompleteOrderButton
  * 
- * Interactive checkout button featuring:
- * - Initial state: Sleek dark button with "Complete Order"
- * - Click sequence: Shrinks into an oval/circle -> parcel box drops into truck ->
- *   truck drives off with speed lines -> expands into green pill with "Order Placed" + checkmark
- * - Completion: Calls onAnimationComplete() to trigger receipt printing
+ * Interactive truck delivery animation button for checkout:
+ * - Idle: Sleek dark button with "Complete Order"
+ * - Animating:
+ *   1. (0.0s - 1.2s): Parcel box drops into the delivery truck bed
+ *   2. (1.2s - 2.0s): Truck back closes, headlights beam on with roadway dash lines
+ *   3. (2.0s - 3.8s): Truck accelerates and drives out to the right offscreen
+ * - Success (3.8s - 5.0s):
+ *   4. Button expands into green pill displaying "Order Placed" with checkmark
+ * - Transition:
+ *   Calls onComplete() / onAnimationComplete() to trigger the thermal receipt printer
  */
-const CompleteOrderButton = ({
+export default function CompleteOrderButton({
+  onComplete,
   onAnimationComplete,
   onClick,
+  onStart,
   disabled = false,
+  totalAmount,
   className = '',
   style = {},
-  type = 'button',
   defaultText = 'Complete Order',
   successText = 'Order Placed',
-}) => {
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+}) {
+  const [status, setStatus] = useState('idle'); // 'idle' | 'animating' | 'success'
 
-  // Keep references to timers to prevent leaks if unmounted
   const timer1Ref = useRef(null);
   const timer2Ref = useRef(null);
 
@@ -34,15 +39,16 @@ const CompleteOrderButton = ({
     };
   }, []);
 
-  const handleClick = async (e) => {
-    if (disabled || isAnimating || isSuccess) return;
+  const handleStartOrder = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (status !== 'idle' || disabled) return;
 
-    // If an external onClick handler is provided (e.g. form validation or async checkout)
-    if (onClick) {
+    // Check external onClick / onStart handler (e.g. for delivery validation)
+    const clickHandler = onClick || onStart;
+    if (clickHandler) {
       try {
-        const proceed = await onClick(e);
-        // If handler explicitly returned false, abort starting animation
-        if (proceed === false) {
+        const canProceed = await clickHandler(e);
+        if (canProceed === false) {
           return;
         }
       } catch (err) {
@@ -51,50 +57,56 @@ const CompleteOrderButton = ({
       }
     }
 
-    setIsAnimating(true);
+    setStatus('animating');
 
-    // Phase 1: 4500ms total truck driving & box drop animation
+    // 4000ms: Truck finishes parcel load, door close, headlights on, and drive-out
     timer1Ref.current = setTimeout(() => {
-      setIsAnimating(false);
-      setIsSuccess(true);
+      setStatus('success');
 
-      // Phase 2: Green "Order Placed" state displays for 1000ms, then invokes receipt printer
+      // 1200ms: Green "Order Placed" state displays, then triggers transition to thermal receipt printer
       timer2Ref.current = setTimeout(() => {
-        if (typeof onAnimationComplete === 'function') {
-          onAnimationComplete();
+        const completionHandler = onComplete || onAnimationComplete;
+        if (typeof completionHandler === 'function') {
+          completionHandler();
         }
-      }, 1000);
-    }, 4500);
+      }, 1200);
+    }, 4000);
   };
 
   return (
     <button
-      type={type}
-      className={`order-button ${isAnimating ? 'active' : ''} ${isSuccess ? 'success' : ''} ${className}`}
-      onClick={handleClick}
-      disabled={disabled || isAnimating || isSuccess}
+      type="button"
+      onClick={handleStartOrder}
+      disabled={status !== 'idle' || disabled}
+      className={`truck-order-btn ${status} ${className}`}
       style={style}
-      aria-label={isSuccess ? successText : defaultText}
+      aria-label={status === 'success' ? successText : defaultText}
     >
-      <span className="default">{defaultText}</span>
-      <span className="success">
+      <span className="btn-label default-label">{defaultText}</span>
+
+      <div className="truck-scene" aria-hidden="true">
+        <div className="road-lines"></div>
+        <div className="package-box"></div>
+        <div className="delivery-truck">
+          <div className="truck-body">
+            <div className="truck-bed"></div>
+            <div className="truck-door"></div>
+          </div>
+          <div className="truck-cabin">
+            <div className="truck-window"></div>
+            <div className="truck-headlight"></div>
+          </div>
+          <div className="truck-wheel wheel-back"></div>
+          <div className="truck-wheel wheel-front"></div>
+        </div>
+      </div>
+
+      <span className="btn-label success-label">
         {successText}
-        <svg viewBox="0 0 12 10" aria-hidden="true">
-          <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+        <svg viewBox="0 0 16 16" className="w-4 h-4 fill-none stroke-current stroke-2">
+          <polyline points="3 8 7 12 13 4" />
         </svg>
       </span>
-      <div className="truck" aria-hidden="true">
-        <div className="back"></div>
-        <div className="front">
-          <div className="window"></div>
-        </div>
-        <div className="light top"></div>
-        <div className="light bottom"></div>
-        <div className="box"></div>
-      </div>
-      <div className="lines" aria-hidden="true"></div>
     </button>
   );
-};
-
-export default CompleteOrderButton;
+}
