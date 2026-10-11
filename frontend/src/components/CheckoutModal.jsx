@@ -254,10 +254,6 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
       setInvoiceOrder(finalOrder);
       setGeneratedInvoice(finalOrder);
       clearCart();
-
-      if (onOrderConfirmed) {
-        onOrderConfirmed(finalOrder);
-      }
     } catch (err) {
       console.error('Order placement caught exception:', err);
       // Fallback order state
@@ -270,10 +266,16 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
   };
 
   // Called strictly after the CompleteOrderButton 4.5s animation finishes
-  const handleOrderSuccess = () => {
+  const handleTransitionToReceipt = () => {
     setShowCardOtpModal(false);
+    const finalOrder = invoiceOrder || generatedInvoice;
+    if (onOrderConfirmed && finalOrder) {
+      onOrderConfirmed(finalOrder);
+    }
     setStep(2);
   };
+
+  const handleOrderSuccess = handleTransitionToReceipt;
 
   // Handler for clicking CompleteOrderButton in the main checkout view
   const handleCompleteOrderClick = async (e) => {
@@ -676,7 +678,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
 
                         <div className="text-[11px] text-zinc-400 flex items-center gap-1.5">
                           <ShieldCheck className="w-3.5 h-3.5 text-rose-500" />
-                          <span>Auto-verifying payment within 1.5 seconds upon confirmation.</span>
+                          <span>Instant secure verification upon completing order.</span>
                         </div>
                       </div>
                     </div>
