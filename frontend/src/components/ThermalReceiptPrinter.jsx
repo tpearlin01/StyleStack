@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   Download,
   X,
+  Clock,
 } from 'lucide-react';
 import './ThermalReceiptPrinter.css';
 
@@ -36,7 +37,10 @@ export class ReceiptErrorBoundary extends Component {
               </div>
               <h3 className="text-base font-bold text-white">Order Confirmed!</h3>
               <p className="text-xs text-zinc-400">
-                Payment received successfully. Thank you for shopping with StyleStack.
+                {String(this.props.order?.paymentMethod || this.props.invoice?.paymentMethod || '').toLowerCase().includes('cash') ||
+                String(this.props.order?.paymentMethod || this.props.invoice?.paymentMethod || '').toLowerCase() === 'cod'
+                  ? 'Order placed with Cash on Delivery! Pay upon arrival.'
+                  : 'Payment received successfully. Thank you for shopping with StyleStack.'}
               </p>
               <button
                 type="button"
@@ -209,11 +213,18 @@ const ThermalReceiptPrinterContent = ({ invoice, order, orderDetails, onClose })
     <div className="printer-overlay">
       <div className="printer-stage">
         
-        {/* 1. GREEN PAYMENT CONFIRMATION PILL */}
-        <div className="payment-confirmation-pill">
-          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-          <span>Payment Received Successfully! Thank you for your payment.</span>
-        </div>
+        {/* 1. TOP CONFIRMATION BANNER (CONDITIONAL FOR COD VS ONLINE) */}
+        {isCod ? (
+          <div className="payment-confirmation-pill cod bg-amber-950/40 border border-amber-600/40 text-amber-300 px-4 py-3 rounded-xl flex items-center justify-center gap-2.5 mb-6 text-[13px] font-semibold shadow-lg text-center">
+            <Clock className="w-5 h-5 text-amber-400 shrink-0" />
+            <span>Order Placed with Cash on Delivery! Pay upon arrival.</span>
+          </div>
+        ) : (
+          <div className="payment-confirmation-pill bg-emerald-950/40 border border-emerald-600/40 text-emerald-300 px-4 py-3 rounded-xl flex items-center justify-center gap-2.5 mb-6 text-[13px] font-semibold shadow-lg text-center">
+            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+            <span>Payment Received Successfully! Thank you for your payment.</span>
+          </div>
+        )}
 
         {/* 2. SLEEK POS THERMAL PRINTER HARDWARE FIXTURE */}
         <div className="printer-hardware">

@@ -41,6 +41,13 @@
   text-align: center;
 }
 
+/* Amber COD confirmation pill */
+.payment-confirmation-pill.cod {
+  background-color: rgba(69, 26, 3, 0.6);
+  border: 1px solid rgba(217, 119, 6, 0.4);
+  color: rgb(252, 211, 77);
+}
+
 /* POS Thermal Printer hardware fixture */
 .printer-hardware {
   width: 320px;
