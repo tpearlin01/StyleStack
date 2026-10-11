@@ -9,16 +9,15 @@ export default function CompleteOrderButton({
   className = '',
   style = {},
 }) {
-  const [stage, setStage] = useState('idle'); // 'idle' | 'loading' | 'closing' | 'driving' | 'done'
+  const [stage, setStage] = useState('idle'); // 'idle' | 'running' | 'done'
 
-  // Reset stage if modal reopens or totalAmount changes
   useEffect(() => {
     setStage('idle');
   }, [totalAmount]);
 
   const handleClick = async (e) => {
-    if (e && e.preventDefault) e.preventDefault();
-    if (e && e.stopPropagation) e.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
     if (stage !== 'idle' || disabled) return;
 
     if (typeof onClick === 'function') {
@@ -31,29 +30,17 @@ export default function CompleteOrderButton({
       }
     }
 
-    setStage('loading');
+    setStage('running');
 
-    // Box drops into truck (0s - 1.0s)
-    setTimeout(() => {
-      setStage('closing');
-    }, 1000);
-
-    // Door closes & truck drives away (1.0s - 1.8s)
-    setTimeout(() => {
-      setStage('driving');
-    }, 1800);
-
-    // "Order Placed" state (1.8s - 4.2s)
+    // 1. Full sequence runs via CSS keyframes (3.8s)
     setTimeout(() => {
       setStage('done');
 
-      // Transition to thermal receipt (1.2s after done)
+      // 2. Transition to receipt modal after green state is clearly seen
       setTimeout(() => {
-        if (typeof onComplete === 'function') {
-          onComplete();
-        }
+        if (typeof onComplete === 'function') onComplete();
       }, 1200);
-    }, 4200);
+    }, 3800);
   };
 
   return (
@@ -62,32 +49,38 @@ export default function CompleteOrderButton({
         type="button"
         onClick={handleClick}
         disabled={stage !== 'idle' || disabled}
-        className={`truck-btn ${stage}`}
+        className={`order-truck-button ${stage}`}
         aria-label={stage === 'done' ? 'Order Placed' : 'Complete Order'}
       >
-        <span className="btn-label default-label">Complete Order</span>
+        <span className="btn-label-text default-label">Complete Order</span>
 
-        {/* Animation stage contained strictly within button */}
-        <div className="truck-stage" aria-hidden="true">
-          <div className="road-line"></div>
-          <div className="box-parcel"></div>
+        {/* Scene Container */}
+        <div className="truck-viewport" aria-hidden="true">
+          <div className="road-stripes"></div>
 
-          <div className="truck-unit">
-            <div className="truck-bed">
-              <div className="tailgate"></div>
+          {/* Truck with box nested inside its bed */}
+          <div className="truck-assembly">
+            <div className="truck-bed-container">
+              {/* Box drops right into here, then disappears inside */}
+              <div className="truck-box"></div>
+              {/* Bed walls */}
+              <div className="bed-wall-back"></div>
+              <div className="bed-door-tailgate"></div>
             </div>
-            <div className="truck-cabin">
-              <div className="cab-window"></div>
-              <div className="headlight"></div>
+
+            <div className="truck-cab-unit">
+              <div className="cab-windshield"></div>
+              <div className="cab-headlamp"></div>
             </div>
-            <div className="wheel wheel-front"></div>
-            <div className="wheel wheel-back"></div>
+
+            <div className="truck-tire tire-rear"></div>
+            <div className="truck-tire tire-front"></div>
           </div>
         </div>
 
-        <span className="btn-label success-label">
+        <span className="btn-label-text success-label">
           Order Placed
-          <svg className="check-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+          <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
             <path d="M3 8.5l3.5 3.5L13 4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
