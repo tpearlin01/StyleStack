@@ -1,4 +1,5 @@
 import { MOCK_PRODUCTS, MOCK_CATEGORIES, MOCK_USER } from './mockData';
+import { saveNewOrder, getStoredOrders, restockProduct } from '../utils/orderStorage';
 
 const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -332,10 +333,7 @@ export const apiService = {
     };
 
     try {
-      const stored = localStorage.getItem('stylestack_orders');
-      const orders = stored ? JSON.parse(stored) : INITIAL_MOCK_ORDERS;
-      const updatedOrders = [invoice, ...orders];
-      localStorage.setItem('stylestack_orders', JSON.stringify(updatedOrders));
+      saveNewOrder(invoice);
     } catch (e) {
       console.error('LocalStorage order save error', e);
     }
@@ -351,9 +349,9 @@ export const apiService = {
   async getOrders() {
     await delay(100);
     try {
-      const stored = localStorage.getItem('stylestack_orders');
-      if (stored) {
-        return { success: true, data: JSON.parse(stored) };
+      const orders = getStoredOrders();
+      if (orders && orders.length > 0) {
+        return { success: true, data: orders };
       }
       localStorage.setItem('stylestack_orders', JSON.stringify(INITIAL_MOCK_ORDERS));
       return { success: true, data: INITIAL_MOCK_ORDERS };
@@ -366,14 +364,22 @@ export const apiService = {
   async updateOrderStatus(orderId, newStatus) {
     await delay(100);
     try {
-      const stored = localStorage.getItem('stylestack_orders');
-      const orders = stored ? JSON.parse(stored) : INITIAL_MOCK_ORDERS;
-      const updated = orders.map((o) => (o.orderId === orderId ? { ...o, status: newStatus } : o));
+      const orders = getStoredOrders();
+      const currentList = orders.length > 0 ? orders : INITIAL_MOCK_ORDERS;
+      const updated = currentList.map((o) => (o.orderId === orderId ? { ...o, status: newStatus } : o));
       localStorage.setItem('stylestack_orders', JSON.stringify(updated));
+      window.dispatchEvent(new Event('stylestack_orders_updated'));
       return { success: true, data: updated };
     } catch (e) {
       return { success: false, message: 'Could not update status' };
     }
+  },
+
+  // Restock inventory directly
+  async restockProduct(productId, quantity = 20) {
+    await delay(100);
+    const success = restockProduct(productId, quantity);
+    return { success };
   },
 
   async getCategories() {

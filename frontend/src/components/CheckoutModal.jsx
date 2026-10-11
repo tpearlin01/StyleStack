@@ -23,6 +23,7 @@ import {
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { apiService } from '../services/api';
+import { saveNewOrder } from '../utils/orderStorage';
 import { BrandLogo } from './BrandLogo';
 import { ThermalReceiptPrinter } from './ThermalReceiptPrinter';
 import './CompleteOrderButton.css';
@@ -437,6 +438,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
     } catch (err) {
       console.error('Order placement caught exception:', err);
       // Fallback order state
+      saveNewOrder(safeOrderData);
       setInvoiceOrder(safeOrderData);
       setGeneratedInvoice(safeOrderData);
     } finally {
