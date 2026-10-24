@@ -1,0 +1,190 @@
+[
+  {
+    "id": "ORD-919827",
+    "orderId": "ORD-919827",
+    "customerName": "Priya Verma",
+    "customerEmail": "priya.verma@example.com",
+    "shippingAddress": "Standard Shipping Address",
+    "customer": {
+      "name": "Priya Verma",
+      "email": "priya.verma@example.com",
+      "address": "Standard Shipping Address",
+      "paymentMethod": "Instant UPI / GPay"
+    },
+    "items": [
+      {
+        "id": "prod-1",
+        "productId": "prod-1",
+        "name": "Hand-Stitched Italian Leather Reversible Belt",
+        "size": "M",
+        "quantity": 2,
+        "unitPrice": 449,
+        "price": 449,
+        "imageUrl": "",
+        "image": ""
+      }
+    ],
+    "subtotal": 898,
+    "taxAmount": 44.9,
+    "totalAmount": 942.9,
+    "status": "Delivered",
+    "paymentMethod": "Instant UPI / GPay",
+    "date": "2026-10-13T16:09:06.652Z",
+    "createdAt": "2026-10-13T16:09:06.652Z",
+    "updatedAt": "2026-10-13T16:09:06.687Z"
+  },
+  {
+    "id": "ORD-877369",
+    "orderId": "ORD-877369",
+    "customerName": "Priya Verma",
+    "customerEmail": "priya.verma@example.com",
+    "shippingAddress": "Standard Shipping Address",
+    "customer": {
+      "name": "Priya Verma",
+      "email": "priya.verma@example.com",
+      "address": "Standard Shipping Address",
+      "paymentMethod": "Instant UPI / GPay"
+    },
+    "items": [
+      {
+        "id": "prod-1",
+        "productId": "prod-1",
+        "name": "Hand-Stitched Italian Leather Reversible Belt",
+        "size": "M",
+        "quantity": 2,
+        "unitPrice": 449,
+        "price": 449,
+        "imageUrl": "",
+        "image": ""
+      }
+    ],
+    "subtotal": 898,
+    "taxAmount": 44.9,
+    "totalAmount": 942.9,
+    "status": "Delivered",
+    "paymentMethod": "Instant UPI / GPay",
+    "date": "2026-10-13T15:28:58.282Z",
+    "createdAt": "2026-10-13T15:28:58.282Z",
+    "updatedAt": "2026-10-13T15:28:58.353Z"
+  },
+  {
+    "id": "ORD-849201",
+    "orderId": "ORD-849201",
+    "customerName": "Ananya Sharma",
+    "customerEmail": "ananya@example.com",
+    "shippingAddress": "42 Marine Drive, Apartment 5B, Mumbai, Maharashtra 400020",
+    "customer": {
+      "name": "Ananya Sharma",
+      "email": "ananya@example.com",
+      "address": "42 Marine Drive, Apartment 5B",
+      "city": "Mumbai",
+      "pincode": "400020",
+      "paymentMethod": "Instant UPI / GPay"
+    },
+    "items": [
+      {
+        "id": "prod-w-trad-1",
+        "productId": "prod-w-trad-1",
+        "name": "Embroidered Royal Anarkali Set",
+        "category": "Festive / Traditional",
+        "price": 899,
+        "unitPrice": 899,
+        "selectedSize": "M",
+        "size": "M",
+        "quantity": 1,
+        "imageUrl": "/images/women tarditional dress/1183653B-EA4C-4D27-A91A-900C61473B85_600x.webp"
+      },
+      {
+        "id": "prod-w-acc-1",
+        "productId": "prod-w-acc-1",
+        "name": "Artisan Gold-Plated Statement Earrings & Choker",
+        "category": "Accessories",
+        "price": 499,
+        "unitPrice": 499,
+        "selectedSize": "Free Size",
+        "size": "Free Size",
+        "quantity": 1,
+        "imageUrl": "/images/women accessories/images (1).jpg"
+      }
+    ],
+    "subtotal": 1398,
+    "taxAmount": 70,
+    "shippingFee": 0,
+    "totalAmount": 1468,
+    "status": "Delivered",
+    "date": "2026-10-11T10:30:00.000Z",
+    "createdAt": "2026-10-11T10:30:00.000Z"
+  },
+  {
+    "id": "ORD-739104",
+    "orderId": "ORD-739104",
+    "customerName": "Rohan Mehta",
+    "customerEmail": "rohan.m@example.com",
+    "shippingAddress": "15 MG Road, Indiranagar, Bengaluru, Karnataka 560038",
+    "customer": {
+      "name": "Rohan Mehta",
+      "email": "rohan.m@example.com",
+      "address": "15 MG Road, Indiranagar",
+      "city": "Bengaluru",
+      "pincode": "560038",
+      "paymentMethod": "Credit / Debit Card"
+    },
+    "items": [
+      {
+        "id": "prod-m-form-1",
+        "productId": "prod-m-form-1",
+        "name": "Bespoke Slim-Fit Tuxedo Jacket",
+        "category": "Formals",
+        "price": 949,
+        "unitPrice": 949,
+        "selectedSize": "L",
+        "size": "L",
+        "quantity": 1,
+        "imageUrl": "/images/men formal/-473Wx593H-469514972-black-MODEL.avif"
+      }
+    ],
+    "subtotal": 949,
+    "taxAmount": 47,
+    "shippingFee": 0,
+    "totalAmount": 996,
+    "status": "Dispatched",
+    "date": "2026-10-12T14:15:00.000Z",
+    "createdAt": "2026-10-12T14:15:00.000Z"
+  },
+  {
+    "id": "ORD-628491",
+    "orderId": "ORD-628491",
+    "customerName": "Priya Verma",
+    "customerEmail": "priya.verma@example.com",
+    "shippingAddress": "Flat 301, Palm Grove, Bandra West, Mumbai 400050",
+    "customer": {
+      "name": "Priya Verma",
+      "email": "priya.verma@example.com",
+      "address": "Flat 301, Palm Grove, Bandra West",
+      "city": "Mumbai",
+      "pincode": "400050",
+      "paymentMethod": "Cash on Delivery"
+    },
+    "items": [
+      {
+        "id": "prod-3",
+        "productId": "prod-3",
+        "name": "Classic Sneakers",
+        "category": "Footwear",
+        "price": 65,
+        "unitPrice": 65,
+        "selectedSize": "8",
+        "size": "8",
+        "quantity": 2,
+        "imageUrl": "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500"
+      }
+    ],
+    "subtotal": 130,
+    "taxAmount": 6.5,
+    "shippingFee": 50,
+    "totalAmount": 186.5,
+    "status": "Placed",
+    "date": "2026-10-13T09:00:00.000Z",
+    "createdAt": "2026-10-13T09:00:00.000Z"
+  }
+]
