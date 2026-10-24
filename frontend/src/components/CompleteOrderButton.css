@@ -1,0 +1,246 @@
+.truck-btn-wrapper {
+  display: inline-block;
+  position: relative;
+}
+
+.order-truck-button {
+  position: relative !important;
+  width: 250px;
+  height: 52px;
+  background-color: #09090b;
+  border: 1px solid #27272a;
+  border-radius: 9999px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  contain: paint;
+  transition: width 0.35s ease, background-color 0.35s ease, border-color 0.35s ease;
+}
+
+.order-truck-button:hover:not(:disabled) {
+  background-color: #18181b;
+  border-color: #3f3f46;
+}
+
+.order-truck-button.running {
+  width: 300px;
+  background-color: #18181b;
+  cursor: default;
+}
+
+.order-truck-button.done {
+  width: 200px;
+  background-color: #10b981;
+  border-color: #059669;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  cursor: default;
+}
+
+/* Button Labels */
+.btn-label-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.order-truck-button.running .default-label,
+.order-truck-button.done .default-label {
+  opacity: 0;
+  transform: translateY(-24px);
+  position: absolute;
+}
+
+.success-label {
+  position: absolute;
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.order-truck-button.done .success-label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Internal Track Viewport */
+.truck-viewport {
+  position: absolute;
+  inset: 0;
+  display: none;
+  overflow: hidden;
+}
+
+.order-truck-button.running .truck-viewport {
+  display: block;
+}
+
+.road-stripes {
+  position: absolute;
+  bottom: 11px;
+  left: 0;
+  width: 200%;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #71717a 0, #71717a 12px, transparent 12px, transparent 24px);
+  animation: roadRunAnim 0.3s linear infinite;
+}
+
+@keyframes roadRunAnim {
+  from { transform: translateX(0); }
+  to { transform: translateX(-24px); }
+}
+
+/* Truck Movement Across Button */
+.truck-assembly {
+  position: absolute;
+  width: 66px;
+  height: 32px;
+  bottom: 12px;
+  left: 0;
+  animation: truckDriveTimeline 3.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes truckDriveTimeline {
+  0% { transform: translateX(-80px); }
+  25% { transform: translateX(110px); } /* Parks at center */
+  60% { transform: translateX(110px); } /* Waits for drop & door shut */
+  100% { transform: translateX(330px); } /* Drives out right */
+}
+
+/* Bed Container (Left Side of Truck) */
+.truck-bed-container {
+  position: absolute;
+  width: 36px;
+  height: 22px;
+  left: 0;
+  bottom: 6px;
+  background: #f4f4f5;
+  border-radius: 2px 0 0 2px;
+}
+
+/* Parcel Dropping Further Left & Sliding into Truck Bed */
+.truck-box {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  background: #d97706;
+  border-radius: 2px;
+  left: -20px !important; /* Shifted significantly further left behind the truck opening */
+  top: -26px;
+  z-index: 6;
+  box-shadow: inset 0 0 0 1px #b45309;
+  animation: boxDropFarLeftIntoBed 3.6s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+}
+
+@keyframes boxDropFarLeftIntoBed {
+  0%, 25% {
+    opacity: 0;
+    transform: translate(0, -8px);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  42% {
+    opacity: 1;
+    /* Falls down at the rear opening */
+    transform: translate(6px, 26px) scale(0.95);
+  }
+  48% {
+    opacity: 1;
+    /* Slides right directly inside the cargo hold */
+    transform: translate(16px, 28px) scale(0.85);
+  }
+  52% {
+    opacity: 0;
+    /* Disappears completely enclosed inside the truck */
+    transform: translate(18px, 28px) scale(0.5);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Tailgate Door */
+.bed-door-tailgate {
+  position: absolute;
+  width: 3px;
+  height: 20px;
+  background: #a1a1aa;
+  left: 0;
+  bottom: 0;
+  transform-origin: bottom center;
+  animation: tailgateShut 3.6s ease forwards;
+}
+
+@keyframes tailgateShut {
+  0%, 48% {
+    transform: rotate(-90deg); /* Open while parcel drops */
+  }
+  56%, 100% {
+    transform: rotate(0deg); /* Closes shut over the compartment */
+  }
+}
+
+/* Truck Cabin */
+.truck-cab-unit {
+  position: absolute;
+  width: 20px;
+  height: 18px;
+  right: 8px;
+  bottom: 6px;
+  background: #e4e4e7;
+  border-radius: 0 4px 2px 0;
+}
+
+.cab-windshield {
+  position: absolute;
+  width: 9px;
+  height: 8px;
+  background: #27272a;
+  right: 4px;
+  top: 2px;
+  border-radius: 0 2px 0 0;
+}
+
+.cab-headlamp {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #facc15;
+  right: 0;
+  bottom: 3px;
+  border-radius: 50%;
+  animation: headlampGlow 3.6s ease forwards;
+}
+
+@keyframes headlampGlow {
+  0%, 54% {
+    opacity: 0.2;
+    box-shadow: none;
+  }
+  58%, 100% {
+    opacity: 1;
+    box-shadow: 10px 0 16px 4px rgba(250, 204, 21, 0.95); /* Glows when ready to move */
+  }
+}
+
+/* Tires */
+.truck-tire {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  background: #09090b;
+  border: 2px solid #a1a1aa;
+  border-radius: 50%;
+  bottom: 1px;
+  z-index: 5;
+}
+
+.tire-rear { left: 8px; }
+.tire-front { right: 12px; }
