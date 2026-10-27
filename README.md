@@ -241,3 +241,52 @@ StyleStack is a collaborative full-stack development project.
 ## License & Documentation
 
 Refer to the repository's license file and project configuration for licensing and additional implementation details.
+
+## Troubleshooting
+
+### Backend Does Not Start
+
+- Ensure Node.js and npm are installed.
+- Run `npm install` inside the backend directory.
+- Check the terminal for missing dependencies or configuration errors.
+- Verify that the configured port is available.
+
+### Frontend Does Not Start
+
+- Navigate to the frontend directory.
+- Run `npm install` to install dependencies.
+- Run `npm run dev` and check the terminal for errors.
+
+### Database Connection Issues
+
+- Verify the database configuration in the environment variables.
+- Ensure the database service is running if the application requires it.
+- Check whether the backend supports the configured storage method.
+
+## Future Enhancements
+
+Possible future improvements for StyleStack include:
+
+- Integration of a secure online payment gateway.
+- Improved product recommendations.
+- Wishlist functionality for customers.
+- Enhanced sales reports and analytics.
+- Improved product search and filtering.
+- Additional security and performance improvements.
+- Better order tracking and customer notifications.
+
+These enhancements are proposed ideas and may not be implemented in the current version.
+
+## Contribution Guidelines
+
+Contributions can help improve StyleStack and its functionality.
+
+1. Create a separate branch for your changes.
+2. Make focused changes related to a specific feature or fix.
+3. Test your changes before committing.
+4. Write clear and meaningful commit messages.
+5. Submit a pull request for review.
+
+## Acknowledgements
+
+StyleStack was developed using open-source technologies and tools, including React, Vite, Node.js, Express.js, and the project's testing libraries.
