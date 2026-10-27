@@ -80,14 +80,27 @@ StyleStack/
 
 ## Tech Stack
 
-| Layer                     | Technologies                                     |
-| ------------------------- | ------------------------------------------------ |
-| Frontend                  | React, Vite, Tailwind CSS                        |
-| Backend                   | Node.js, Express.js                              |
-| Database and data storage | MongoDB (optional), JSON-backed fallback storage |
-| Authentication            | JWT                                              |
-| Image uploads             | Multer                                           |
-| Testing                   | Jest, Supertest                                  |
+| Component          | Technology         | Purpose                                           |
+| ------------------ | ------------------ | ------------------------------------------------- |
+| Frontend           | React              | Builds the user interface and reusable components |
+| Development Server | Vite               | Runs the frontend development environment         |
+| Styling            | Tailwind CSS       | Provides responsive styling                       |
+| Backend            | Node.js            | Runs the server-side application                  |
+| API Framework      | Express.js         | Handles API routes and HTTP requests              |
+| Database           | MongoDB            | Stores application data when configured           |
+| Fallback Storage   | JSON files         | Provides an alternative data storage mechanism    |
+| Authentication     | JWT                | Supports token-based authentication               |
+| File Uploads       | Multer             | Handles uploaded product images                   |
+| Testing            | Jest and Supertest | Supports backend testing                          |
+
+## Application Architecture
+
+StyleStack follows a client-server architecture. The frontend communicates with the backend through REST API endpoints.
+
+- **Frontend:** Displays products, manages the shopping cart, and provides the customer interface.
+- **Backend:** Handles authentication, product operations, order processing, and analytics.
+- **Data Storage:** Uses MongoDB when configured, with JSON-backed fallback storage.
+- **API Communication:** Connects the frontend and backend through HTTP requests.
 
 ## Backend Setup & API
 
