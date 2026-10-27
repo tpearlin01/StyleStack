@@ -1,212 +1,214 @@
-# StyleStack
+# StyleStack 👗
 
-## AI Mini Project — Semester V, Computer Engineering, DBIT
-
-StyleStack is a full-stack fashion and apparel e-commerce platform built with a React frontend and a Node.js/Express REST API backend. It supports product discovery, shopping cart management, order processing, automated 5% GST calculation, invoice generation, image uploads, and administrative analytics.
+StyleStack is a full-stack fashion e-commerce application designed to provide a smooth online shopping experience. It includes product browsing, filtering, cart management, order processing, and administrative features.
 
 ## Problem Statement
 
-Traditional online apparel shopping platforms can make it difficult for customers to discover relevant products, manage shopping carts, and complete purchases with a clear breakdown of costs. At the same time, store administrators need an efficient way to manage product catalogs, track inventory, process orders, and monitor store performance.
-
-StyleStack addresses these needs through a full-stack fashion e-commerce platform that brings product discovery, dynamic filtering, shopping cart management, order processing, automated GST calculation, invoice generation, and administrative analytics into a unified system. It aims to provide customers with a smooth shopping experience while simplifying essential store management operations.
+Traditional clothing stores often face challenges in managing product catalogs, tracking orders, and providing customers with a convenient shopping experience. StyleStack aims to simplify these processes through a centralized e-commerce platform.
 
 ## Key Features
 
-### Customer Features
-
-- **Dynamic Product Catalog:** Browse apparel with category, gender, and search filters.
-- **Shopping Cart:** Add and manage items through the cart experience.
-- **Quick Product View:** View product details using interactive modals.
-- **Order Placement:** Place orders with inventory availability checks.
-- **Automated GST Calculation:** Calculate 5% GST and the final payable amount.
-- **Thermal Invoice Generation:** Generate print-ready receipts with order details and a price breakdown.
-
-### Administrative Features
-
-- **Product Management:** Create products, update stock, and remove catalog products.
-- **Image Uploads:** Upload product images using Multer.
-- **Order Management:** View orders and update their delivery status.
-- **Store Analytics:** View sales metrics, customer feedback, ratings, and return trends.
+- Product catalog with filtering and browsing
+- Shopping cart management
+- Order processing and tracking
+- Admin features for managing products
+- Product image uploads
+- Analytics and store insights
+- Invoice generation with 5% GST
+- REST API for frontend-backend communication
+- Backend integration and automated testing
 
 ## Key Differentiators
 
-- **Integrated Shopping Workflow:** Combines product discovery, cart management, order placement, and invoicing in one platform.
-- **Inventory-Aware Orders:** Checks product stock during order processing and deducts inventory.
-- **Transparent Pricing:** Calculates GST automatically and provides an itemized price breakdown.
-- **Administrative Insights:** Provides analytics for sales, customer satisfaction, and product returns.
-- **Decoupled Architecture:** Separates the React frontend from the Express REST API, making each easier to maintain and develop.
-- **Flexible Data Handling:** Supports a JSON-backed fallback store when a MongoDB connection is not configured.
+- Simple and user-friendly shopping experience
+- Centralized product and order management
+- Automated invoice generation
+- Admin-focused store analytics
+- Modular frontend and backend architecture
 
-## Architecture & Directory Structure
-
-StyleStack is organized as a monorepo with two main workspaces:
+## Project Architecture
 
 ```text
 StyleStack/
-├── frontend/                      # Client application (Princel Tixeira)
-│   ├── public/                     # Static assets and catalog imagery
-│   ├── src/
-│   │   ├── assets/                 # Brand artwork and SVG icons
-│   │   ├── components/             # UI components (Navbar, CartDrawer, modals, etc.)
-│   │   ├── context/                # React Context (AuthContext, CartContext)
-│   │   ├── services/               # API service layer with mock fallback
-│   │   ├── utils/                  # Order persistence and receipt helpers
-│   │   ├── App.jsx                 # Root client component
-│   │   └── main.jsx                # React DOM entry point
-│   ├── index.html                  # Vite HTML entry
-│   ├── tailwind.config.js          # Tailwind CSS configuration
-│   └── vite.config.js              # Vite build configuration
-├── backend/                        # Server application and API (Pearlin Tixeira)
-│   ├── data/                       # Seed stores and JSON-backed data repositories
-│   ├── middleware/                 # Express middleware (uploads, error handling)
-│   ├── src/
-│   │   ├── config/                 # Database connection and configuration
-│   │   ├── controllers/             # Business logic (auth, products, orders, analytics)
-│   │   ├── routes/                 # Express API routers
-│   │   ├── app.js                  # Express setup, CORS, and route mounting
-│   │   └── server.js               # Server listener and environment configuration
-│   ├── tests/                      # Jest and Supertest test suites
-│   ├── uploads/                    # Multer upload destination
-│   └── package.json                # Backend dependencies and scripts
-├── AGENTS.md                       # Development rules and agent protocols
-├── PRD.md                          # Product Requirements Document
-└── README.md                       # Project documentation and setup guide
+├── frontend/             # React frontend application
+├── backend/
+│   ├── controllers/      # Request handling logic
+│   ├── routes/           # API route definitions
+│   ├── middleware/       # Middleware and error handling
+│   ├── data/             # JSON-backed data files
+│   ├── tests/             # Backend test suites
+│   └── ...
+├── README.md
+└── ...
 ```
 
-### Primary Directory Responsibilities
+## Directory Responsibilities
 
-- **`/frontend`:** Handles the responsive catalog, product filtering, cart state, quick-view modals, and print-ready receipts. The API service layer (`frontend/src/services/api.js`) can fall back to mock data when the backend is unavailable.
-- **`/backend`:** Provides the REST API for authentication, product catalog operations, image uploads, order placement, stock deduction, 5% GST calculation, and administrative analytics.
+- **frontend:** User interface and customer-facing shopping features.
+- **backend:** Server-side logic and REST API.
+- **controllers:** Handles application requests and responses.
+- **routes:** Defines available API endpoints.
+- **middleware:** Handles request processing and errors.
+- **data:** Contains JSON data files used by the application.
+- **tests:** Contains automated backend tests.
 
 ## Tech Stack
 
-| Component          | Technology         | Purpose                                           |
-| ------------------ | ------------------ | ------------------------------------------------- |
-| Frontend           | React              | Builds the user interface and reusable components |
-| Development Server | Vite               | Runs the frontend development environment         |
-| Styling            | Tailwind CSS       | Provides responsive styling                       |
-| Backend            | Node.js            | Runs the server-side application                  |
-| API Framework      | Express.js         | Handles API routes and HTTP requests              |
-| Database           | MongoDB            | Stores application data when configured           |
-| Fallback Storage   | JSON files         | Provides an alternative data storage mechanism    |
-| Authentication     | JWT                | Supports token-based authentication               |
-| File Uploads       | Multer             | Handles uploaded product images                   |
-| Testing            | Jest and Supertest | Supports backend testing                          |
+| Component          | Technology         | Purpose                                   |
+| ------------------ | ------------------ | ----------------------------------------- |
+| Frontend           | React              | Builds the user interface                 |
+| Development Server | Vite               | Runs the frontend development environment |
+| Styling            | Tailwind CSS       | Provides responsive styling               |
+| Backend            | Node.js            | Runs server-side JavaScript               |
+| API Framework      | Express.js         | Handles HTTP requests and routes          |
+| Database           | MongoDB            | Database option when configured           |
+| Fallback Storage   | JSON files         | Stores data using local JSON files        |
+| Authentication     | JWT                | Supports token-based authentication       |
+| File Uploads       | Multer             | Handles uploaded files                    |
+| Testing            | Jest and Supertest | Tests backend functionality               |
 
 ## Application Architecture
 
-StyleStack follows a client-server architecture. The frontend communicates with the backend through REST API endpoints.
+StyleStack follows a client-server architecture.
 
-- **Frontend:** Displays products, manages the shopping cart, and provides the customer interface.
-- **Backend:** Handles authentication, product operations, order processing, and analytics.
-- **Data Storage:** Uses MongoDB when configured, with JSON-backed fallback storage.
-- **API Communication:** Connects the frontend and backend through HTTP requests.
+1. The frontend displays products and provides the shopping interface.
+2. The backend processes requests and applies application logic.
+3. REST API endpoints connect the frontend and backend.
+4. Data is stored using the configured storage mechanism.
+5. The testing framework helps verify backend functionality.
 
-## Backend Setup & API
+## Backend Setup
 
 ### Prerequisites
 
-- **Node.js:** Version 18 or higher
-- **npm:** Version 9 or higher
-- **MongoDB (optional):** A local MongoDB instance or MongoDB Atlas connection URI. The backend includes a JSON fallback store for zero-configuration execution.
+- Node.js and npm
+- Git
+- MongoDB, if using MongoDB storage
+
+### Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/tpearlin01/StyleStack.git
+cd StyleStack
+```
+
+Navigate to the backend directory:
+
+```bash
+cd backend
+npm install
+```
 
 ### Environment Variables
 
-Create a `.env` file in the `backend/` directory. From the project root:
+Configure the environment variables required by the backend in a `.env` file.
 
-```bash
-cd backend
-cp .env.example .env
+Example:
+
+```env
+PORT=5000
+JWT_SECRET=your_secret_key
+MONGODB_URI=your_mongodb_connection_string
 ```
 
-Set the following variables in `backend/.env`:
+Replace the example values with your actual configuration. Use only the variables supported by your implementation.
 
-| Variable      | Description                               | Default / Example                      |
-| ------------- | ----------------------------------------- | -------------------------------------- |
-| `PORT`        | HTTP port used by the Express server      | `5000`                                 |
-| `MONGODB_URI` | MongoDB connection string                 | `mongodb://localhost:27017/stylestack` |
-| `JWT_SECRET`  | Secret used to sign authentication tokens | Set your own secret value              |
-
-Do not use a sample JWT secret in a deployed application.
-
-### Installation & Run Commands
-
-Run these commands from the project root:
+### Run the Backend
 
 ```bash
-# 1. Navigate to the backend directory
-cd backend
-
-# 2. Install dependencies
-npm install
-
-# 3. Start the development server
-npm run dev
-
-# 4. Alternatively, start the server normally
 npm start
 ```
 
-The backend is expected to run at `http://localhost:5000`. CORS is configured for the Vite frontend at `http://localhost:5173`.
+If your project uses a different start script, check the `scripts` section of `backend/package.json`.
 
-### Running Test Suites
+## Database & Data Storage
 
-The backend uses Jest and Supertest for automated tests. From the `backend/` directory, run:
+StyleStack supports application data management through its configured storage mechanism.
 
-```bash
-npm test
-```
+### MongoDB
 
-The README currently documents six test suites:
+When MongoDB is configured, it can be used to store application data such as products and orders.
 
-- `tests/health.test.js` — Health check endpoint
-- `tests/auth.test.js` — Registration and authentication
-- `tests/products.test.js` — Product queries, filtering, creation, and stock updates
-- `tests/orders.test.js` — Order processing, stock deduction, and GST calculations
-- `tests/analytics.test.js` — Business metrics, feedback, and return rates
-- `tests/upload.test.js` — Multipart file uploads and static file serving
+### JSON Storage
+
+The backend also contains JSON data files under `backend/data/`, including:
+
+- `products.json`
+- `orders.json`
+
+These files provide a local data-storage option where supported by the application.
+
+### Data Handling
+
+- Product data supports catalog operations.
+- Order data supports order-related operations.
+- The backend processes requests through its controllers and routes.
+- The actual storage method depends on the application's implementation and configuration.
 
 ## API Endpoints Reference
 
-The API is documented as returning JSON responses in these general formats:
+The backend exposes REST API endpoints for application functionality. Refer to the backend route files for the exact paths and HTTP methods.
 
-- **Success:** `{ "success": true, "data": ... }`
-- **Error:** `{ "success": false, "message": "..." }`
+| Feature        | Purpose                                 |
+| -------------- | --------------------------------------- |
+| Products       | Retrieve and manage product information |
+| Orders         | Handle order-related operations         |
+| Analytics      | Provide store statistics and insights   |
+| Authentication | Handle authentication where implemented |
+| File Uploads   | Process product image uploads           |
 
-### API Route Overview
+**Note:** Confirm the exact endpoint paths, HTTP methods, and authentication requirements from the implemented backend routes before using them.
 
-| Domain         | Method   | Endpoint                  | Description                                                                      |
-| -------------- | -------- | ------------------------- | -------------------------------------------------------------------------------- |
-| System         | `GET`    | `/api/health`             | Returns health status and server timestamp                                       |
-| Authentication | `POST`   | `/api/auth/register`      | Registers a user account                                                         |
-| Authentication | `POST`   | `/api/auth/login`         | Authenticates user credentials                                                   |
-| Products       | `GET`    | `/api/products`           | Retrieves products; supports `category`, `gender`, and `search` query parameters |
-| Products       | `GET`    | `/api/products/:id`       | Retrieves one product                                                            |
-| Products       | `POST`   | `/api/products`           | Creates a product; supports multipart image upload using `image`                 |
-| Products       | `PATCH`  | `/api/products/:id/stock` | Updates product stock                                                            |
-| Products       | `DELETE` | `/api/products/:id`       | Removes a product                                                                |
-| Orders         | `POST`   | `/api/orders`             | Places an order, validates stock, and calculates 5% GST                          |
-| Orders         | `GET`    | `/api/orders`             | Retrieves placed orders                                                          |
-| Orders         | `GET`    | `/api/orders/:id`         | Retrieves an order and its invoice details                                       |
-| Orders         | `PATCH`  | `/api/orders/:id/status`  | Updates order status (`Placed`, `Dispatched`, or `Delivered`)                    |
-| Analytics      | `GET`    | `/api/analytics/overview` | Returns sales KPIs, revenue, average order value, and order volume               |
-| Analytics      | `GET`    | `/api/analytics/feedback` | Returns customer satisfaction, rating distribution, and reviews                  |
-| Analytics      | `GET`    | `/api/analytics/returns`  | Returns return-rate metrics and categorized return reasons                       |
-| Uploads        | `POST`   | `/api/upload`             | Uploads a catalog image using Multer                                             |
+## API Usage Guide
 
-### Automated 5% GST Calculation
+REST APIs allow the frontend and other clients to communicate with the backend using HTTP requests.
 
-When an order is submitted to `POST /api/orders`, the backend checks inventory and calculates the subtotal, GST, and final total.
+A typical API request includes:
 
-- **Subtotal** = sum of quantity × unit price for all items
-- **GST amount** = round(subtotal × 0.05, 2)
-- **Total amount** = subtotal + GST amount
+1. The API endpoint URL.
+2. The appropriate HTTP method, such as GET, POST, PUT, or DELETE.
+3. Required request headers.
+4. A request body when the endpoint requires data.
+5. The server response containing the result or error information.
 
-The order receipt includes an order ID, timestamp, customer details, and pricing summary.
+Example request using JavaScript:
 
-## Frontend Setup (Quickstart)
+```javascript
+fetch("http://localhost:5000/api/products")
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error("Failed to fetch products");
+    }
 
-Open a separate terminal from the project root and run:
+    return response.json();
+  })
+  .then((products) => {
+    console.log(products);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+```
+
+Replace the example URL with the actual API endpoint configured in your project.
+
+## Invoice Calculation
+
+StyleStack includes invoice generation with 5% GST.
+
+The general calculation is:
+
+- **Subtotal:** Sum of the item prices.
+- **GST:** 5% of the applicable taxable amount.
+- **Total:** Subtotal plus GST.
+
+The final invoice calculation should follow the tax logic implemented by the application.
+
+## Frontend Setup
+
+Navigate to the frontend directory:
 
 ```bash
 cd frontend
@@ -214,14 +216,28 @@ npm install
 npm run dev
 ```
 
-The frontend is expected to run at `http://localhost:5173`.
+Vite provides the frontend development server. Open the local URL displayed in the terminal to access the application.
+
+## Testing
+
+The backend uses Jest and Supertest for automated testing.
+
+Run the test command configured in `backend/package.json`. For example, if the project defines a `test` script:
+
+```bash
+npm test
+```
+
+Tests help verify API responses, request handling, and backend functionality.
 
 ## Team & Credits
 
-- **Princel Tixeira:** Frontend architecture, UI/UX, responsive component design, and client state management.
-- **Pearlin Tixeira:** Backend architecture, REST API design, database integration, Multer file handling, and automated testing.
+StyleStack is a collaborative full-stack development project.
+
+- **Frontend:** React, Vite, and Tailwind CSS
+- **Backend:** Node.js and Express.js
+- **Testing:** Jest and Supertest
 
 ## License & Documentation
 
-- Product requirements and user stories: [`PRD.md`](PRD.md)
-- Development and collaboration protocols: [`AGENTS.md`](AGENTS.md)
+Refer to the repository's license file and project configuration for licensing and additional implementation details.
