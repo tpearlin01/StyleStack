@@ -1,0 +1,75 @@
+/* AddToCart.css */
+.add-to-cart-btn {
+  width: 140px;
+  height: 48px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s ease;
+  overflow: visible;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.add-to-cart-btn:hover:not(:disabled) {
+  background-color: #e11d48;
+}
+
+.add-to-cart-btn.full-width {
+  width: 100%;
+}
+
+.add-to-cart-btn.animating {
+  width: 48px !important;
+  border-radius: 50% !important;
+  background-color: #000 !important;
+}
+
+.add-to-cart-btn.success {
+  width: 48px !important;
+  border-radius: 50% !important;
+  background-color: #10B981 !important;
+}
+
+.cart-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flying-image {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: -40px;
+  left: 0;
+  border-radius: 6px;
+  object-fit: cover;
+  animation: flyToCart 1.5s ease-in-out forwards;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  z-index: 30;
+}
+
+@keyframes flyToCart {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-10px, -50px) scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-20px, 0) scale(0.1);
+  }
+}
