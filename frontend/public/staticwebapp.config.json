@@ -1,0 +1,14 @@
+{
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/images/*", "/assets/*", "/*.{png,jpg,jpeg,gif,svg,webp,avif,ico,css,js}"]
+  },
+  "mimeTypes": {
+    ".webp": "image/webp",
+    ".avif": "image/avif"
+  },
+  "globalHeaders": {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "SAMEORIGIN"
+  }
+}
