@@ -1,5 +1,49 @@
 [
   {
+    "id": "ORD-108450",
+    "orderId": "ORD-108450",
+    "customerName": "MeeraS",
+    "customerEmail": "pearlintixeira@gmail.com",
+    "shippingAddress": "rcf, Mumbai, Maharashtra - 400074",
+    "customer": {
+      "name": "MeeraS",
+      "email": "pearlintixeira@gmail.com",
+      "address": "rcf, Mumbai, Maharashtra - 400074",
+      "paymentMethod": "Cash on Delivery"
+    },
+    "items": [
+      {
+        "id": "prod-5",
+        "productId": "prod-5",
+        "name": "Full-Grain Leather Bifold Cardholder Wallet",
+        "size": "Free Size",
+        "quantity": 1,
+        "unitPrice": 549,
+        "price": 549,
+        "imageUrl": "/images/men accessories/images (1).jpg",
+        "image": "/images/men accessories/images (1).jpg"
+      },
+      {
+        "id": "prod-29",
+        "productId": "prod-29",
+        "name": "Sunset Coral Relaxed Fit Everyday Tee",
+        "size": "S",
+        "quantity": 1,
+        "unitPrice": 499,
+        "price": 499,
+        "imageUrl": "/images/men tshirt summer/Summer-Vibe-Men's-Regular-Fit-T-shirt.avif",
+        "image": "/images/men tshirt summer/Summer-Vibe-Men's-Regular-Fit-T-shirt.avif"
+      }
+    ],
+    "subtotal": 1048,
+    "taxAmount": 52.4,
+    "totalAmount": 1100.4,
+    "status": "Placed",
+    "paymentMethod": "Cash on Delivery",
+    "date": "2026-11-01T17:10:40.685Z",
+    "createdAt": "2026-11-01T17:10:40.685Z"
+  },
+  {
     "id": "ORD-452625",
     "orderId": "ORD-452625",
     "customerName": "Meera Sk",

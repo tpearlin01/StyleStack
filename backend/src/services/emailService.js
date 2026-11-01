@@ -91,6 +91,29 @@ const resetTransporter = () => {
 };
 
 /**
+ * Resolves the effective recipient email.
+ * If in local development the recipient is a mock placeholder (e.g. 'customer@stylestack.com' or '@stylestack.com')
+ * and the developer has configured a valid EMAIL_USER, reroute to EMAIL_USER so confirmation emails arrive in the developer's inbox.
+ */
+const resolveRecipientEmail = (rawRecipient) => {
+  if (!rawRecipient || typeof rawRecipient !== 'string') return '';
+  const trimmed = rawRecipient.trim();
+  const cleanEmailUser = sanitizeCredential(process.env.EMAIL_USER);
+
+  if (
+    process.env.NODE_ENV !== 'production' &&
+    cleanEmailUser &&
+    !isPlaceholder(cleanEmailUser) &&
+    (trimmed.toLowerCase() === 'customer@stylestack.com' || trimmed.toLowerCase().endsWith('@stylestack.com'))
+  ) {
+    console.log(`[EmailService] Rerouting mock recipient "${trimmed}" to configured EMAIL_USER "${cleanEmailUser}" for local testing.`);
+    return cleanEmailUser;
+  }
+
+  return trimmed;
+};
+
+/**
  * Send an Order Confirmation Email upon successful order placement.
  * Safe execution: never throws or disrupts order flow if email fails.
  */
@@ -108,10 +131,12 @@ const sendOrderConfirmationEmail = async (order) => {
     return { success: true, skipped: true, message: 'Duplicate email prevented' };
   }
 
-  const recipientEmail =
+  const rawRecipient =
     order.customerEmail ||
     (order.customer && order.customer.email) ||
     '';
+
+  const recipientEmail = resolveRecipientEmail(rawRecipient);
 
   if (!recipientEmail || !recipientEmail.includes('@')) {
     console.warn(`[EmailService] Invalid recipient email for Order ${orderId}: "${recipientEmail}"`);
@@ -310,11 +335,13 @@ const sendPaymentConfirmationEmail = async (order, paymentDetails = {}) => {
     return { success: true, skipped: true, message: 'Duplicate payment email prevented' };
   }
 
-  const recipientEmail =
+  const rawRecipient =
     order.customerEmail ||
     (order.customer && order.customer.email) ||
     paymentDetails.email ||
     '';
+
+  const recipientEmail = resolveRecipientEmail(rawRecipient);
 
   if (!recipientEmail || !recipientEmail.includes('@')) {
     console.warn(`[EmailService] Invalid recipient email for Payment Confirmation ${orderId}: "${recipientEmail}"`);
@@ -550,5 +577,6 @@ module.exports = {
   sanitizePassword,
   isPlaceholder,
   getSenderAddress,
+  resolveRecipientEmail,
   _sentEmailKeys: sentEmailKeys,
 };

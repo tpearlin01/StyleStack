@@ -211,7 +211,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
       setOtpError('');
     } else {
       setStep(1);
-      setEmail(activeUser?.email || 'customer@stylestack.com');
+      setEmail(activeUser?.email || '');
       setFormError('');
       setPaymentStatusMessage(null);
     }
@@ -355,8 +355,10 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
     if (!fullName.trim()) {
       setFullName('Valued Customer');
     }
-    if (!email.trim()) {
-      setEmail(activeUser?.email || 'customer@stylestack.com');
+    const cleanEmail = email.trim();
+    if (!cleanEmail || !cleanEmail.includes('@') || cleanEmail.length < 5) {
+      setFormError('Please enter a valid email address to receive your order confirmation.');
+      return false;
     }
     if (!address.trim()) {
       setFormError('Please enter your street address.');
@@ -646,17 +648,16 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-zinc-300 mb-1">Email Address (Account Session) *</label>
+                  <label className="block text-xs font-semibold text-zinc-300 mb-1">Email Address (Order Confirmation) *</label>
                   <div className="relative">
                     <Mail className="absolute left-3.5 top-3 w-4 h-4 text-zinc-500" />
                     <input
                       type="email"
                       required
                       value={email}
-                      readOnly
-                      title="Prefilled from active logged-in account"
-                      placeholder="Enter your email address"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-800 bg-zinc-950/60 text-xs font-medium text-zinc-400 outline-none cursor-not-allowed"
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email address (e.g. name@gmail.com)"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-800 bg-zinc-950 text-white placeholder-zinc-500 text-xs font-medium focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 outline-none transition-colors"
                     />
                   </div>
                 </div>
