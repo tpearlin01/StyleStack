@@ -1,4 +1,5 @@
 const store = require('../data/store');
+const emailService = require('../services/emailService');
 
 const getOrders = async (req, res, next) => {
   try {
@@ -44,6 +45,11 @@ const createOrder = async (req, res, next) => {
       items,
       paymentMethod,
       customer,
+    });
+
+    // Send order confirmation email asynchronously; errors are handled gracefully without affecting order response
+    emailService.sendOrderConfirmationEmail(newOrder).catch((emailErr) => {
+      console.error('[OrderController] Email sending error caught gracefully:', emailErr.message);
     });
 
     res.status(201).json({

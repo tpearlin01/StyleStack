@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const { getRazorpayInstance, isRazorpayConfigured } = require('../config/razorpay');
 const store = require('../data/store');
+const emailService = require('../services/emailService');
 
 /**
  * Create a new Razorpay payment order
@@ -132,6 +133,17 @@ const verifyRazorpayPayment = async (req, res, next) => {
       }
     }
 
+    // Send Payment Confirmation Email asynchronously
+    if (updatedOrder) {
+      emailService
+        .sendPaymentConfirmationEmail(updatedOrder, {
+          paymentId: razorpay_payment_id,
+          razorpay_order_id,
+          status: 'Paid',
+        })
+        .catch((err) => console.error('[Email Notification Error]', err.message));
+    }
+
     res.json({
       success: true,
       message: 'Payment verified successfully',
@@ -199,9 +211,32 @@ const getPaymentConfig = (req, res) => {
   });
 };
 
+/**
+ * Trigger manual test email for Gmail SMTP verification
+ * POST /api/payment/email/test
+ */
+const triggerTestEmail = async (req, res) => {
+  const { to } = req.body;
+  const result = await emailService.sendTestEmail(to);
+  if (result.success) {
+    res.json({
+      success: true,
+      message: 'Test email dispatched successfully',
+      data: result,
+    });
+  } else {
+    res.status(400).json({
+      success: false,
+      message: 'Failed to dispatch test email',
+      error: result.error,
+    });
+  }
+};
+
 module.exports = {
   createRazorpayOrder,
   verifyRazorpayPayment,
   handlePaymentFailure,
   getPaymentConfig,
+  triggerTestEmail,
 };

@@ -5,6 +5,7 @@ const {
   verifyRazorpayPayment,
   handlePaymentFailure,
   getPaymentConfig,
+  triggerTestEmail,
 } = require('../controllers/paymentController');
 
 // Razorpay Order Creation
@@ -19,5 +20,8 @@ router.post('/razorpay/failure', handlePaymentFailure);
 
 // Public Config (Key ID)
 router.get('/razorpay/config', getPaymentConfig);
+
+// Gmail SMTP Notification Test
+router.post('/email/test', triggerTestEmail);
 
 module.exports = router;
