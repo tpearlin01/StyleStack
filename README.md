@@ -171,12 +171,12 @@ Follow these steps to connect StyleStack to a free-tier MongoDB Atlas cluster:
    - Select **Drivers** (Node.js).
    - Copy the SRV connection URI:
      ```text
-     mongodb+srv://<username>:<password>@<cluster-name>.mongodb.net/<database>?retryWrites=true&w=majority
+     mongodb+srv://<username>:<password>@<cluster-url>/<database>?retryWrites=true&w=majority
      ```
 6. **Set Connection String in `backend/.env`:**
    - In `backend/.env`, set `MONGODB_URI` with your actual username, password, and database name (e.g., `stylestack`):
      ```env
-     MONGODB_URI=mongodb+srv://stylestack_admin:YourSecurePassword@stylestack.ixsx5xr.mongodb.net/stylestack?retryWrites=true&w=majority
+     MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-url>/stylestack?retryWrites=true&w=majority
      ```
 
 ### 2. Startup Connection Sequence & Fallback Mechanism

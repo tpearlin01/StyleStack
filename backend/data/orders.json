@@ -1,5 +1,49 @@
 [
   {
+    "id": "ORD-673514",
+    "orderId": "ORD-673514",
+    "customerName": "Meera S",
+    "customerEmail": "pearlintixeira@gmail.com",
+    "shippingAddress": "rcf colony, Pune, Maharashtra - 400074",
+    "customer": {
+      "name": "Meera S",
+      "email": "pearlintixeira@gmail.com",
+      "address": "rcf colony, Pune, Maharashtra - 400074",
+      "paymentMethod": "Instant UPI / GPay"
+    },
+    "items": [
+      {
+        "id": "prod-27",
+        "productId": "prod-27",
+        "name": "Coastal Breeze Breathable Organic Cotton Tee",
+        "size": "S",
+        "quantity": 1,
+        "unitPrice": 449,
+        "price": 449,
+        "imageUrl": "/images/men tshirt summer/226076702-1-38_1.webp",
+        "image": "/images/men tshirt summer/226076702-1-38_1.webp"
+      },
+      {
+        "id": "prod-26",
+        "productId": "prod-26",
+        "name": "Washed Mineral Grey Drop-Shoulder Summer Tee",
+        "size": "XL",
+        "quantity": 1,
+        "unitPrice": 449,
+        "price": 449,
+        "imageUrl": "/images/men tshirt summer/-473Wx593H-410521490-u9360-MODEL.avif",
+        "image": "/images/men tshirt summer/-473Wx593H-410521490-u9360-MODEL.avif"
+      }
+    ],
+    "subtotal": 898,
+    "taxAmount": 44.9,
+    "totalAmount": 942.9,
+    "status": "Placed",
+    "paymentMethod": "Instant UPI / GPay",
+    "date": "2026-11-01T15:16:14.580Z",
+    "createdAt": "2026-11-01T15:16:14.580Z"
+  },
+  {
     "id": "ORD-919827",
     "orderId": "ORD-919827",
     "customerName": "Priya Verma",
