@@ -1,3 +1,9 @@
+try {
+  require('dotenv').config();
+} catch (e) {
+  // Ignore in environments where dotenv is already loaded
+}
+
 const nodemailer = require('nodemailer');
 
 // In-memory deduplication set to prevent duplicate email transmissions
@@ -6,17 +12,50 @@ const sentEmailKeys = new Set();
 let cachedTransporter = null;
 
 /**
+ * Strips outer quotes and surrounding whitespace
+ */
+const sanitizeCredential = (val) => {
+  if (!val || typeof val !== 'string') return '';
+  return val.trim().replace(/^['"]|['"]$/g, '');
+};
+
+/**
+ * Strips outer quotes and removes all internal whitespace.
+ * Google App Passwords are 16 characters shown in 4x4 groups (e.g. "abcd efgh ijkl mnop").
+ * Stripping whitespace ensures Nodemailer transmits the continuous 16-character string.
+ */
+const sanitizePassword = (val) => {
+  if (!val || typeof val !== 'string') return '';
+  return val.trim().replace(/^['"]|['"]$/g, '').replace(/\s+/g, '');
+};
+
+/**
+ * Detects whether an email or password is an unconfigured placeholder.
+ */
+const isPlaceholder = (val) => {
+  if (!val || typeof val !== 'string') return true;
+  const clean = val.trim().toLowerCase();
+  return (
+    !clean ||
+    clean.includes('your_') ||
+    clean.includes('your-') ||
+    clean.includes('example.com') ||
+    clean === 'your_gmail@gmail.com' ||
+    clean === 'your_actual_app_password'
+  );
+};
+
+const getSenderAddress = () => {
+  const cleanUser = sanitizeCredential(process.env.EMAIL_USER);
+  return cleanUser || 'no-reply@stylestack.com';
+};
+
+/**
  * Returns a configured Nodemailer transporter for Gmail SMTP, or null if credentials are not configured.
  */
 const getTransporter = () => {
-  const user = process.env.EMAIL_USER;
-  const pass = process.env.EMAIL_APP_PASSWORD;
-
-  const isPlaceholder = (val) =>
-    !val ||
-    !val.trim() ||
-    val.includes('your_') ||
-    val.includes('example.com');
+  const user = sanitizeCredential(process.env.EMAIL_USER);
+  const pass = sanitizePassword(process.env.EMAIL_APP_PASSWORD);
 
   if (isPlaceholder(user) || isPlaceholder(pass)) {
     return null;
@@ -29,9 +68,12 @@ const getTransporter = () => {
   try {
     cachedTransporter = nodemailer.createTransport({
       service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
       auth: {
-        user: user.trim(),
-        pass: pass.trim(),
+        user,
+        pass,
       },
     });
     return cachedTransporter;
@@ -208,7 +250,7 @@ Thank you for shopping with StyleStack!
   const transporter = getTransporter();
 
   if (!transporter) {
-    console.log(`[EmailService] Mock mode: EMAIL_USER/EMAIL_APP_PASSWORD not set. Order confirmation email simulated for ${recipientEmail}.`);
+    console.log(`[EmailService] Mock mode: EMAIL_USER/EMAIL_APP_PASSWORD contains unconfigured placeholder in backend/.env. Order confirmation email simulated for ${recipientEmail}.`);
     sentEmailKeys.add(dedupKey);
     order.orderConfirmationEmailSent = true;
     return {
@@ -221,8 +263,9 @@ Thank you for shopping with StyleStack!
   }
 
   try {
+    const sender = getSenderAddress();
     const info = await transporter.sendMail({
-      from: `"StyleStack Fashion" <${process.env.EMAIL_USER}>`,
+      from: `"StyleStack Fashion" <${sender}>`,
       to: recipientEmail,
       subject: `Order Confirmation #${orderId} - StyleStack`,
       text: plainText,
@@ -373,7 +416,7 @@ Thank you for shopping with StyleStack!
   const transporter = getTransporter();
 
   if (!transporter) {
-    console.log(`[EmailService] Mock mode: EMAIL_USER/EMAIL_APP_PASSWORD not set. Payment confirmation email simulated for ${recipientEmail}.`);
+    console.log(`[EmailService] Mock mode: EMAIL_USER/EMAIL_APP_PASSWORD contains unconfigured placeholder in backend/.env. Payment confirmation email simulated for ${recipientEmail}.`);
     sentEmailKeys.add(dedupKey);
     order.paymentConfirmationEmailSent = true;
     return {
@@ -387,8 +430,9 @@ Thank you for shopping with StyleStack!
   }
 
   try {
+    const sender = getSenderAddress();
     const info = await transporter.sendMail({
-      from: `"StyleStack Fashion" <${process.env.EMAIL_USER}>`,
+      from: `"StyleStack Fashion" <${sender}>`,
       to: recipientEmail,
       subject: `Payment Confirmed #${orderId} - StyleStack (Ref: ${paymentId})`,
       text: plainText,
@@ -417,7 +461,8 @@ Thank you for shopping with StyleStack!
  * Send a verification/test email (used to verify Gmail SMTP configuration).
  */
 const sendTestEmail = async (to) => {
-  const targetEmail = to || process.env.EMAIL_USER;
+  const sender = getSenderAddress();
+  const targetEmail = to || sender;
   if (!targetEmail) {
     return { success: false, error: 'Recipient email required' };
   }
@@ -432,7 +477,7 @@ const sendTestEmail = async (to) => {
 
   try {
     const info = await transporter.sendMail({
-      from: `"StyleStack Fashion" <${process.env.EMAIL_USER}>`,
+      from: `"StyleStack Fashion" <${sender}>`,
       to: targetEmail,
       subject: 'StyleStack Gmail SMTP Test Notification',
       text: 'Congratulations! Your StyleStack Nodemailer Gmail SMTP integration is functioning perfectly.',
@@ -452,11 +497,58 @@ const sendTestEmail = async (to) => {
   }
 };
 
+/**
+ * Verifies SMTP connection and credentials without sending an email.
+ */
+const verifyConnection = async () => {
+  const rawUser = process.env.EMAIL_USER;
+  const rawPass = process.env.EMAIL_APP_PASSWORD;
+  const cleanUser = sanitizeCredential(rawUser);
+  const cleanPass = sanitizePassword(rawPass);
+
+  if (isPlaceholder(cleanUser) || isPlaceholder(cleanPass)) {
+    return {
+      success: false,
+      configured: false,
+      error: 'Gmail SMTP credentials (EMAIL_USER, EMAIL_APP_PASSWORD) not configured or using default placeholders in backend/.env.',
+    };
+  }
+
+  const transporter = getTransporter();
+  if (!transporter) {
+    return {
+      success: false,
+      configured: false,
+      error: 'Could not initialize Gmail SMTP transporter.',
+    };
+  }
+
+  try {
+    await transporter.verify();
+    return {
+      success: true,
+      configured: true,
+      message: 'Gmail SMTP connection verified successfully and ready to dispatch emails.',
+    };
+  } catch (err) {
+    return {
+      success: false,
+      configured: true,
+      error: err.message,
+    };
+  }
+};
+
 module.exports = {
   getTransporter,
   resetTransporter,
   sendOrderConfirmationEmail,
   sendPaymentConfirmationEmail,
   sendTestEmail,
+  verifyConnection,
+  sanitizeCredential,
+  sanitizePassword,
+  isPlaceholder,
+  getSenderAddress,
   _sentEmailKeys: sentEmailKeys,
 };

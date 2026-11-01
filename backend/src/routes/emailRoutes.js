@@ -24,4 +24,26 @@ router.post('/test', async (req, res) => {
   }
 });
 
+/**
+ * Verify Gmail SMTP configuration status
+ * GET /api/email/verify
+ */
+router.get('/verify', async (req, res) => {
+  const result = await emailService.verifyConnection();
+  if (result.success) {
+    res.json({
+      success: true,
+      message: result.message,
+      data: result,
+    });
+  } else {
+    res.status(result.configured ? 502 : 400).json({
+      success: false,
+      message: result.error,
+      data: result,
+      error: result.error,
+    });
+  }
+});
+
 module.exports = router;

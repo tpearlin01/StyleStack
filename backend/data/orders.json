@@ -1,5 +1,49 @@
 [
   {
+    "id": "ORD-452625",
+    "orderId": "ORD-452625",
+    "customerName": "Meera Sk",
+    "customerEmail": "pearlintixeira@gmail.com",
+    "shippingAddress": "rcf conoly, Mumbai, Maharashtra - 400074",
+    "customer": {
+      "name": "Meera Sk",
+      "email": "pearlintixeira@gmail.com",
+      "address": "rcf conoly, Mumbai, Maharashtra - 400074",
+      "paymentMethod": "Instant UPI / GPay"
+    },
+    "items": [
+      {
+        "id": "prod-15",
+        "productId": "prod-15",
+        "name": "Classic Oxford Sky-Blue Herringbone Formal Shirt",
+        "size": "S",
+        "quantity": 1,
+        "unitPrice": 849,
+        "price": 849,
+        "imageUrl": "/images/men formal/BSH61879LLH.webp",
+        "image": "/images/men formal/BSH61879LLH.webp"
+      },
+      {
+        "id": "prod-16",
+        "productId": "prod-16",
+        "name": "Crisp Egyptian Cotton French Cuff Formal Shirt",
+        "size": "S",
+        "quantity": 1,
+        "unitPrice": 899,
+        "price": 899,
+        "imageUrl": "/images/men formal/Formal_Shirts.webp",
+        "image": "/images/men formal/Formal_Shirts.webp"
+      }
+    ],
+    "subtotal": 1748,
+    "taxAmount": 87.4,
+    "totalAmount": 1835.4,
+    "status": "Placed",
+    "paymentMethod": "Instant UPI / GPay",
+    "date": "2026-11-01T16:41:20.509Z",
+    "createdAt": "2026-11-01T16:41:20.509Z"
+  },
+  {
     "id": "ORD-673514",
     "orderId": "ORD-673514",
     "customerName": "Meera S",

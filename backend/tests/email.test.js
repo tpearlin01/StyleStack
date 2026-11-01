@@ -143,4 +143,34 @@ describe('Gmail & Nodemailer Email Service Tests', () => {
       }
     });
   });
+
+  describe('Credential Sanitization & Validation', () => {
+    it('should strip internal whitespace from 16-character Google App Passwords', () => {
+      expect(emailService.sanitizePassword('abcd efgh ijkl mnop')).toBe('abcdefghijklmnop');
+      expect(emailService.sanitizePassword('"abcd efgh ijkl mnop"')).toBe('abcdefghijklmnop');
+      expect(emailService.sanitizePassword("'abcd efgh ijkl mnop'")).toBe('abcdefghijklmnop');
+    });
+
+    it('should strip quotes and whitespace from email credentials', () => {
+      expect(emailService.sanitizeCredential(' "test@gmail.com" ')).toBe('test@gmail.com');
+      expect(emailService.sanitizeCredential("'test@gmail.com'")).toBe('test@gmail.com');
+    });
+
+    it('should correctly identify placeholder credentials', () => {
+      expect(emailService.isPlaceholder('your_gmail@gmail.com')).toBe(true);
+      expect(emailService.isPlaceholder('your_actual_app_password')).toBe(true);
+      expect(emailService.isPlaceholder('')).toBe(true);
+      expect(emailService.isPlaceholder(null)).toBe(true);
+      expect(emailService.isPlaceholder('stylestack.store@gmail.com')).toBe(false);
+    });
+  });
+
+  describe('GET /api/email/verify - Gmail SMTP Verification Endpoint', () => {
+    it('should return 400 with helpful message when placeholder credentials are used', async () => {
+      const res = await request(app).get('/api/email/verify');
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+      expect(res.body.error).toMatch(/not configured or using default placeholders/i);
+    });
+  });
 });
