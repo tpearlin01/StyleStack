@@ -297,8 +297,9 @@ const store = {
     }
 
     order.paymentStatus = paymentData.paymentStatus || 'Paid';
-    order.razorpayOrderId = paymentData.razorpayOrderId || order.razorpayOrderId;
-    order.razorpayPaymentId = paymentData.razorpayPaymentId || order.razorpayPaymentId;
+    if (paymentData.transactionId) {
+      order.transactionId = paymentData.transactionId;
+    }
     order.paymentDetails = {
       ...(order.paymentDetails || {}),
       ...paymentData,

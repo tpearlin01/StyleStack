@@ -1,166 +1,126 @@
 const request = require('supertest');
-const crypto = require('crypto');
 const app = require('../app');
 const store = require('../src/data/store');
 
-describe('Payment & Razorpay Gateway Integration Tests', () => {
-  let createdOrderId;
+describe('Simulated Checkout and Payment Flow Tests', () => {
+  describe('Cash on Delivery (COD) Checkout Flow', () => {
+    it('should successfully place a Cash on Delivery order with Pending payment status', async () => {
+      const payload = {
+        customerName: 'Aarav Mehta',
+        customerEmail: 'aarav.mehta@example.com',
+        shippingAddress: '12 Marine Drive, Nariman Point, Mumbai - 400021',
+        paymentMethod: 'Cash on Delivery',
+        items: [
+          {
+            id: 'prod-1',
+            productId: 'prod-1',
+            name: 'Hand-Stitched Italian Leather Reversible Belt',
+            price: 449,
+            quantity: 1,
+            size: 'Standard',
+          },
+        ],
+      };
 
-  beforeAll(() => {
-    // Seed an order in local store for testing payment status updates
-    const testOrder = store.createOrder({
-      customerName: 'Test Customer',
-      customerEmail: 'test.customer@example.com',
-      shippingAddress: '123 Test Street, Mumbai, Maharashtra - 400001',
-      items: [
-        {
-          id: 'prod-test-1',
-          name: 'Designer Casual Shirt',
-          price: 999,
-          quantity: 1,
-        },
-      ],
-      paymentMethod: 'Razorpay Gateway (Test Mode)',
-    });
-    createdOrderId = testOrder.id;
-  });
-
-  describe('POST /api/payment/razorpay/order - Order Creation', () => {
-    it('should successfully create a Razorpay payment order for a valid amount', async () => {
-      const res = await request(app)
-        .post('/api/payment/razorpay/order')
-        .send({
-          amount: 1048.95,
-          currency: 'INR',
-          orderId: createdOrderId,
-          receipt: createdOrderId,
-        });
+      const res = await request(app).post('/api/orders').send(payload);
 
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
-      expect(res.body.data).toHaveProperty('orderId');
-      expect(res.body.data.amount).toBe(104895); // 1048.95 * 100 paise
-      expect(res.body.data.currency).toBe('INR');
-      expect(res.body.data).toHaveProperty('keyId');
-    });
-
-    it('should reject payment order creation when amount is zero or negative', async () => {
-      const res = await request(app)
-        .post('/api/payment/razorpay/order')
-        .send({
-          amount: 0,
-          currency: 'INR',
-        });
-
-      expect(res.status).toBe(400);
-      expect(res.body.success).toBe(false);
-    });
-
-    it('should reject payment order creation when amount is missing or not a number', async () => {
-      const res = await request(app)
-        .post('/api/payment/razorpay/order')
-        .send({
-          amount: 'invalid-amount',
-        });
-
-      expect(res.status).toBe(400);
-      expect(res.body.success).toBe(false);
+      expect(res.body.data).toHaveProperty('id');
+      expect(res.body.data.paymentMethod).toBe('Cash on Delivery');
+      expect(res.body.data.status).toBe('Placed');
+      expect(res.body.data.subtotal).toBe(449);
+      expect(res.body.data.taxAmount).toBe(22.45); // 5% GST
+      expect(res.body.data.totalAmount).toBe(471.45);
     });
   });
 
-  describe('POST /api/payment/razorpay/verify - Signature Verification', () => {
-    it('should fail verification if signature is invalid or tampered', async () => {
-      const res = await request(app)
-        .post('/api/payment/razorpay/verify')
-        .send({
-          razorpay_order_id: 'order_test_12345',
-          razorpay_payment_id: 'pay_test_67890',
-          razorpay_signature: 'invalid_tampered_signature_hex_1234',
-          orderId: createdOrderId,
-        });
-
-      expect(res.status).toBe(400);
-      expect(res.body.success).toBe(false);
-      expect(res.body.message).toMatch(/Invalid payment signature/i);
-    });
-
-    it('should reject verification when required parameters are missing', async () => {
-      const res = await request(app)
-        .post('/api/payment/razorpay/verify')
-        .send({
-          razorpay_order_id: 'order_test_12345',
-          // razorpay_payment_id and razorpay_signature intentionally omitted
-        });
-
-      expect(res.status).toBe(400);
-      expect(res.body.success).toBe(false);
-    });
-
-    it('should verify payment successfully when given a valid cryptographic signature', async () => {
-      const rzpOrderId = 'order_test_998877';
-      const rzpPaymentId = 'pay_test_112233';
-
-      // Generate valid signature using configured secret or fallback mock secret
-      const secret = process.env.RAZORPAY_KEY_SECRET || 'mock_secret_fallback';
-      const validSignature = crypto
-        .createHmac('sha256', secret)
-        .update(`${rzpOrderId}|${rzpPaymentId}`)
-        .digest('hex');
-
-      const res = await request(app)
-        .post('/api/payment/razorpay/verify')
-        .send({
-          razorpay_order_id: rzpOrderId,
-          razorpay_payment_id: rzpPaymentId,
-          razorpay_signature: validSignature,
-          orderId: createdOrderId,
-        });
-
-      expect(res.status).toBe(200);
-      expect(res.body.success).toBe(true);
-      expect(res.body.data.paymentStatus).toBe('Paid');
-      expect(res.body.data.paymentId).toBe(rzpPaymentId);
-
-      // Verify that the order in store was updated
-      const updatedOrder = store.getOrderById(createdOrderId);
-      expect(updatedOrder.paymentStatus).toBe('Paid');
-      expect(updatedOrder.razorpayPaymentId).toBe(rzpPaymentId);
-    });
-  });
-
-  describe('POST /api/payment/razorpay/failure - Failure and Cancellation Handling', () => {
-    it('should record payment failure details in the order', async () => {
-      const res = await request(app)
-        .post('/api/payment/razorpay/failure')
-        .send({
-          orderId: createdOrderId,
-          razorpay_payment_id: 'pay_failed_445566',
-          error: {
-            code: 'BAD_REQUEST_ERROR',
-            description: 'Payment was cancelled by the customer in popup modal',
-            reason: 'payment_cancelled_by_user',
+  describe('Simulated Instant UPI / QR Checkout Flow', () => {
+    it('should place an order with Instant UPI / GPay payment method', async () => {
+      const payload = {
+        customerName: 'Ananya Sharma',
+        customerEmail: 'ananya.sharma@example.com',
+        shippingAddress: '45 MG Road, Indiranagar, Bengaluru - 560038',
+        paymentMethod: 'Instant UPI / GPay',
+        items: [
+          {
+            id: 'prod-2',
+            productId: 'prod-2',
+            name: 'Artisanal Silk Evening Scarf',
+            price: 799,
+            quantity: 1,
+            size: 'One Size',
           },
-        });
+        ],
+      };
 
-      expect(res.status).toBe(200);
+      const res = await request(app).post('/api/orders').send(payload);
+
+      expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
-      expect(res.body.data.paymentStatus).toBe('Failed');
-
-      const updatedOrder = store.getOrderById(createdOrderId);
-      expect(updatedOrder.paymentStatus).toBe('Failed');
+      expect(res.body.data.paymentMethod).toBe('Instant UPI / GPay');
+      expect(res.body.data.status).toBe('Placed');
     });
   });
 
-  describe('GET /api/payment/razorpay/config - Public Configuration', () => {
-    it('should return public keyId and testMode flag without exposing secret key', async () => {
-      const res = await request(app).get('/api/payment/razorpay/config');
+  describe('Simulated 3D-Secure Card Checkout Flow', () => {
+    it('should place an order with Credit / Debit Card (3D-Secure Verified)', async () => {
+      const payload = {
+        customerName: 'Rohan Verma',
+        customerEmail: 'rohan.verma@example.com',
+        shippingAddress: '78 Sector 18, Noida, Uttar Pradesh - 201301',
+        paymentMethod: 'Credit / Debit Card (3D-Secure Verified)',
+        items: [
+          {
+            id: 'prod-3',
+            productId: 'prod-3',
+            name: 'Tailored Slim-Fit Oxford Shirt',
+            price: 1299,
+            quantity: 1,
+            size: 'L',
+          },
+        ],
+      };
 
-      expect(res.status).toBe(200);
+      const res = await request(app).post('/api/orders').send(payload);
+
+      expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
-      expect(res.body.data).toHaveProperty('keyId');
-      expect(res.body.data.testMode).toBe(true);
-      expect(res.body.data).not.toHaveProperty('keySecret');
-      expect(res.body.data).not.toHaveProperty('secret');
+      expect(res.body.data.paymentMethod).toBe('Credit / Debit Card (3D-Secure Verified)');
+      expect(res.body.data.status).toBe('Placed');
+      expect(res.body.data.totalAmount).toBe(1363.95);
+    });
+
+    it('should reject order creation when customer details are missing', async () => {
+      const invalidPayload = {
+        paymentMethod: 'Credit / Debit Card (3D-Secure Verified)',
+        items: [
+          {
+            id: 'prod-1',
+            price: 449,
+            quantity: 1,
+          },
+        ],
+      };
+
+      const res = await request(app).post('/api/orders').send(invalidPayload);
+
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
+    });
+
+    it('should reject order creation when cart items are empty', async () => {
+      const emptyItemsPayload = {
+        customerName: 'Test User',
+        customerEmail: 'test@example.com',
+        paymentMethod: 'Cash on Delivery',
+        items: [],
+      };
+
+      const res = await request(app).post('/api/orders').send(emptyItemsPayload);
+
+      expect(res.status).toBe(400);
+      expect(res.body.success).toBe(false);
     });
   });
 });

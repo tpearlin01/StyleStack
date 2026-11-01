@@ -45,7 +45,7 @@ StyleStack addresses these challenges through a web-based e-commerce application
 | Authentication     | JWT                | Token-based authentication             |
 | File Uploads       | Multer             | Product image upload handling          |
 | Testing            | Jest and Supertest | Backend testing                        |
-| Payment Gateway    | Razorpay           | Online payment processing (Test mode)  |
+| Payment & Checkout | Simulated Engine   | Zero-risk 3D-Secure, UPI QR, and COD   |
 | Email Service      | Nodemailer + Gmail | Transactional email notifications      |
 
 ## Project Architecture
@@ -146,27 +146,67 @@ Open the local URL printed by Vite to access the frontend.
 
 ## Database and Data Storage
 
-StyleStack supports data storage through its configured backend storage mechanism.
+StyleStack features a production-ready **MongoDB Atlas** integration with an intelligent, resilient fallback mechanism.
 
-### MongoDB
+### 1. MongoDB Atlas Setup Instructions
 
-MongoDB can be used to store application data when the database integration is configured. The connection settings must match the backend implementation.
+Follow these steps to connect StyleStack to a free-tier MongoDB Atlas cluster:
 
-### JSON Storage
+1. **Create an Atlas Account:**
+   - Sign up or log in at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
+2. **Deploy a Free Cluster (M0 Sandbox):**
+   - Click **Create Database** &rarr; Select the **M0 Free** cluster tier &rarr; Choose your preferred cloud provider and region (e.g., AWS / Mumbai).
+3. **Configure Database Access (User Credentials):**
+   - In the Atlas sidebar, navigate to **Security** &rarr; **Database Access**.
+   - Click **Add New Database User**.
+   - Select **Password** authentication.
+   - Enter a username (e.g., `stylestack_admin`) and a secure password.
+   - Assign the built-in role: **Read and write to any database**.
+4. **Configure Network Access (IP Whitelist):**
+   - In the Atlas sidebar, navigate to **Security** &rarr; **Network Access**.
+   - Click **Add IP Address**.
+   - For local development and Azure cloud deployment, choose **Allow Access From Anywhere** (`0.0.0.0/0`) or add your current public IP address.
+5. **Obtain the Connection String:**
+   - In the Atlas sidebar, click **Database** &rarr; Click **Connect** on your cluster.
+   - Select **Drivers** (Node.js).
+   - Copy the SRV connection URI:
+     ```text
+     mongodb+srv://<username>:<password>@<cluster-name>.mongodb.net/<database>?retryWrites=true&w=majority
+     ```
+6. **Set Connection String in `backend/.env`:**
+   - In `backend/.env`, set `MONGODB_URI` with your actual username, password, and database name (e.g., `stylestack`):
+     ```env
+     MONGODB_URI=mongodb+srv://stylestack_admin:YourSecurePassword@stylestack.ixsx5xr.mongodb.net/stylestack?retryWrites=true&w=majority
+     ```
 
-The backend includes JSON data files under `backend/data/`:
+### 2. Startup Connection Sequence & Fallback Mechanism
 
-- `products.json` — Product data.
-- `orders.json` — Order data.
+- **Pre-Flight Connection:** The backend (`backend/src/server.js` and `backend/app.js`) connects to MongoDB Atlas *before* launching the Express HTTP listener.
+- **Graceful Error Handling:** If `MONGODB_URI` is missing or the cluster is temporarily unreachable (e.g., DNS error, IP block, network disconnect), the server catches the error, outputs clear diagnostic logs, and engages the local JSON store (`backend/src/data/store.js`) as a fallback so development and testing never stall.
+- **Dynamic Mode Detection:** The backend logs its active state on startup:
+  - `[DB] Storage Mode: MONGODB_ATLAS (Primary)`
+  - `[DB Mode] Falling back gracefully to local JSON fallback store.`
 
-These files support local data storage where the application is configured to use them.
+### 3. Automated Zero-Loss Data Migration
 
-### Data Handling
+On the first successful connection to an empty MongoDB database:
+- The migration utility (`backend/src/utils/migrate.js`) scans `backend/data/products.json` and `backend/data/orders.json`.
+- It idempotently seeds all catalog products (130+ apparel items), historical orders, and default users without duplicating records.
+- If existing documents are found, they are preserved intact without data loss.
 
-- Product operations use the backend's product-management logic.
-- Order operations use the backend's order-management logic.
-- Controllers and routes handle requests involving application data.
-- The active storage mechanism depends on the implemented configuration.
+### 4. Models and Data Schema
+
+- **Product (`backend/src/models/Product.js`):** Supports `id`, `name`/`title`, `brand`, `category`, `gender`, `price`, `sizes`, `stock`/`inStock`/`stockQuantity`, `badge`, `image`/`imageUrl`, `rating`, `reviewsCount`, and `description`. Pre-save hooks keep field aliases in sync.
+- **Order (`backend/src/models/Order.js`):** Stores `id`/`orderId`, `customer` info, itemized apparel items, `subtotal`, `taxAmount`/`gstAmount` (5% GST), `shippingFee`, `total`/`totalAmount`, order `status` (`Placed`, `Dispatched`, `Delivered`), `paymentMethod`, `paymentStatus` (`Pending`, `Completed`), and Razorpay transaction IDs.
+- **User (`backend/src/models/User.js`):** Manages `id`, `name`, `firstName`, `lastName`, `email`, `password`, and `role` (`customer`, `admin`).
+
+### 5. Stock Management & Order Processing
+
+When an order is submitted:
+1. Stock availability is verified for each item in MongoDB.
+2. An order document is created with full tax and customer breakdowns.
+3. Inventory is automatically decremented (`$inc: { stock: -qty, stockQuantity: -qty, inStock: -qty }`).
+4. Order confirmation email is dispatched via Nodemailer.
 
 ## API Documentation
 
@@ -187,11 +227,7 @@ The following reference summarizes the API groups documented for StyleStack. Con
 | `/api/analytics/feedback` | Analytics-related feedback operations  |
 | `/api/analytics/returns`  | Return-related analytics               |
 | `/api/upload`             | File upload handling                   |
-| `/api/payment/razorpay/order` | Razorpay order creation            |
-| `/api/payment/razorpay/verify`| Payment signature verification     |
-| `/api/payment/razorpay/failure`| Payment cancellation/failure logging|
-| `/api/payment/razorpay/config`| Public Razorpay key configuration  |
-| `/api/payment/email/test` | Test Gmail SMTP email transmission     |
+| `/api/email/test`          | Test Gmail SMTP email transmission     |
 
 Product filtering and CRUD operations depend on the supported route methods and query parameters. Authentication requirements and access permissions depend on the corresponding middleware and route configuration.
 
@@ -222,35 +258,18 @@ cd backend
 npm test
 ```
 
-## Cloud Integration and Payment Gateway Setup
+## Order Processing, Simulated Payment & Cloud Setup
 
-### 1. Razorpay Test Mode Integration
+### 1. Simulated Checkout and Payment Processing
 
-StyleStack integrates the Razorpay payment gateway in Test Mode for zero-risk simulated transactions.
+StyleStack features a zero-risk simulated checkout engine that validates and processes payments without requiring external third-party payment gateways:
 
-#### Getting Razorpay Test Credentials
-
-1. Sign up or log in at [Razorpay Dashboard](https://dashboard.razorpay.com).
-2. Toggle to **Test Mode** in the top navigation bar.
-3. Navigate to **Account & Settings** &rarr; **API Keys**.
-4. Click **Generate Test Key** and copy:
-   - `Key ID` (e.g. `rzp_test_...`)
-   - `Key Secret`
-5. Add to `backend/.env`:
-   ```env
-   RAZORPAY_KEY_ID=rzp_test_YourKeyIdHere
-   RAZORPAY_KEY_SECRET=YourKeySecretHere
-   ```
-6. Add public Key ID to `frontend/.env` (optional, backend also provides it dynamically):
-   ```env
-   VITE_RAZORPAY_KEY_ID=rzp_test_YourKeyIdHere
-   ```
-
-#### Payment Flow Security
-
-- **Server-Side Order Creation:** Payment orders are created via `POST /api/payment/razorpay/order` on the backend.
-- **Cryptographic Signature Verification:** Upon frontend checkout completion, `razorpay_order_id`, `razorpay_payment_id`, and `razorpay_signature` are sent to `POST /api/payment/razorpay/verify`. The backend validates the signature using HMAC SHA256 before marking the order as `Paid`.
-- **Zero Card Data Storage:** Customer card numbers and CVV codes are handled exclusively by Razorpay PCI-DSS compliant iframe modals and never touch StyleStack servers.
+- **Cash on Delivery (COD):** Allows customers to place orders instantly with `Payment Status: Pending`, ideal for physical goods delivery.
+- **Instant UPI / GPay:** Supports dynamic UPI QR code scanning and UPI ID (VPA) verification simulation.
+- **Credit / Debit Card (3D-Secure Verified):** Validates 16-digit card number, MM/YY expiry, CVV, and cardholder name, followed by a simulated 3D-Secure bank OTP modal:
+  - **Success Simulation:** Entering demo OTP `123456` (or clicking *Auto-Fill Demo OTP*) confirms payment and transitions to the interactive invoice receipt.
+  - **Failure Simulation:** Entering `000000` (or clicking *Simulate Failure*) simulates bank decline and displays an explicit payment failure alert with retry guidance.
+- **Automated Order Creation & Stock Update:** Successful orders are saved to MongoDB Atlas, inventory is decremented, and an order confirmation email is dispatched.
 
 ### 2. Gmail SMTP Notifications via Nodemailer
 
@@ -272,7 +291,7 @@ StyleStack dispatches automated transactional emails using Nodemailer with Gmail
 #### Email Notification Types
 
 - **Order Confirmation Email:** Triggered when a customer places an order. Includes order reference, itemized clothing list with sizes and quantities, subtotal, 5% GST, free shipping, and delivery destination.
-- **Payment Confirmation Receipt:** Triggered immediately upon server-side cryptographic payment verification. Includes Razorpay transaction reference, total amount paid, and verified badge.
+- **Payment Confirmation Receipt:** Triggered upon verified payment simulation. Includes transaction reference, total amount paid, and verified badge.
 - **Resilience & Deduplication:** All email operations are non-blocking. If SMTP credentials are missing or network times out, orders remain created and safe. An in-memory deduplication index prevents duplicate email dispatches.
 
 ### 3. Azure App Service and Cloud Deployment
@@ -290,10 +309,8 @@ StyleStack is optimized for deployment on Azure App Service (Backend) and Azure 
    In Azure Portal &rarr; App Service &rarr; **Configuration** / **Environment variables**:
    - `PORT`: Set automatically by Azure.
    - `CLIENT_URL`: `https://<your-static-web-app>.azurestaticapps.net`
-   - `MONGODB_URI`: Azure Cosmos DB MongoDB connection string (or leave empty for JSON fallback).
+   - `MONGODB_URI`: Azure Cosmos DB MongoDB connection string or MongoDB Atlas URI (or leave empty for JSON fallback).
    - `JWT_SECRET`: Secure random string.
-   - `RAZORPAY_KEY_ID`: Your Razorpay Test Key ID.
-   - `RAZORPAY_KEY_SECRET`: Your Razorpay Test Key Secret.
    - `EMAIL_USER`: Your Gmail address.
    - `EMAIL_APP_PASSWORD`: Your 16-character Google App Password.
 
@@ -304,5 +321,4 @@ StyleStack is optimized for deployment on Azure App Service (Backend) and Azure 
 3. **Output location:** `dist`
 4. **Environment Variables:**
    - `VITE_API_BASE_URL`: `https://<your-app-service-name>.azurewebsites.net`
-   - `VITE_RAZORPAY_KEY_ID`: `rzp_test_...`
 5. Single Page Application (SPA) routing is pre-configured in `frontend/public/staticwebapp.config.json`.

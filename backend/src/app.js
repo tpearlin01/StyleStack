@@ -7,7 +7,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const authRoutes = require('./routes/authRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
-const paymentRoutes = require('./routes/paymentRoutes');
+const emailRoutes = require('./routes/emailRoutes');
 const mongoose = require('mongoose');
 const errorHandler = require('../middleware/errorHandler');
 
@@ -79,7 +79,8 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/upload', uploadRoutes);
-app.use('/api/payment', paymentRoutes);
+app.use('/api/email', emailRoutes);
+app.use('/api/payment/email', emailRoutes); // backward-compatible alias
 
 // 404 handler for unknown routes
 app.use((req, res, next) => {

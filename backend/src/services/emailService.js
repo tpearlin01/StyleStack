@@ -12,7 +12,13 @@ const getTransporter = () => {
   const user = process.env.EMAIL_USER;
   const pass = process.env.EMAIL_APP_PASSWORD;
 
-  if (!user || !pass || !user.trim() || !pass.trim()) {
+  const isPlaceholder = (val) =>
+    !val ||
+    !val.trim() ||
+    val.includes('your_') ||
+    val.includes('example.com');
+
+  if (isPlaceholder(user) || isPlaceholder(pass)) {
     return null;
   }
 
@@ -252,7 +258,7 @@ const sendPaymentConfirmationEmail = async (order, paymentDetails = {}) => {
   }
 
   const orderId = order.id || order.orderId || 'UNKNOWN';
-  const paymentId = paymentDetails.paymentId || paymentDetails.razorpay_payment_id || order.razorpayPaymentId || 'N/A';
+  const paymentId = paymentDetails.paymentId || paymentDetails.transactionId || order.transactionId || `TXN-${Date.now()}`;
   const dedupKey = `payment_confirmation:${orderId}:${paymentId}`;
 
   // Deduplication check
@@ -306,7 +312,7 @@ const sendPaymentConfirmationEmail = async (order, paymentDetails = {}) => {
           <td style="padding: 32px 24px;">
             <div style="background-color: #10b981/10; border-left: 4px solid #10b981; padding: 12px 16px; border-radius: 4px; margin-bottom: 24px;">
               <h2 style="margin: 0; color: #10b981; font-size: 18px;">Payment Successful &amp; Verified</h2>
-              <p style="margin: 4px 0 0 0; color: #a1a1aa; font-size: 13px;">Your online payment via Razorpay was successfully captured.</p>
+              <p style="margin: 4px 0 0 0; color: #a1a1aa; font-size: 13px;">Your online payment was successfully verified and confirmed.</p>
             </div>
 
             <div style="text-align: center; margin: 24px 0; background-color: #09090b; padding: 20px; border-radius: 12px; border: 1px solid #27272a;">
@@ -323,33 +329,27 @@ const sendPaymentConfirmationEmail = async (order, paymentDetails = {}) => {
                 <td style="text-align: right; color: #ffffff; font-family: monospace;">#${orderId}</td>
               </tr>
               <tr>
-                <td style="padding: 6px 0;"><strong>Razorpay Payment ID:</strong></td>
+                <td style="padding: 6px 0;"><strong>Transaction ID:</strong></td>
                 <td style="text-align: right; color: #ffffff; font-family: monospace;">${paymentId}</td>
               </tr>
-              ${paymentDetails.razorpay_order_id ? `
-              <tr>
-                <td style="padding: 6px 0;"><strong>Razorpay Order ID:</strong></td>
-                <td style="text-align: right; color: #a1a1aa; font-family: monospace;">${paymentDetails.razorpay_order_id}</td>
-              </tr>
-              ` : ''}
               <tr>
                 <td style="padding: 6px 0;"><strong>Payment Date:</strong></td>
                 <td style="text-align: right; color: #ffffff;">${paymentDate}</td>
               </tr>
               <tr>
-                <td style="padding: 6px 0;"><strong>Gateway / Processor:</strong></td>
-                <td style="text-align: right; color: #ffffff;">Razorpay Secure (Test Mode)</td>
+                <td style="padding: 6px 0;"><strong>Payment Method:</strong></td>
+                <td style="text-align: right; color: #ffffff;">${order.paymentMethod || 'Online Payment'}</td>
               </tr>
             </table>
 
             <p style="font-size: 12px; color: #71717a; margin-top: 24px; text-align: center;">
-              This transaction was authenticated and verified server-side using 256-bit cryptographic signature verification.
+              This transaction was authenticated and processed securely.
             </p>
           </td>
         </tr>
         <tr>
           <td style="background-color: #09090b; padding: 20px; text-align: center; font-size: 11px; color: #71717a; border-top: 1px solid #27272a;">
-            <p style="margin: 0;">StyleStack Fashion Private Limited &bull; Secure Payments Powered by Razorpay</p>
+            <p style="margin: 0;">StyleStack Fashion Private Limited &bull; Verified Online Checkout</p>
           </td>
         </tr>
       </table>
@@ -360,11 +360,11 @@ const sendPaymentConfirmationEmail = async (order, paymentDetails = {}) => {
   const plainText = `
 StyleStack - Payment Receipt
 Order ID: #${orderId}
-Razorpay Payment ID: ${paymentId}
+Transaction ID: ${paymentId}
 Payment Status: ${paymentStatus}
 Date: ${paymentDate}
 Total Amount: ₹${totalAmount}
-Gateway: Razorpay Test Mode
+Payment Method: ${order.paymentMethod || 'Online Payment'}
 
 Your payment has been successfully verified and confirmed.
 Thank you for shopping with StyleStack!

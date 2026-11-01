@@ -28,25 +28,6 @@ import { BrandLogo } from './BrandLogo';
 import { ThermalReceiptPrinter } from './ThermalReceiptPrinter';
 import './CompleteOrderButton.css';
 
-// Dynamically load Razorpay standard checkout script
-const loadRazorpayScript = () => {
-  return new Promise((resolve) => {
-    if (typeof window !== 'undefined' && window.Razorpay) {
-      resolve(true);
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.async = true;
-    script.onload = () => resolve(true);
-    script.onerror = () => {
-      console.warn('Failed to load Razorpay checkout script from CDN');
-      resolve(false);
-    };
-    document.body.appendChild(script);
-  });
-};
-
 // Self-contained embedded CompleteOrderButton component with zero external dependencies
 const CompleteOrderButton = ({
   onComplete,
@@ -177,9 +158,9 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
   const [pincode, setPincode] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('COD'); // 'COD' | 'RAZORPAY' | 'UPI' | 'CARD'
+  const [paymentMethod, setPaymentMethod] = useState('COD'); // 'COD' | 'UPI' | 'CARD'
   const [formError, setFormError] = useState('');
-  const [paymentStatusMessage, setPaymentStatusMessage] = useState(null); // { type: 'success' | 'error' | 'warning' | 'info', text: string }
+  const [paymentStatusMessage, setPaymentStatusMessage] = useState(null); // { type: 'error' | 'success', text: string }
 
   // UPI Specific State
   const [upiMode, setUpiMode] = useState('QR'); // 'QR' | 'ID'
@@ -233,7 +214,6 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
       setEmail(activeUser?.email || 'customer@stylestack.com');
       setFormError('');
       setPaymentStatusMessage(null);
-      loadRazorpayScript().catch(() => {});
     }
   }, [isOpen, activeUser?.email]);
 
@@ -255,9 +235,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
     setShowCardOtpModal(false);
 
     const selectedPaymentMethod =
-      paymentMethod === 'RAZORPAY'
-        ? (invoiceOrder?.paymentMethod || 'Razorpay Gateway (Online Verified - Test Mode)')
-        : paymentMethod === 'CARD'
+      paymentMethod === 'CARD'
         ? 'Credit / Debit Card (Online 3D-Secure Verified)'
         : paymentMethod === 'UPI'
         ? (upiMode === 'QR' ? 'Instant UPI (QR Code Scanned)' : `Instant UPI (${upiId || 'Verified'})`)
@@ -513,187 +491,6 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
       return false; // Do not animate main button; animate in the OTP modal
     }
 
-    // RAZORPAY TEST MODE FLOW
-    if (paymentMethod === 'RAZORPAY') {
-      if (isSubmitting) return false;
-      setIsSubmitting(true);
-      setPaymentStatusMessage(null);
-
-      try {
-        const isScriptLoaded = await loadRazorpayScript();
-        if (!isScriptLoaded || typeof window.Razorpay === 'undefined') {
-          setPaymentStatusMessage({
-            type: 'error',
-            text: 'Could not load Razorpay Checkout script. Please check your network connection and retry.',
-          });
-          setIsSubmitting(false);
-          return false;
-        }
-
-        const capturedItems = Array.isArray(cartItems) && cartItems.length > 0
-          ? cartItems.map((item) => ({ ...item }))
-          : [];
-        const capturedSubtotal = Number(subtotal || 0);
-        const capturedGst = Number(gstAmount || 0);
-        const capturedShipping = Number(shippingFee || 0);
-        const capturedTotal = Number(displayedTotal || totalAmount || (capturedSubtotal + capturedGst + capturedShipping));
-        const cleanedPincode = pincode.replace(/\D/g, '') || '400001';
-
-        // 1. Create StyleStack order record
-        const orderRes = await apiService.placeOrder({
-          customer: {
-            name: fullName.trim() || 'Valued Customer',
-            email: email.trim() || activeUser?.email || 'customer@stylestack.com',
-            address: address.trim() || 'Standard Delivery Address',
-            state: state || 'Maharashtra',
-            city: city || 'Mumbai',
-            pincode: cleanedPincode,
-            paymentMethod: 'Razorpay Gateway (Test Mode)',
-          },
-          items: capturedItems,
-          subtotal: capturedSubtotal,
-          gstAmount: capturedGst,
-          shippingFee: capturedShipping,
-          totalAmount: capturedTotal,
-        });
-
-        const activeOrder = orderRes?.data || {
-          id: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
-          orderId: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
-        };
-        const orderId = activeOrder.orderId || activeOrder.id;
-
-        // 2. Create server-side Razorpay payment order
-        const rzpOrderRes = await apiService.createRazorpayOrder({
-          amount: capturedTotal,
-          currency: 'INR',
-          receipt: orderId,
-          orderId,
-          notes: {
-            customerName: fullName.trim() || 'Valued Customer',
-            customerEmail: email.trim() || activeUser?.email || '',
-          },
-        });
-
-        const rzpData = rzpOrderRes?.data || {};
-        const rzpOrderId = rzpData.orderId;
-        const rzpKey = rzpData.keyId || (typeof import.meta !== 'undefined' && import.meta.env?.VITE_RAZORPAY_KEY_ID) || 'rzp_test_placeholder';
-
-        // 3. Launch Razorpay Standard Checkout modal
-        const rzpOptions = {
-          key: rzpKey,
-          amount: rzpData.amount || Math.round(capturedTotal * 100),
-          currency: rzpData.currency || 'INR',
-          name: 'StyleStack Luxury Fashion',
-          description: `Order #${orderId} Payment (Test Mode)`,
-          order_id: rzpOrderId,
-          prefill: {
-            name: fullName.trim() || activeUser?.name || 'Valued Customer',
-            email: email.trim() || activeUser?.email || 'customer@stylestack.com',
-            contact: '9999999999',
-          },
-          theme: {
-            color: '#e11d48',
-          },
-          handler: async function (response) {
-            // Successful payment returned from Razorpay modal
-            try {
-              setPaymentStatusMessage({
-                type: 'info',
-                text: 'Verifying payment signature with StyleStack server...',
-              });
-
-              const verifyRes = await apiService.verifyRazorpayPayment({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                orderId: orderId,
-              });
-
-              if (verifyRes.success) {
-                setPaymentStatusMessage({
-                  type: 'success',
-                  text: `Payment Successful & Verified! Transaction Ref: ${response.razorpay_payment_id}`,
-                });
-
-                const confirmedOrder = {
-                  ...activeOrder,
-                  subtotal: capturedSubtotal,
-                  gstAmount: capturedGst,
-                  shippingFee: capturedShipping,
-                  totalAmount: capturedTotal,
-                  total: capturedTotal,
-                  paymentMethod: `Razorpay Test Mode (${response.razorpay_payment_id})`,
-                  paymentStatus: 'Paid',
-                  razorpayPaymentId: response.razorpay_payment_id,
-                  razorpayOrderId: response.razorpay_order_id,
-                };
-
-                setInvoiceOrder(confirmedOrder);
-                setGeneratedInvoice(confirmedOrder);
-
-                setTimeout(() => {
-                  handleTransitionToReceipt();
-                }, 1200);
-              } else {
-                setPaymentStatusMessage({
-                  type: 'error',
-                  text: verifyRes.message || 'Payment signature verification failed. Please contact support.',
-                });
-                setIsSubmitting(false);
-              }
-            } catch (vErr) {
-              setPaymentStatusMessage({
-                type: 'error',
-                text: 'Verification error: ' + (vErr.message || 'Unknown verification error'),
-              });
-              setIsSubmitting(false);
-            }
-          },
-          modal: {
-            ondismiss: function () {
-              setIsSubmitting(false);
-              setPaymentStatusMessage({
-                type: 'warning',
-                text: 'Payment was cancelled. You can retry payment or choose another payment method.',
-              });
-              apiService.recordPaymentFailure({
-                orderId,
-                error: { reason: 'payment_cancelled_by_user' },
-              });
-            },
-          },
-        };
-
-        const rzp = new window.Razorpay(rzpOptions);
-
-        rzp.on('payment.failed', function (resp) {
-          setIsSubmitting(false);
-          const failureDesc = resp?.error?.description || resp?.error?.reason || 'Transaction could not be completed.';
-          setPaymentStatusMessage({
-            type: 'error',
-            text: `Payment Failed: ${failureDesc}`,
-          });
-          apiService.recordPaymentFailure({
-            orderId,
-            razorpay_payment_id: resp?.error?.metadata?.payment_id,
-            error: resp?.error,
-          });
-        });
-
-        rzp.open();
-        return false;
-      } catch (err) {
-        console.error('Razorpay initialization exception:', err);
-        setIsSubmitting(false);
-        setPaymentStatusMessage({
-          type: 'error',
-          text: 'Payment initialization error: ' + (err.message || 'Could not reach server'),
-        });
-        return false;
-      }
-    }
-
     // UPI FLOW: Instant background preparation without early navigation timers
     if (paymentMethod === 'UPI') {
       if (upiMode === 'ID') {
@@ -731,7 +528,19 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
       return false;
     }
 
+    // Support simulated payment failure
+    if (cleanedOtp === '000000') {
+      setIsCardVerifying(false);
+      setShowCardOtpModal(false);
+      setPaymentStatusMessage({
+        type: 'error',
+        text: 'Payment Failed: Transaction was declined by card issuing bank (Simulated Failure Code 000000). Your card was not charged.',
+      });
+      return false;
+    }
+
     setIsCardVerifying(true);
+    setPaymentStatusMessage(null);
     await executePlaceOrder('Credit / Debit Card (3D-Secure Verified)');
     setIsCardVerifying(false);
     return true;
@@ -794,22 +603,24 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
 
             {paymentStatusMessage && (
               <div
-                className={`p-3.5 rounded-xl border text-xs font-medium flex items-center gap-2.5 transition-all animate-in fade-in duration-150 ${
-                  paymentStatusMessage.type === 'success'
-                    ? 'bg-emerald-950/40 border-emerald-800/60 text-emerald-300'
-                    : paymentStatusMessage.type === 'warning'
-                    ? 'bg-amber-950/40 border-amber-800/60 text-amber-300'
-                    : paymentStatusMessage.type === 'info'
-                    ? 'bg-blue-950/40 border-blue-800/60 text-blue-300'
-                    : 'bg-rose-950/40 border-rose-800/60 text-rose-300'
+                className={`p-3.5 rounded-xl border text-xs font-medium flex items-center justify-between gap-2.5 transition-all animate-in fade-in duration-150 ${
+                  paymentStatusMessage.type === 'error'
+                    ? 'bg-rose-950/40 border-rose-800/60 text-rose-300'
+                    : 'bg-emerald-950/40 border-emerald-800/60 text-emerald-300'
                 }`}
               >
-                {paymentStatusMessage.type === 'success' ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                ) : (
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                )}
-                <span>{paymentStatusMessage.text}</span>
+                <div className="flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                  <span>{paymentStatusMessage.text}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPaymentStatusMessage(null)}
+                  className="text-zinc-400 hover:text-white text-xs font-bold p-1 cursor-pointer"
+                  title="Dismiss"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
               </div>
             )}
 
@@ -938,12 +749,13 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
               </div>
 
               {/* Payment Method Options Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <button
                   type="button"
                   onClick={() => {
                     setPaymentMethod('COD');
                     setPaymentStatusMessage(null);
+                    setFormError('');
                   }}
                   className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
                     paymentMethod === 'COD'
@@ -953,27 +765,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
                 >
                   <Banknote className="w-5 h-5 text-rose-500 mb-1" />
                   <p className="font-bold text-xs">Cash on Delivery</p>
-                  <p className="text-[10px] text-zinc-500">Pay on delivery</p>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPaymentMethod('RAZORPAY');
-                    setPaymentStatusMessage(null);
-                  }}
-                  className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer relative ${
-                    paymentMethod === 'RAZORPAY'
-                      ? 'border-rose-600 bg-rose-600/10 text-white ring-2 ring-rose-500/30'
-                      : 'border-zinc-800 bg-zinc-950/60 hover:border-zinc-700 text-zinc-300'
-                  }`}
-                >
-                  <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[9px] font-black tracking-wider bg-rose-500/20 text-rose-400 border border-rose-500/30">
-                    TEST
-                  </span>
-                  <ShieldCheck className="w-5 h-5 text-rose-500 mb-1" />
-                  <p className="font-bold text-xs">Razorpay Secure</p>
-                  <p className="text-[10px] text-zinc-500">Cards, UPI, NetBank</p>
+                  <p className="text-[10px] text-zinc-500">Instant placement</p>
                 </button>
 
                 <button
@@ -981,6 +773,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
                   onClick={() => {
                     setPaymentMethod('UPI');
                     setPaymentStatusMessage(null);
+                    setFormError('');
                   }}
                   className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
                     paymentMethod === 'UPI'
@@ -989,7 +782,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
                   }`}
                 >
                   <QrCode className="w-5 h-5 text-rose-500 mb-1" />
-                  <p className="font-bold text-xs">Instant UPI / QR</p>
+                  <p className="font-bold text-xs">Instant UPI / GPay</p>
                   <p className="text-[10px] text-zinc-500">Scan QR or enter VPA</p>
                 </button>
 
@@ -998,6 +791,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
                   onClick={() => {
                     setPaymentMethod('CARD');
                     setPaymentStatusMessage(null);
+                    setFormError('');
                   }}
                   className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
                     paymentMethod === 'CARD'
@@ -1006,68 +800,10 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
                   }`}
                 >
                   <CreditCard className="w-5 h-5 text-rose-500 mb-1" />
-                  <p className="font-bold text-xs">Simulated Card</p>
-                  <p className="text-[10px] text-zinc-500">3D-Secure Demo</p>
+                  <p className="font-bold text-xs">Debit / Credit Card</p>
+                  <p className="text-[10px] text-zinc-500">3D-Secure Verified</p>
                 </button>
               </div>
-
-              {/* DYNAMIC SUBSECTION: RAZORPAY TEST MODE */}
-              {paymentMethod === 'RAZORPAY' && (
-                <div className="bg-zinc-950 p-5 rounded-2xl border border-zinc-800 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-rose-600/20 border border-rose-500/30 flex items-center justify-center text-rose-400">
-                        <ShieldCheck className="w-4 h-4 text-rose-500" />
-                      </div>
-                      <div>
-                        <h5 className="font-bold text-xs text-white flex items-center gap-2">
-                          <span>Razorpay Payment Gateway</span>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold">
-                            Test Mode Active
-                          </span>
-                        </h5>
-                        <p className="text-[10px] text-zinc-400">
-                          Razorpay Standard Checkout with 256-bit Server Signature Verification
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                    <div className="bg-zinc-900 p-3 rounded-xl border border-zinc-800/80 space-y-1">
-                      <p className="text-zinc-300 font-semibold text-[11px] flex items-center gap-1.5">
-                        <CreditCard className="w-3.5 h-3.5 text-rose-400" />
-                        <span>Accepted Instruments</span>
-                      </p>
-                      <p className="text-[11px] text-zinc-400 leading-relaxed">
-                        Simulated Credit Cards, Debit Cards, UPI (GPay/PhonePe), NetBanking (50+ Banks), and Wallets.
-                      </p>
-                    </div>
-
-                    <div className="bg-zinc-900 p-3 rounded-xl border border-zinc-800/80 space-y-1">
-                      <p className="text-zinc-300 font-semibold text-[11px] flex items-center gap-1.5">
-                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>Zero Risk Sandbox</span>
-                      </p>
-                      <p className="text-[11px] text-zinc-400 leading-relaxed">
-                        Operating in Razorpay Sandbox / Test Mode. No real financial charges will occur.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="p-3 bg-zinc-900/60 rounded-xl border border-zinc-800 text-[11px] text-zinc-400 flex items-center justify-between">
-                    <span>Payable Total Amount:</span>
-                    <span className="font-bold font-mono text-white text-xs">₹{Number(displayedTotal).toLocaleString('en-IN')}</span>
-                  </div>
-
-                  {isSubmitting && (
-                    <div className="p-3 rounded-xl bg-rose-600/10 border border-rose-500/30 flex items-center justify-center gap-2 text-xs text-rose-300 font-bold animate-pulse">
-                      <Loader2 className="w-4 h-4 animate-spin text-rose-500" />
-                      <span>Connecting to Razorpay gateway... please complete payment in popup.</span>
-                    </div>
-                  )}
-                </div>
-              )}
 
               {/* DYNAMIC SUBSECTION A: INSTANT UPI / GPAY */}
               {paymentMethod === 'UPI' && (
@@ -1371,13 +1107,25 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
                 </div>
 
                 <div className="flex items-center justify-between text-[11px] text-zinc-400 px-1">
-                  <span>Expires in: 04:59</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowCardOtpModal(false);
+                      setPaymentStatusMessage({
+                        type: 'error',
+                        text: 'Payment Failed: Transaction was declined by card issuing bank (Simulated Failure). No charges were incurred. You can retry or choose another payment method.',
+                      });
+                    }}
+                    className="text-zinc-500 hover:text-rose-400 transition cursor-pointer"
+                  >
+                    Simulate Failure
+                  </button>
                   <button
                     type="button"
                     onClick={() => setCardOtp('123456')}
                     className="text-rose-400 hover:text-rose-300 font-semibold cursor-pointer"
                   >
-                    Auto-Fill Demo OTP
+                    Auto-Fill Demo OTP (123456)
                   </button>
                 </div>
 
