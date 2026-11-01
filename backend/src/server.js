@@ -8,10 +8,11 @@ const connectDB = require('./config/db');
 connectDB();
 
 const PORT = process.env.PORT || 5000;
+const HOST = '0.0.0.0';
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
-    console.log(`[StyleStack Backend] Server running on port ${PORT}`);
+  app.listen(PORT, HOST, () => {
+    console.log(`[StyleStack Backend] Server running on http://${HOST}:${PORT}`);
   });
 }
 

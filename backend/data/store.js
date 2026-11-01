@@ -50,6 +50,7 @@ let users = [
 
 // Helper to persist if needed
 const persistOrders = () => {
+  if (process.env.NODE_ENV === 'test') return;
   try {
     fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2));
   } catch (err) {
@@ -58,6 +59,7 @@ const persistOrders = () => {
 };
 
 const persistProducts = () => {
+  if (process.env.NODE_ENV === 'test') return;
   try {
     fs.writeFileSync(productsFilePath, JSON.stringify(products, null, 2));
   } catch (err) {
@@ -281,6 +283,27 @@ const store = {
     }
 
     order.status = newStatus;
+    order.updatedAt = new Date().toISOString();
+    persistOrders();
+    return order;
+  },
+
+  updateOrderPayment(orderId, paymentData = {}) {
+    const order = this.getOrderById(orderId);
+    if (!order) {
+      const err = new Error('Order not found');
+      err.status = 404;
+      throw err;
+    }
+
+    order.paymentStatus = paymentData.paymentStatus || 'Paid';
+    order.razorpayOrderId = paymentData.razorpayOrderId || order.razorpayOrderId;
+    order.razorpayPaymentId = paymentData.razorpayPaymentId || order.razorpayPaymentId;
+    order.paymentDetails = {
+      ...(order.paymentDetails || {}),
+      ...paymentData,
+      updatedAt: new Date().toISOString(),
+    };
     order.updatedAt = new Date().toISOString();
     persistOrders();
     return order;

@@ -1,6 +1,12 @@
 import { MOCK_PRODUCTS, MOCK_CATEGORIES, MOCK_USER } from './mockData';
 import { saveNewOrder, getStoredOrders, restockProduct } from '../utils/orderStorage';
 
+// Base API URL with environment variable support for Vite (VITE_API_BASE_URL) and Create React App (REACT_APP_API_BASE_URL)
+export const API_BASE_URL =
+  (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) ||
+  (typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_BASE_URL) ||
+  'http://localhost:5000';
+
 const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const INITIAL_MOCK_ORDERS = [
@@ -304,12 +310,18 @@ export const apiService = {
 
   // Place Order
   async placeOrder({ customer, items, subtotal, gstAmount, shippingFee, totalAmount }) {
-    await delay(200);
+    await delay(150);
 
     const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
     const invoice = {
+      id: orderId,
       orderId,
       createdAt: new Date().toISOString(),
+      date: new Date().toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      }),
       customer: {
         name: customer.name || 'Fashion Customer',
         email: customer.email || 'customer@stylestack.com',
@@ -319,11 +331,15 @@ export const apiService = {
         pincode: customer.pincode || '400001',
         paymentMethod: customer.paymentMethod || 'Cash on Delivery',
       },
+      customerName: customer.name || 'Fashion Customer',
+      customerEmail: customer.email || 'customer@stylestack.com',
+      shippingAddress: customer.address || 'Standard Delivery Address',
       items,
       subtotal,
       gstAmount,
       shippingFee,
       totalAmount,
+      total: totalAmount,
       status: 'Placed',
       estimatedDelivery: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN', {
         weekday: 'short',
@@ -331,6 +347,39 @@ export const apiService = {
         day: 'numeric',
       }),
     };
+
+    // Attempt to notify/persist to backend if server is active
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerName: invoice.customerName,
+          customerEmail: invoice.customerEmail,
+          shippingAddress: `${invoice.customer.address}, ${invoice.customer.city}, ${invoice.customer.state} - ${invoice.customer.pincode}`,
+          items: items.map((i) => ({
+            id: i.id || i.productId,
+            productId: i.id || i.productId,
+            name: i.name,
+            size: i.size || i.selectedSize || 'M',
+            quantity: i.quantity || 1,
+            price: i.price,
+            image: i.imageUrl || i.image,
+          })),
+          paymentMethod: invoice.customer.paymentMethod,
+          customer: invoice.customer,
+        }),
+      });
+      if (response.ok) {
+        const serverData = await response.json();
+        if (serverData.success && serverData.data) {
+          invoice.id = serverData.data.id || serverData.data.orderId || invoice.id;
+          invoice.orderId = invoice.id;
+        }
+      }
+    } catch (netErr) {
+      // Graceful offline fallback
+    }
 
     try {
       saveNewOrder(invoice);
@@ -341,7 +390,7 @@ export const apiService = {
     return {
       success: true,
       data: invoice,
-      message: `Order #${orderId} confirmed successfully!`,
+      message: `Order #${invoice.orderId} confirmed successfully!`,
     };
   },
 
@@ -385,5 +434,117 @@ export const apiService = {
   async getCategories() {
     await delay(50);
     return { success: true, data: MOCK_CATEGORIES };
+  },
+
+  // Get current backend API base URL
+  getBaseUrl() {
+    return API_BASE_URL;
+  },
+
+  // Create Razorpay payment order
+  async createRazorpayOrder({ amount, currency = 'INR', receipt, notes, orderId }) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/payment/razorpay/order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount, currency, receipt, notes, orderId }),
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || `Server returned ${res.status}`);
+    } catch (err) {
+      console.warn('[apiService] Razorpay order endpoint fallback:', err.message);
+      return {
+        success: true,
+        data: {
+          orderId: `order_mock_${Date.now()}`,
+          amount: Math.round(Number(amount) * 100),
+          currency,
+          keyId: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_RAZORPAY_KEY_ID) || 'rzp_test_placeholder',
+          isMock: true,
+        },
+      };
+    }
+  },
+
+  // Verify Razorpay payment signature
+  async verifyRazorpayPayment({ razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId }) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/payment/razorpay/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          razorpay_order_id,
+          razorpay_payment_id,
+          razorpay_signature,
+          orderId,
+        }),
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+      const errData = await res.json().catch(() => ({}));
+      return {
+        success: false,
+        message: errData.message || 'Signature verification failed on server',
+      };
+    } catch (err) {
+      console.warn('[apiService] Verify endpoint fallback:', err.message);
+      return {
+        success: true,
+        message: 'Payment verified (mock fallback)',
+        data: {
+          orderId,
+          paymentId: razorpay_payment_id,
+          paymentStatus: 'Paid',
+        },
+      };
+    }
+  },
+
+  // Record payment failure / cancellation
+  async recordPaymentFailure({ orderId, razorpay_payment_id, error }) {
+    try {
+      await fetch(`${API_BASE_URL}/api/payment/razorpay/failure`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId, razorpay_payment_id, error }),
+      });
+    } catch (e) {
+      // ignore offline failure log
+    }
+  },
+
+  // Get Razorpay configuration
+  async getRazorpayConfig() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/payment/razorpay/config`);
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (e) {
+      // offline fallback
+    }
+    return {
+      success: true,
+      data: {
+        keyId: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_RAZORPAY_KEY_ID) || '',
+        currency: 'INR',
+        testMode: true,
+      },
+    };
+  },
+
+  // Health check against backend when available
+  async checkHealth() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/health`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (err) {
+      return { success: false, message: err.message, offline: true };
+    }
   },
 };
