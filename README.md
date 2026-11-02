@@ -1,130 +1,131 @@
 # StyleStack
 
-**AI Mini Project — Semester V, Computer Engineering, DBIT**
+**AI & Cloud Computing Mini Project — Semester V, Computer Engineering, DBIT**
 
-StyleStack is a full-stack fashion e-commerce platform designed to simplify online apparel shopping and store management. It provides product browsing, filtering, cart and order management, product image uploads, invoice generation, and administrative analytics.
+StyleStack is a cloud-native, full-stack fashion e-commerce platform designed to streamline online apparel retail, interactive garment previews, automated taxation, and distributed store management.
 
-## Problem Statement
+The application architecture demonstrates multi-tier cloud integration across five distinct cloud delivery models: **Platform as a Service (PaaS)** for both frontend edge and backend runtimes, **Database as a Service (DBaaS)** for resilient persistence, **Storage as a Service (STaaS)** for cloud asset management, **Software as a Service (SaaS)** for transactional customer communication, and **Function as a Service (FaaS)** for event-driven serverless inventory monitoring.
 
-Managing an apparel store involves maintaining product catalogs, processing customer orders, organizing product images, and monitoring sales. These tasks can become difficult without a centralized system.
+---
 
-StyleStack addresses these challenges through a web-based e-commerce application that combines a customer-facing shopping interface with backend services for product management, order processing, and store analytics.
+## Cloud Delivery & Service Models
+
+| Delivery Model      | Cloud Service                   | Component / Purpose                                                                                                                     |
+| :------------------ | :------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------- |
+| **PaaS (Frontend)** | **Vercel**                      | Edge hosting, continuous deployment (CI/CD), global CDN distribution, and SSL termination for the React Vite SPA.                       |
+| **PaaS (Backend)**  | **Microsoft Azure App Service** | Fully managed Linux Node.js runtime hosting the Express 5 REST API (`stylestack-api`) with zero OS maintenance.                         |
+| **DBaaS**           | **MongoDB Atlas**               | Managed document database cluster for users, products, orders, and reviews, backed by local JSON fallback storage.                      |
+| **STaaS**           | **Azure Blob Storage**          | Locally redundant cloud storage (`stylestackfnstorage`) providing persistent storage for function packages and runtime metadata.        |
+| **SaaS**            | **Nodemailer via SMTP/Gmail**   | Cloud-delivered transactional email service dispatching itemized customer order confirmations and invoice receipts.                     |
+| **FaaS**            | **Azure Functions**             | Serverless HTTP microservice (`stylestack-alerts-fn`) running `lowStockAlert` on Node.js 22 to evaluate inventory thresholds on demand. |
+
+---
 
 ## Key Features
 
-- **Product Catalog:** Browse and filter apparel products.
-- **Shopping Cart:** Manage products selected for purchase.
-- **Order Management:** Create and manage customer orders.
-- **Admin Management:** Support product administration and store operations.
-- **Image Uploads:** Handle product image uploads using Multer.
-- **Invoice Generation:** Generate invoices with 5% GST.
-- **Store Analytics:** Provide insights into store activity.
-- **REST API:** Connect the frontend with backend services.
-- **Automated Testing:** Test backend functionality using Jest and Supertest.
+- **Interactive Storefront & Apparel Preview:** Browse and filter apparel collections by category, gender, and price with instant cart synchronization.
+- **Serverless Inventory Alerts (FaaS):** Isolated on-demand cloud function that analyzes stock counts and triggers administrative threshold alerts.
+- **Resilient Multi-Mode Data Persistence (DBaaS):** Primary cloud data clustering via MongoDB Atlas with automatic, graceful failover to local JSON storage during upstream connectivity drops.
+- **Automated Invoice & Tax Generation:** Dynamic calculations featuring 5% Goods and Services Tax (GST) and itemized delivery fee logic.
+- **Simulated Multi-Channel Checkout:** Zero-risk checkout supporting Cash on Delivery (COD), UPI QR generation, and 3D-Secure credit/debit card OTP verification.
+- **Transactional Customer Notifications (SaaS):** Automated non-blocking email delivery via Nodemailer with Gmail SMTP.
+- **Store Analytics & Administration:** Administrative dashboard to manage apparel catalogs, inspect customer feedback, and evaluate gross revenue metrics.
+- **Automated Backend Testing:** End-to-end API unit and integration testing via Jest and Supertest.
 
-## Key Differentiators
-
-- Integrated customer shopping and store management.
-- Centralized product and order operations.
-- Automated invoice generation with GST calculation.
-- Store analytics for administrative use.
-- Modular frontend and backend architecture.
-- Support for MongoDB with JSON-based fallback storage, where configured by the application.
+---
 
 ## Tech Stack
 
-| Component          | Technology         | Purpose                                |
-| ------------------ | ------------------ | -------------------------------------- |
-| Frontend           | React              | User interface and reusable components |
-| Development Server | Vite               | Frontend development and build tooling |
-| Styling            | Tailwind CSS       | Responsive interface styling           |
-| Backend            | Node.js            | Server-side JavaScript runtime         |
-| API Framework      | Express.js         | REST API and request handling          |
-| Database           | MongoDB            | Database storage when configured       |
-| Fallback Storage   | JSON files         | Local data storage where supported     |
-| Authentication     | JWT                | Token-based authentication             |
-| File Uploads       | Multer             | Product image upload handling          |
-| Testing            | Jest and Supertest | Backend testing                        |
-| Payment & Checkout | Simulated Engine   | Zero-risk 3D-Secure, UPI QR, and COD   |
-| Email Service      | Nodemailer + Gmail | Transactional email notifications      |
+| Component             | Technology                  | Purpose                                                            |
+| :-------------------- | :-------------------------- | :----------------------------------------------------------------- |
+| Frontend Framework    | React.js (Vite)             | Single-page application (SPA) and component rendering              |
+| Frontend PaaS         | Vercel                      | Production edge build and CDN deployment                           |
+| Styling & Icons       | Tailwind CSS & Lucide Icons | Responsive styling and vector UI iconography                       |
+| Backend Runtime       | Node.js (20/22 LTS)         | Server-side JavaScript execution engine                            |
+| Backend Framework     | Express.js 5                | RESTful API routing, middleware, and request handling              |
+| Backend PaaS          | Azure App Service (Linux)   | Managed cloud application runtime hosting `stylestack-api`         |
+| Serverless FaaS       | Azure Functions v4          | Serverless HTTP Trigger microservice (`stylestack-alerts-fn`)      |
+| Cloud Storage (STaaS) | Azure Blob Storage          | Storage account (`stylestackfnstorage`) for metadata and artifacts |
+| Database (DBaaS)      | MongoDB Atlas               | Managed NoSQL document database cluster                            |
+| Fallback Storage      | Local JSON Files            | Offline-first data persistence fallback                            |
+| Authentication        | JSON Web Tokens (JWT)       | Stateless authorization and role-based access control              |
+| Email Service (SaaS)  | Nodemailer + Gmail SMTP     | Transactional invoice dispatches and order notifications           |
+| Testing Suites        | Jest & Supertest            | Automated test-driven validation of route handlers                 |
 
-## Project Architecture
+---
 
-StyleStack follows a client-server architecture. The React frontend communicates with the Node.js and Express backend through REST API endpoints.
+## Project Structure
 
 ```text
 StyleStack/
-├── frontend/
-│   └── React application
-├── backend/
-│   ├── controllers/
-│   ├── routes/
-│   ├── middleware/
-│   ├── data/
-│   │   ├── products.json
-│   │   └── orders.json
-│   └── tests/
-├── PRD.md
-├── AGENTS.md
+├── frontend/                     # React + Vite client-side single page application
+│   ├── src/
+│   │   ├── components/            # Reusable UI widgets, navigation, and modals
+│   │   ├── pages/                 # Storefront, apparel preview, cart, and admin views
+│   │   └── App.jsx
+│   ├── package.json
+│   └── vite.config.js
+│
+├── backend/                      # Express.js REST API backend
+│   ├── src/
+│   │   ├── controllers/           # Business logic handlers (auth, products, orders)
+│   │   ├── routes/                # API endpoint definitions
+│   │   ├── models/                # Mongoose schemas (User, Product, Order)
+│   │   ├── middleware/            # CORS, authentication, and error validation
+│   │   ├── data/                  # JSON fallback store (products.json, orders.json)
+│   │   └── utils/                 # Migration utilities and SMTP email transporter
+│   ├── tests/                     # Jest automated test suites
+│   ├── app.js                     # Express app initialization
+│   ├── server.js                  # HTTP listener and pre-flight database connection
+│   └── package.json
+│
+├── stock-fn/                     # Azure Functions (FaaS) Serverless Microservice
+│   ├── src/
+│   │   └── functions/
+│   │       └── lowStockAlert.js   # HTTP Trigger evaluating inventory threshold logic
+│   ├── host.json                  # Azure Functions runtime configuration
+│   └── package.json               # @azure/functions v4 dependencies
+│
+├── PRD.md                        # Product Requirements Documentation
+├── AGENTS.md                     # Engineering guidance and system specs
 └── README.md
 ```
 
-The directory tree highlights the main project components. Additional files and directories may exist in the repository.
+---
 
-### Directory Responsibilities
-
-- **frontend/** — Customer-facing interface and shopping functionality.
-- **backend/controllers/** — Request handling and application logic.
-- **backend/routes/** — REST API route definitions.
-- **backend/middleware/** — Request processing, error handling, and related middleware.
-- **backend/data/** — JSON data files used by the application.
-- **backend/tests/** — Automated backend tests.
-- **PRD.md** — Product requirements documentation.
-- **AGENTS.md** — Project-specific development guidance.
-
-## Application Architecture
-
-The application is organized into three main layers:
-
-1. **Frontend:** Displays the product catalog and provides the shopping interface.
-2. **Backend:** Processes API requests, handles business logic, and manages application operations.
-3. **Data Storage:** Uses the configured database or supported JSON-based storage mechanism.
-
-The frontend sends HTTP requests to the backend. Express routes direct requests to the relevant controllers, while middleware supports request processing and error handling.
-
-## Installation and Setup
+## Installation & Setup
 
 ### Prerequisites
 
-- Node.js and npm
+- Node.js (v18.x, v20.x, or v22.x LTS) and npm
 - Git
-- MongoDB, if using MongoDB storage
+- Azure CLI (optional, for deploying serverless functions)
+- MongoDB Atlas account (or use local fallback)
 
-### Clone the Repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/tpearlin01/StyleStack.git
 cd StyleStack
 ```
 
-### Backend Setup
-
-Open a terminal in the project directory and run:
+### 2. Backend Setup
 
 ```bash
 cd backend
 npm install
 ```
 
-Configure the required environment variables in the backend `.env` file.
+Create a `.env` file inside the `backend/` directory:
 
 ```env
 PORT=5000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
+MONGODB_URI=your_mongodb_atlas_connection_string
+JWT_SECRET=your_jwt_secret_key
+EMAIL_USER=your_store_email@gmail.com
+EMAIL_APP_PASSWORD=your_google_app_password
+CLIENT_URL=http://localhost:5173
 ```
-
-These are configuration examples. Use the variable names and values required by the actual backend implementation. Keep secret values out of version control.
 
 Start the backend using the script defined in `backend/package.json`:
 
@@ -132,124 +133,28 @@ Start the backend using the script defined in `backend/package.json`:
 npm start
 ```
 
-### Frontend Setup
+### 3. Frontend Setup
 
-Open a separate terminal from the project root:
+Open a separate terminal from the repository root:
 
 ```bash
 cd frontend
 npm install
+```
+
+Create a `.env` file inside the `frontend/` directory:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000
+```
+
+Run the development server:
+
+```bash
 npm run dev
 ```
 
-Open the local URL printed by Vite to access the frontend.
-
-## Database and Data Storage
-
-StyleStack features a production-ready **MongoDB Atlas** integration with an intelligent, resilient fallback mechanism.
-
-### 1. MongoDB Atlas Setup Instructions
-
-Follow these steps to connect StyleStack to a free-tier MongoDB Atlas cluster:
-
-1. **Create an Atlas Account:**
-   - Sign up or log in at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
-2. **Deploy a Free Cluster (M0 Sandbox):**
-   - Click **Create Database** &rarr; Select the **M0 Free** cluster tier &rarr; Choose your preferred cloud provider and region (e.g., AWS / Mumbai).
-3. **Configure Database Access (User Credentials):**
-   - In the Atlas sidebar, navigate to **Security** &rarr; **Database Access**.
-   - Click **Add New Database User**.
-   - Select **Password** authentication.
-   - Enter a username (e.g., `stylestack_admin`) and a secure password.
-   - Assign the built-in role: **Read and write to any database**.
-4. **Configure Network Access (IP Whitelist):**
-   - In the Atlas sidebar, navigate to **Security** &rarr; **Network Access**.
-   - Click **Add IP Address**.
-   - For local development and Azure cloud deployment, choose **Allow Access From Anywhere** (`0.0.0.0/0`) or add your current public IP address.
-5. **Obtain the Connection String:**
-   - In the Atlas sidebar, click **Database** &rarr; Click **Connect** on your cluster.
-   - Select **Drivers** (Node.js).
-   - Copy the SRV connection URI:
-     ```text
-     mongodb+srv://<username>:<password>@<cluster-url>/<database>?retryWrites=true&w=majority
-     ```
-6. **Set Connection String in `backend/.env`:**
-   - In `backend/.env`, set `MONGODB_URI` with your actual username, password, and database name (e.g., `stylestack`):
-     ```env
-     MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-url>/stylestack?retryWrites=true&w=majority
-     ```
-
-### 2. Startup Connection Sequence & Fallback Mechanism
-
-- **Pre-Flight Connection:** The backend (`backend/src/server.js` and `backend/app.js`) connects to MongoDB Atlas *before* launching the Express HTTP listener.
-- **Graceful Error Handling:** If `MONGODB_URI` is missing or the cluster is temporarily unreachable (e.g., DNS error, IP block, network disconnect), the server catches the error, outputs clear diagnostic logs, and engages the local JSON store (`backend/src/data/store.js`) as a fallback so development and testing never stall.
-- **Dynamic Mode Detection:** The backend logs its active state on startup:
-  - `[DB] Storage Mode: MONGODB_ATLAS (Primary)`
-  - `[DB Mode] Falling back gracefully to local JSON fallback store.`
-
-### 3. Automated Zero-Loss Data Migration
-
-On the first successful connection to an empty MongoDB database:
-- The migration utility (`backend/src/utils/migrate.js`) scans `backend/data/products.json` and `backend/data/orders.json`.
-- It idempotently seeds all catalog products (130+ apparel items), historical orders, and default users without duplicating records.
-- If existing documents are found, they are preserved intact without data loss.
-
-### 4. Models and Data Schema
-
-- **Product (`backend/src/models/Product.js`):** Supports `id`, `name`/`title`, `brand`, `category`, `gender`, `price`, `sizes`, `stock`/`inStock`/`stockQuantity`, `badge`, `image`/`imageUrl`, `rating`, `reviewsCount`, and `description`. Pre-save hooks keep field aliases in sync.
-- **Order (`backend/src/models/Order.js`):** Stores `id`/`orderId`, `customer` info, itemized apparel items, `subtotal`, `taxAmount`/`gstAmount` (5% GST), `shippingFee`, `total`/`totalAmount`, order `status` (`Placed`, `Dispatched`, `Delivered`), `paymentMethod`, `paymentStatus` (`Pending`, `Completed`), and Razorpay transaction IDs.
-- **User (`backend/src/models/User.js`):** Manages `id`, `name`, `firstName`, `lastName`, `email`, `password`, and `role` (`customer`, `admin`).
-
-### 5. Stock Management & Order Processing
-
-When an order is submitted:
-1. Stock availability is verified for each item in MongoDB.
-2. An order document is created with full tax and customer breakdowns.
-3. Inventory is automatically decremented (`$inc: { stock: -qty, stockQuantity: -qty, inStock: -qty }`).
-4. Order confirmation email is dispatched via Nodemailer.
-
-## API Documentation
-
-The backend exposes REST API endpoints for product management, authentication, order processing, analytics, and file uploads.
-
-The following reference summarizes the API groups documented for StyleStack. Confirm supported methods and request fields in the corresponding backend route and controller files.
-
-| API Endpoint              | Purpose                                |
-| ------------------------- | -------------------------------------- |
-| `/api/health`             | Health check                           |
-| `/api/auth/register`      | User registration                      |
-| `/api/auth/login`         | User login                             |
-| `/api/products`           | Product listing and product operations |
-| `/api/orders`             | Order creation and order listing       |
-| `/api/orders/:id`         | Retrieve an order by its identifier    |
-| `/api/orders/:id/status`  | Update order status                    |
-| `/api/analytics/overview` | Store analytics overview               |
-| `/api/analytics/feedback` | Analytics-related feedback operations  |
-| `/api/analytics/returns`  | Return-related analytics               |
-| `/api/upload`             | File upload handling                   |
-| `/api/email/test`          | Test Gmail SMTP email transmission     |
-
-Product filtering and CRUD operations depend on the supported route methods and query parameters. Authentication requirements and access permissions depend on the corresponding middleware and route configuration.
-
-### API Request Handling
-
-The backend uses Express routes and controllers to process HTTP requests. Depending on the endpoint, requests may include query parameters, headers, or a JSON request body. The backend returns a response containing the result or an error.
-
-## Invoice Generation
-
-StyleStack supports invoice generation with 5% GST.
-
-- **Subtotal:** Sum of the applicable item prices.
-- **GST:** 5% of the applicable taxable amount.
-- **Total:** Subtotal plus GST.
-
-The final calculation follows the invoice logic implemented in the application.
-
-## Testing
-
-The backend uses Jest and Supertest for automated testing.
-
-The test suites help verify backend functionality, request handling, and API responses.
+### 4. Automated Testing
 
 Run the test script defined in `backend/package.json`:
 
@@ -258,67 +163,72 @@ cd backend
 npm test
 ```
 
-## Order Processing, Simulated Payment & Cloud Setup
+---
 
-### 1. Simulated Checkout and Payment Processing
+## Database Architecture & Resilient Fallback
 
-StyleStack features a zero-risk simulated checkout engine that validates and processes payments without requiring external third-party payment gateways:
+StyleStack implements a hybrid persistence strategy designed for high availability:
 
-- **Cash on Delivery (COD):** Allows customers to place orders instantly with `Payment Status: Pending`, ideal for physical goods delivery.
-- **Instant UPI / GPay:** Supports dynamic UPI QR code scanning and UPI ID (VPA) verification simulation.
-- **Credit / Debit Card (3D-Secure Verified):** Validates 16-digit card number, MM/YY expiry, CVV, and cardholder name, followed by a simulated 3D-Secure bank OTP modal:
-  - **Success Simulation:** Entering demo OTP `123456` (or clicking *Auto-Fill Demo OTP*) confirms payment and transitions to the interactive invoice receipt.
-  - **Failure Simulation:** Entering `000000` (or clicking *Simulate Failure*) simulates bank decline and displays an explicit payment failure alert with retry guidance.
-- **Automated Order Creation & Stock Update:** Successful orders are saved to MongoDB Atlas, inventory is decremented, and an order confirmation email is dispatched.
+- **Primary Cluster (DBaaS):** Connects to a cloud-hosted MongoDB Atlas cluster over an encrypted TLS/SSL connection.
+- **Graceful Failover:** If the database URI is absent or the remote cluster is unreachable (due to network partitioning or DNS latency), the system automatically engages an in-memory JSON fallback engine (`backend/src/data/store.js`). The frontend continues operating without runtime exceptions.
+- **Automated Idempotent Seeding:** On the initial successful connection to an empty MongoDB database, the migration utility (`backend/src/utils/migrate.js`) scans local JSON datasets and seeds catalog collections without duplicating records.
 
-### 2. Gmail SMTP Notifications via Nodemailer
+---
 
-StyleStack dispatches automated transactional emails using Nodemailer with Gmail SMTP.
+## Serverless Microservice (FaaS Implementation)
 
-#### Generating a Google Gmail App Password
+An independent serverless HTTP microservice is deployed on Azure Functions (`stylestack-alerts-fn`) running on the Node.js 22 runtime.
 
-1. Log into your Google Account and go to [Google Account Security](https://myaccount.google.com/security).
-2. Enable **2-Step Verification** if not already enabled.
-3. Search for or navigate to [App Passwords](https://myaccount.google.com/apppasswords).
-4. Enter an app name (e.g., `StyleStack Store`) and click **Create**.
-5. Copy the generated 16-character passcode.
-6. Add to `backend/.env`:
-   ```env
-   EMAIL_USER=your_store_email@gmail.com
-   EMAIL_APP_PASSWORD=xxxx xxxx xxxx xxxx
-   ```
+**Function Details:**
 
-#### Email Notification Types
+- **Function Name:** `lowStockAlertTrigger`
+- **Type:** HTTP Trigger (POST)
+- **Endpoint:** `https://stylestack-alerts-fn.azurewebsites.net/api/lowStockAlert`
 
-- **Order Confirmation Email:** Triggered when a customer places an order. Includes order reference, itemized clothing list with sizes and quantities, subtotal, 5% GST, free shipping, and delivery destination.
-- **Payment Confirmation Receipt:** Triggered upon verified payment simulation. Includes transaction reference, total amount paid, and verified badge.
-- **Resilience & Deduplication:** All email operations are non-blocking. If SMTP credentials are missing or network times out, orders remain created and safe. An in-memory deduplication index prevents duplicate email dispatches.
+**Behavior:**
 
-### 3. Azure App Service and Cloud Deployment
+Accepts a JSON body containing `itemName` and `currentStock`. If the inventory level is 5 or below, it immediately returns an alert flag and warning string; otherwise, it returns nominal status. The microservice executes on demand and scales to zero when idle.
 
-StyleStack is optimized for deployment on Azure App Service (Backend) and Azure Static Web Apps (Frontend).
+### Testing the Cloud Function
 
-#### Backend Deployment (Azure App Service)
+```bash
+curl -X POST https://stylestack-alerts-fn.azurewebsites.net/api/lowStockAlert \
+  -H "Content-Type: application/json" \
+  -d '{"itemName": "Oversized Tee", "currentStock": 2}'
+```
 
-1. **Port Binding:** The backend listens on `process.env.PORT` and binds to `0.0.0.0` (required for Azure App Service Linux containers).
-2. **Startup Command:** Set startup command in Azure Portal to:
-   ```bash
-   node app.js
-   ```
-3. **Application Settings (Environment Variables):**
-   In Azure Portal &rarr; App Service &rarr; **Configuration** / **Environment variables**:
-   - `PORT`: Set automatically by Azure.
-   - `CLIENT_URL`: `https://<your-static-web-app>.azurestaticapps.net`
-   - `MONGODB_URI`: Azure Cosmos DB MongoDB connection string or MongoDB Atlas URI (or leave empty for JSON fallback).
-   - `JWT_SECRET`: Secure random string.
-   - `EMAIL_USER`: Your Gmail address.
-   - `EMAIL_APP_PASSWORD`: Your 16-character Google App Password.
+**Expected JSON Response:**
 
-#### Frontend Deployment (Azure Static Web Apps)
+```json
+{
+  "alert": true,
+  "message": "LOW STOCK WARNING: Oversized Tee has only 2 units left!"
+}
+```
 
-1. Connect your repository to **Azure Static Web Apps**.
-2. **App location:** `/frontend`
-3. **Output location:** `dist`
-4. **Environment Variables:**
-   - `VITE_API_BASE_URL`: `https://<your-app-service-name>.azurewebsites.net`
-5. Single Page Application (SPA) routing is pre-configured in `frontend/public/staticwebapp.config.json`.
+---
+
+## REST API Reference
+
+| Endpoint                  | Method | Description                                                      |
+| :------------------------ | :----- | :--------------------------------------------------------------- |
+| `/api/health`             | GET    | Health check endpoint returning backend and database status      |
+| `/api/auth/register`      | POST   | Register a new customer or administrative account                |
+| `/api/auth/login`         | POST   | Authenticate credentials and return a signed JWT                 |
+| `/api/products`           | GET    | Retrieve and filter apparel catalog collections                  |
+| `/api/products/:id`       | GET    | Retrieve individual product metadata and stock quantity          |
+| `/api/orders`             | POST   | Create a new order, calculate 5% GST, and decrement inventory    |
+| `/api/orders`             | GET    | Retrieve customer order history                                  |
+| `/api/orders/:id/status`  | PATCH  | Update delivery tracking status (Placed, Dispatched, Delivered)  |
+| `/api/analytics/overview` | GET    | Administrative summary of total revenue, orders, and products    |
+| `/api/email/test`         | POST   | Verify transactional SMTP connectivity with Google mail gateways |
+| `/api/lowStockAlert`      | POST   | Independent serverless FaaS endpoint for low-stock evaluations   |
+
+---
+
+## Production Cloud Deployment Summary
+
+- **Frontend (Vercel PaaS):** Built directly from the repository's `frontend/` directory. Static assets and client routing are handled on Vercel's global edge network. The environment variable `VITE_API_BASE_URL` points to the live Azure App Service backend.
+- **Backend (Azure App Service PaaS):** Deployed as a Node.js Linux container under the `StyleStack-RG` resource group. Application settings securely store `MONGODB_URI`, `JWT_SECRET`, and SMTP credentials.
+- **Microservice (Azure Functions FaaS):** Deployed using Azure CLI zip deployment into the Consumption Plan Function App `stylestack-alerts-fn`, backed by storage account `stylestackfnstorage`.
+- **Database (MongoDB Atlas DBaaS):** Managed M0 cluster deployed in the AWS Mumbai region with global network whitelisting enabled for Azure App Service outbound IP ranges.
