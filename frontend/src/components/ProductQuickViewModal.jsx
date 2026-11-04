@@ -33,12 +33,13 @@ export const ProductQuickViewModal = ({ product, onClose }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 overflow-y-auto custom-scrollbar">
           
           {/* Image Column */}
-          <div className="relative aspect-[4/5] md:aspect-auto bg-slate-100 overflow-hidden">
+          <div className="relative aspect-[3/4] md:aspect-auto bg-slate-100 overflow-hidden">
             <img
               src={product.imageUrl || product.image}
               alt={product.name}
               className="w-full h-full object-cover"
               loading="lazy"
+              decoding="async"
             />
             {product.tag && (
               <span className="absolute top-4 left-4 bg-slate-900 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">

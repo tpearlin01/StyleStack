@@ -83,12 +83,15 @@ export const CartDrawer = ({ onOpenCheckoutModal }) => {
                   key={`${item.id}-${item.selectedSize}-${index}`}
                   className="flex gap-3 sm:gap-4 p-3 sm:p-3.5 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors group"
                 >
-                  <img
-                    src={item.imageUrl || item.image}
-                    alt={item.name}
-                    className="w-20 h-24 rounded-xl object-cover border border-slate-200 shrink-0"
-                    loading="lazy"
-                  />
+                  <div className="w-20 h-24 aspect-[3/4] rounded-xl overflow-hidden border border-slate-200 shrink-0 bg-slate-100">
+                    <img
+                      src={item.imageUrl || item.image}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
 
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
