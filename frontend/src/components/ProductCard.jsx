@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { ShoppingBag, Star, Eye, Sparkles, Flame } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import AddToCartButton from './AddToCartButton';
 
-export const ProductCard = ({ product, onQuickView }) => {
+export const ProductCard = memo(({ product, onQuickView }) => {
   const { addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState(
     product.sizes && product.sizes.length > 0 ? product.sizes[0] : 'M'
@@ -161,4 +161,6 @@ export const ProductCard = ({ product, onQuickView }) => {
       </div>
     </div>
   );
-};
+});
+
+ProductCard.displayName = 'ProductCard';

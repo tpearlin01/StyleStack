@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { LandingLoginPortal } from './components/LandingLoginPortal';
@@ -37,6 +37,15 @@ function MainAppFlow() {
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
   const [invoiceOrder, setInvoiceOrder] = useState(null);
   const [visibleCount, setVisibleCount] = useState(32);
+
+  // Memoized visible catalog slice to prevent redundant re-renders on mobile
+  const displayedProducts = useMemo(() => {
+    return products.slice(0, visibleCount);
+  }, [products, visibleCount]);
+
+  const handleQuickView = useCallback((p) => {
+    setQuickViewProduct(p);
+  }, []);
 
   const [hasLoadedInitial, setHasLoadedInitial] = useState(false);
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);

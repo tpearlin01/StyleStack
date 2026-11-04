@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { SlidersHorizontal, RotateCcw, Sparkles, Flame, Tag } from 'lucide-react';
 import { MOCK_CATEGORIES, MOCK_SIZES, MOCK_QUICK_FILTERS } from '../services/mockData';
 
-export const ProductFilter = ({
+export const ProductFilter = memo(({
   selectedCategory,
   onSelectCategory,
   selectedQuickFilter,
@@ -154,4 +154,6 @@ export const ProductFilter = ({
       </div>
     </div>
   );
-};
+});
+
+ProductFilter.displayName = 'ProductFilter';
