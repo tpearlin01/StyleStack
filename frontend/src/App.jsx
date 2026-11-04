@@ -149,7 +149,7 @@ function MainAppFlow() {
       <HeroBanner onShopNow={handleShopNowClick} />
 
       {/* Main Catalog Container */}
-      <main id="catalog" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main id="catalog" className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6">
         
         {/* Catalog Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
@@ -203,7 +203,7 @@ function MainAppFlow() {
 
         {/* Product Grid / Dynamic States */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 py-8 sm:py-12">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="bg-white rounded-2xl p-4 border border-slate-200 animate-pulse space-y-4">
                 <div className="aspect-[3/4] bg-slate-200 rounded-xl" />
@@ -243,7 +243,7 @@ function MainAppFlow() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {products.slice(0, visibleCount).map((product) => (
                 <ProductCard
                   key={product.id}
