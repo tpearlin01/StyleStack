@@ -96,13 +96,13 @@ export const Navbar = ({
     }
   };
 
-  // Debounce search update (180ms) to prevent micro-keystroke image flashing
+  // Debounce search update (280ms) to prevent micro-keystroke image flashing
   useEffect(() => {
     const timer = setTimeout(() => {
       if (localSearchTerm !== searchQuery) {
         updateQuery(localSearchTerm);
       }
-    }, 180);
+    }, 280);
     return () => clearTimeout(timer);
   }, [localSearchTerm]);
 

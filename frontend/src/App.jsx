@@ -39,6 +39,15 @@ function MainAppFlow() {
   const [visibleCount, setVisibleCount] = useState(32);
 
   const [hasLoadedInitial, setHasLoadedInitial] = useState(false);
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
+
+  // 280ms debounce handler on real-time search queries and filter inputs
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 280);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
 
   const loadProducts = async () => {
     // Only display full skeleton placeholders on initial mount, preventing violent flash on keystrokes
@@ -71,7 +80,7 @@ function MainAppFlow() {
       loadProducts();
       setVisibleCount(32);
     }
-  }, [isAuthenticated, role, selectedCategory, selectedQuickFilter, selectedSize, searchQuery, sortBy, minPrice, maxPrice]);
+  }, [isAuthenticated, role, selectedCategory, selectedQuickFilter, selectedSize, debouncedSearchQuery, sortBy, minPrice, maxPrice]);
 
   const handleSearchChange = (query) => {
     setSearchQuery(query);
