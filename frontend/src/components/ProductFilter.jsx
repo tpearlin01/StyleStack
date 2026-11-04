@@ -23,10 +23,10 @@ export const ProductFilter = ({
     sortBy !== 'featured';
 
   return (
-    <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm mb-8 space-y-5">
-      {/* Top Quick Filter Chips */}
+    <div className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm mb-6 sm:mb-8 space-y-4 sm:space-y-5">
+      {/* Top Quick Filter Chips with Min 44px Touch Targets */}
       <div className="flex flex-wrap items-center gap-2 pb-4 border-b border-slate-100">
-        <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mr-2 flex items-center gap-1.5">
+        <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mr-1 sm:mr-2 flex items-center gap-1.5 shrink-0">
           <Tag className="w-3.5 h-3.5 text-rose-600" />
           Quick Filters:
         </span>
@@ -36,7 +36,7 @@ export const ProductFilter = ({
             <button
               key={qf.id}
               onClick={() => onSelectQuickFilter(qf.id)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
+              className={`min-h-[44px] px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                 isActive
                   ? 'bg-rose-600 text-white shadow-md ring-2 ring-rose-500/30'
                   : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -51,7 +51,7 @@ export const ProductFilter = ({
       </div>
 
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
         <div className="flex items-center gap-2">
           <SlidersHorizontal className="w-4 h-4 text-rose-600" />
           <h3 className="font-bold text-slate-900 text-base">Collections &amp; Categories</h3>
@@ -64,14 +64,14 @@ export const ProductFilter = ({
           {isFilterActive && (
             <button
               onClick={onResetFilters}
-              className="text-xs font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-1 hover:underline"
+              className="min-h-[44px] px-3 text-xs font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1.5 hover:underline cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               Reset Filters
             </button>
           )}
 
-          {/* Sort Selector */}
+          {/* Sort Selector with 44px Height */}
           <div className="flex items-center gap-2">
             <label className="text-xs font-medium text-slate-500 whitespace-nowrap hidden sm:inline-block">
               Sort by:
@@ -79,7 +79,7 @@ export const ProductFilter = ({
             <select
               value={sortBy}
               onChange={(e) => onSelectSort(e.target.value)}
-              className="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
+              className="h-[44px] text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3.5 text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 cursor-pointer"
             >
               <option value="featured">Featured &amp; Trending</option>
               <option value="price-low">Price: Low to High</option>
@@ -91,7 +91,7 @@ export const ProductFilter = ({
       </div>
 
       {/* Categories & Sizes Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pt-2">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 pt-1 sm:pt-2">
         {/* Category Pills */}
         <div className="md:col-span-8">
           <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
@@ -104,7 +104,7 @@ export const ProductFilter = ({
                 <button
                   key={cat.id}
                   onClick={() => onSelectCategory(cat.id)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                  className={`min-h-[44px] px-4 py-2 rounded-full text-xs font-semibold transition-all flex items-center justify-center cursor-pointer ${
                     isActive
                       ? 'bg-rose-600 text-white font-bold shadow-md shadow-rose-600/20'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
@@ -122,12 +122,12 @@ export const ProductFilter = ({
           <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
             Size Filter
           </label>
-          <div className="flex flex-wrap items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => onSelectSize('all')}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+              className={`min-w-[44px] min-h-[44px] px-3.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center cursor-pointer ${
                 selectedSize === 'all'
-                  ? 'bg-slate-900 text-white'
+                  ? 'bg-slate-900 text-white shadow-sm'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
@@ -139,7 +139,7 @@ export const ProductFilter = ({
                 <button
                   key={sz}
                   onClick={() => onSelectSize(sz)}
-                  className={`px-2.5 h-8 rounded-lg text-xs font-bold border transition-all ${
+                  className={`min-w-[44px] min-h-[44px] px-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center cursor-pointer ${
                     isActive
                       ? 'bg-rose-600 text-white border-rose-600 shadow-sm'
                       : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400'
