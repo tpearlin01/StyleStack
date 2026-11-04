@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const compression = require('compression');
 
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
@@ -12,6 +13,9 @@ const mongoose = require('mongoose');
 const errorHandler = require('../middleware/errorHandler');
 
 const app = express();
+
+// Enable gzip compression for all responses
+app.use(compression());
 
 // CORS configuration: accept localhost, configured CLIENT_URL, and Azure Static Web Apps domains
 const defaultAllowedOrigins = [

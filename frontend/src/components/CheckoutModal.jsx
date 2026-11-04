@@ -566,11 +566,11 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-3xl bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden border border-zinc-800 text-white animate-in zoom-in-95 duration-200 max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-zinc-950/80 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative w-full max-w-3xl bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden border border-zinc-800 text-white animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
         
         {/* Header Decorator */}
-        <div className="bg-zinc-950 text-white p-6 relative overflow-hidden flex items-center justify-between border-b border-zinc-800">
+        <div className="bg-zinc-950 text-white p-4 sm:p-6 relative overflow-hidden flex items-center justify-between border-b border-zinc-800">
           <div className="flex items-center gap-3">
             <BrandLogo size="sm" showText={false} />
             <div>
@@ -594,7 +594,7 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
 
         {/* STEP 1: CUSTOMER CHECKOUT FORM */}
         {step === 1 && (
-          <form onSubmit={handleSubmitOrder} className="p-6 overflow-y-auto custom-scrollbar space-y-6 flex-1 text-zinc-200 bg-zinc-900">
+          <form onSubmit={handleSubmitOrder} className="p-4 sm:p-6 overflow-y-auto overscroll-contain custom-scrollbar space-y-4 sm:space-y-6 flex-1 text-zinc-200 bg-zinc-900">
             
             {formError && (
               <div className="p-3 bg-rose-950/40 border border-rose-800/60 text-rose-300 text-xs font-medium rounded-xl flex items-center gap-2">
@@ -1033,8 +1033,8 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
 
         {/* SIMULATED 3D-SECURE / OTP VERIFICATION MODAL OVERLAY (FOR CARD PAYMENTS) */}
         {showCardOtpModal && (
-          <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-zinc-950/90 backdrop-blur-md animate-in fade-in duration-150">
-            <div className="relative w-full max-w-md bg-zinc-900 rounded-3xl p-6 border border-zinc-800 shadow-2xl space-y-5 animate-in zoom-in-95 duration-200 text-zinc-200">
+          <div className="fixed inset-0 z-60 flex items-center justify-center p-3 sm:p-4 bg-zinc-950/90 backdrop-blur-md animate-in fade-in duration-150">
+            <div className="relative w-full max-w-md bg-zinc-900 rounded-3xl p-4 sm:p-6 border border-zinc-800 shadow-2xl space-y-4 sm:space-y-5 animate-in zoom-in-95 duration-200 text-zinc-200 max-h-[90vh] overflow-y-auto overscroll-contain custom-scrollbar">
               
               {/* Bank Simulation Header */}
               <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
@@ -1131,12 +1131,12 @@ export const CheckoutModal = ({ isOpen, onClose, onOrderConfirmed }) => {
                 </div>
 
                 {/* Modal Buttons */}
-                <div className="flex items-center gap-3 pt-2">
+                <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-2">
                   <button
                     type="button"
                     disabled={isCardVerifying}
                     onClick={() => setShowCardOtpModal(false)}
-                    className="flex-1 py-3 px-4 rounded-xl border border-zinc-700 hover:bg-zinc-800 text-zinc-300 text-xs font-bold transition cursor-pointer"
+                    className="flex-1 min-h-[44px] py-3 px-4 rounded-xl border border-zinc-700 hover:bg-zinc-800 text-zinc-300 text-xs font-bold transition cursor-pointer flex items-center justify-center"
                   >
                     Cancel
                   </button>

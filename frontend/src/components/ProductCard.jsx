@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { ShoppingBag, Star, Eye, Sparkles, Flame } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import AddToCartButton from './AddToCartButton';
 
-export const ProductCard = ({ product, onQuickView }) => {
+export const ProductCard = memo(({ product, onQuickView }) => {
   const { addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState(
     product.sizes && product.sizes.length > 0 ? product.sizes[0] : 'M'
@@ -31,26 +31,27 @@ export const ProductCard = ({ product, onQuickView }) => {
           alt={product.name}
           className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
+          decoding="async"
         />
 
         {/* Highlight Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1 z-10">
+        <div className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 flex flex-col gap-1 z-10 max-w-[calc(100%-20px)]">
           {product.tag && (
             <>
               {product.tag === 'Festive Offer' && (
-                <span className="bg-rose-600 text-white font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-white fill-white" />
-                  <span>Festive Offer • 20% OFF</span>
+                <span className="bg-rose-600 text-white font-extrabold text-[9px] sm:text-[10px] uppercase tracking-wider px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full shadow-md flex items-center gap-1 truncate">
+                  <Sparkles className="w-3 h-3 text-white fill-white shrink-0" />
+                  <span className="truncate">Festive Offer • 20% OFF</span>
                 </span>
               )}
               {product.tag === 'Sale' && (
-                <span className="bg-slate-950 text-white font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 border border-slate-700">
-                  <Flame className="w-3 h-3 text-rose-500 fill-rose-500" />
+                <span className="bg-slate-950 text-white font-extrabold text-[9px] sm:text-[10px] uppercase tracking-wider px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full shadow-md flex items-center gap-1 border border-slate-700">
+                  <Flame className="w-3 h-3 text-rose-500 fill-rose-500 shrink-0" />
                   <span>On Sale</span>
                 </span>
               )}
               {product.tag === 'New Arrival' && (
-                <span className="bg-slate-950/90 backdrop-blur-md text-white font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md border border-slate-700">
+                <span className="bg-slate-950/90 backdrop-blur-md text-white font-extrabold text-[9px] sm:text-[10px] uppercase tracking-wider px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full shadow-md border border-slate-700">
                   New Arrival
                 </span>
               )}
@@ -60,7 +61,7 @@ export const ProductCard = ({ product, onQuickView }) => {
 
         {/* Quick View Overlay */}
         <div
-          className={`absolute inset-x-4 bottom-4 flex gap-2 transition-all duration-300 ${
+          className={`absolute inset-x-3 sm:inset-x-4 bottom-3 sm:bottom-4 flex gap-2 transition-all duration-300 ${
             isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
           }`}
         >
@@ -69,7 +70,7 @@ export const ProductCard = ({ product, onQuickView }) => {
               e.stopPropagation();
               onQuickView(product);
             }}
-            className="w-full py-2.5 bg-slate-950/90 backdrop-blur-md hover:bg-zinc-800 text-white text-xs font-bold rounded-xl shadow-lg border border-slate-700 flex items-center justify-center gap-1.5 transition-all"
+            className="w-full min-h-[44px] py-2.5 bg-slate-950/90 backdrop-blur-md hover:bg-zinc-800 text-white text-xs font-bold rounded-xl shadow-lg border border-slate-700 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
           >
             <Eye className="w-4 h-4" />
             <span>Quick View</span>
@@ -78,31 +79,31 @@ export const ProductCard = ({ product, onQuickView }) => {
       </div>
 
       {/* Product Info Section */}
-      <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+      <div className="p-3.5 sm:p-4 flex-1 flex flex-col justify-between space-y-2.5 sm:space-y-3">
         <div>
           {/* Category Tag & Rating */}
-          <div className="flex items-center justify-between text-xs text-slate-400 font-medium mb-1">
-            <span className="uppercase tracking-wider font-bold text-rose-600 text-[10px]">
+          <div className="flex items-center justify-between text-xs text-slate-400 font-medium mb-1.5 gap-1.5">
+            <span className="uppercase tracking-wider font-bold text-rose-600 text-[10px] truncate">
               {product.categoryName || product.category} • {product.gender === 'men' ? 'Men' : 'Women'}
             </span>
-            <div className="flex items-center gap-1 text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">
+            <div className="flex items-center gap-1 text-slate-700 bg-slate-100 px-1.5 sm:px-2 py-0.5 rounded-full border border-slate-200 shrink-0">
               <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
               <span className="font-bold text-[11px]">{product.rating}</span>
               <span className="text-[10px] text-slate-400">({product.reviewsCount})</span>
             </div>
           </div>
 
-          {/* Product Name */}
+          {/* Product Name with Line Clamping (2 lines max, uniform height) */}
           <h4
             onClick={() => onQuickView(product)}
-            className="font-bold text-slate-900 text-sm sm:text-base leading-snug line-clamp-1 group-hover:text-rose-600 transition-colors cursor-pointer"
+            className="font-bold text-slate-900 text-sm sm:text-base leading-snug line-clamp-2 min-h-[2.5rem] sm:min-h-[2.75rem] group-hover:text-rose-600 transition-colors cursor-pointer"
             title={product.name}
           >
             {product.name}
           </h4>
 
-          {/* Price Breakdown */}
-          <div className="flex items-baseline gap-2 mt-2">
+          {/* Price Breakdown with Flexible Wrapping */}
+          <div className="flex items-baseline flex-wrap gap-x-2 gap-y-1 mt-1.5">
             <span className="text-xl font-extrabold text-slate-900">
               ₹{product.price.toLocaleString('en-IN')}
             </span>
@@ -119,14 +120,14 @@ export const ProductCard = ({ product, onQuickView }) => {
           </div>
         </div>
 
-        {/* Size Badge Options */}
+        {/* Size Badge Options - 44px touch targets on mobile */}
         {product.sizes && product.sizes.length > 0 && (
           <div>
-            <div className="text-[11px] font-semibold text-slate-500 mb-1 flex items-center justify-between">
+            <div className="text-[11px] font-semibold text-slate-500 mb-1.5 flex items-center justify-between">
               <span>Size:</span>
               <span className="font-bold text-slate-800">{selectedSize}</span>
             </div>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {product.sizes.map((sz) => (
                 <button
                   key={sz}
@@ -134,7 +135,7 @@ export const ProductCard = ({ product, onQuickView }) => {
                     e.stopPropagation();
                     setSelectedSize(sz);
                   }}
-                  className={`text-[10px] font-bold py-1 px-2.5 rounded-md border transition-all ${
+                  className={`min-w-[44px] min-h-[44px] text-xs font-bold px-3 py-2 rounded-xl border transition-all flex items-center justify-center cursor-pointer ${
                     selectedSize === sz
                       ? 'bg-slate-950 text-white border-slate-950 shadow-sm'
                       : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-400'
@@ -147,8 +148,8 @@ export const ProductCard = ({ product, onQuickView }) => {
           </div>
         )}
 
-        {/* Action Button */}
-        <div className="w-full flex justify-center">
+        {/* Action Button - Minimum 44px touch target */}
+        <div className="w-full flex justify-center pt-1">
           <AddToCartButton
             product={product}
             selectedSize={selectedSize}
@@ -160,4 +161,6 @@ export const ProductCard = ({ product, onQuickView }) => {
       </div>
     </div>
   );
-};
+});
+
+ProductCard.displayName = 'ProductCard';

@@ -254,10 +254,32 @@ const createOrder = async (req, res, next) => {
       console.error('[OrderController] Email sending error caught gracefully:', emailErr.message);
     });
 
+    // Streamline order payload: prune unneeded nested metadata for lean mobile network responses
+    const streamlinedOrder = {
+      id: newOrder.id || newOrder.orderId,
+      orderId: newOrder.orderId || newOrder.id,
+      customerName: newOrder.customerName,
+      customerEmail: newOrder.customerEmail,
+      shippingAddress: newOrder.shippingAddress,
+      items: (newOrder.items || []).map((i) => ({
+        id: i.id || i.productId,
+        name: i.name,
+        size: i.size,
+        quantity: i.quantity,
+        price: i.price,
+      })),
+      subtotal: newOrder.subtotal,
+      taxAmount: newOrder.taxAmount,
+      totalAmount: newOrder.totalAmount,
+      status: newOrder.status,
+      paymentMethod: newOrder.paymentMethod,
+      createdAt: newOrder.createdAt,
+    };
+
     res.status(201).json({
       success: true,
-      data: newOrder,
-      order: newOrder,
+      data: streamlinedOrder,
+      order: streamlinedOrder,
       source: 'local_json_fallback',
     });
   } catch (error) {

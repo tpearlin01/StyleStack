@@ -51,7 +51,7 @@ const AddToCartButton = ({
         <div className="cart-icon-wrapper">
           <ShoppingCart size={20} color="white" />
           {imageSrc && (
-            <img src={imageSrc} alt={product.name || product.title} className="flying-image" />
+            <img src={imageSrc} alt={product.name || product.title} className="flying-image aspect-[3/4]" loading="lazy" decoding="async" />
           )}
         </div>
       ) : (

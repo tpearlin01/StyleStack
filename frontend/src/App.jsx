@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { LandingLoginPortal } from './components/LandingLoginPortal';
@@ -38,7 +38,25 @@ function MainAppFlow() {
   const [invoiceOrder, setInvoiceOrder] = useState(null);
   const [visibleCount, setVisibleCount] = useState(32);
 
+  // Memoized visible catalog slice to prevent redundant re-renders on mobile
+  const displayedProducts = useMemo(() => {
+    return products.slice(0, visibleCount);
+  }, [products, visibleCount]);
+
+  const handleQuickView = useCallback((p) => {
+    setQuickViewProduct(p);
+  }, []);
+
   const [hasLoadedInitial, setHasLoadedInitial] = useState(false);
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
+
+  // 280ms debounce handler on real-time search queries and filter inputs
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 280);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
 
   const loadProducts = async () => {
     // Only display full skeleton placeholders on initial mount, preventing violent flash on keystrokes
@@ -71,7 +89,7 @@ function MainAppFlow() {
       loadProducts();
       setVisibleCount(32);
     }
-  }, [isAuthenticated, role, selectedCategory, selectedQuickFilter, selectedSize, searchQuery, sortBy, minPrice, maxPrice]);
+  }, [isAuthenticated, role, selectedCategory, selectedQuickFilter, selectedSize, debouncedSearchQuery, sortBy, minPrice, maxPrice]);
 
   const handleSearchChange = (query) => {
     setSearchQuery(query);
@@ -149,7 +167,7 @@ function MainAppFlow() {
       <HeroBanner onShopNow={handleShopNowClick} />
 
       {/* Main Catalog Container */}
-      <main id="catalog" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main id="catalog" className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6">
         
         {/* Catalog Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
@@ -203,7 +221,7 @@ function MainAppFlow() {
 
         {/* Product Grid / Dynamic States */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 py-8 sm:py-12">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="bg-white rounded-2xl p-4 border border-slate-200 animate-pulse space-y-4">
                 <div className="aspect-[3/4] bg-slate-200 rounded-xl" />
@@ -243,7 +261,7 @@ function MainAppFlow() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {products.slice(0, visibleCount).map((product) => (
                 <ProductCard
                   key={product.id}

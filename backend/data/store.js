@@ -69,7 +69,7 @@ const persistProducts = () => {
 
 const store = {
   // Products
-  getProducts({ category, gender, search } = {}) {
+  getProducts({ category, gender, search, fields, projectCardOnly = true } = {}) {
     let result = [...products];
 
     if (category && category !== 'all') {
@@ -97,6 +97,44 @@ const store = {
           .join(' ')
           .toLowerCase();
         return text.includes(q);
+      });
+    }
+
+    // Lean card projection fields to conserve cellular bandwidth on mobile
+    const CARD_DISPLAY_FIELDS = [
+      'id',
+      '_id',
+      'name',
+      'title',
+      'category',
+      'categoryName',
+      'gender',
+      'price',
+      'originalPrice',
+      'rating',
+      'reviewsCount',
+      'sizes',
+      'imageUrl',
+      'image',
+      'badge',
+      'tag',
+      'stock',
+      'inStock',
+      'stockQuantity',
+      'createdAt',
+    ];
+
+    const selectedFields = fields
+      ? (Array.isArray(fields) ? fields : fields.split(',').map((f) => f.trim()))
+      : (projectCardOnly ? CARD_DISPLAY_FIELDS : null);
+
+    if (selectedFields) {
+      result = result.map((p) => {
+        const lean = {};
+        for (const k of selectedFields) {
+          if (p[k] !== undefined) lean[k] = p[k];
+        }
+        return lean;
       });
     }
 

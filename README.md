@@ -226,6 +226,25 @@ curl -X POST https://stylestack-alerts-fn.azurewebsites.net/api/lowStockAlert \
 
 ---
 
+## Mobile Viewport & Performance Optimizations
+
+StyleStack is fully optimized for responsive mobile viewports (tested against 375px iPhone and 412px Android profiles):
+
+- **Touch Targets:** All interactive controls (buttons, quantity toggles, category pills, filter chips) adhere to the 44x44px minimum touch target standard (WCAG 2.5.5).
+- **Navigation:** Compact sticky header with a smooth slide-in mobile navigation drawer, backdrop blur, and outside-click dismissal.
+- **Fluid Grid:** Mobile-first catalog grid (`grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`) with tight padding and safe badge truncation.
+- **Client Performance:**
+  - Native `loading="lazy"` and `decoding="async"` on all product image thumbnails.
+  - Explicit aspect-ratio bounding (`aspect-[3/4]`) preventing Cumulative Layout Shifts (CLS).
+  - 280ms debounce handler on search and filter inputs preventing redundant renders.
+  - Component memoization with `React.memo` and `useMemo` catalog slicing.
+  - Optimized Vite bundle splitting separating vendor React and icon chunks.
+- **Backend Optimization:**
+  - Query field projections on `/api/products` returning lean card payloads to save mobile bandwidth.
+  - Gzip compression enabled for all JSON and static responses.
+
+---
+
 ## Production Cloud Deployment Summary
 
 - **Frontend (Vercel PaaS):** Built directly from the repository's `frontend/` directory. Static assets and client routing are handled on Vercel's global edge network. The environment variable `VITE_API_BASE_URL` points to the live Azure App Service backend.

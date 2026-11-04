@@ -18,25 +18,28 @@ export const ProductQuickViewModal = ({ product, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
         
-        {/* Close Button */}
+        {/* Close Button - 44x44px touch target */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 text-slate-400 hover:text-slate-800 bg-white/80 backdrop-blur-md rounded-full shadow-sm hover:bg-white transition-colors"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 w-11 h-11 min-w-[44px] min-h-[44px] text-slate-400 hover:text-slate-800 bg-white/90 backdrop-blur-md rounded-full shadow-sm hover:bg-white transition-colors flex items-center justify-center cursor-pointer"
+          aria-label="Close modal"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="grid grid-cols-1 md:grid-cols-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 overflow-y-auto custom-scrollbar">
           
           {/* Image Column */}
-          <div className="relative aspect-[4/5] md:aspect-auto bg-slate-100 overflow-hidden">
+          <div className="relative aspect-[3/4] md:aspect-auto bg-slate-100 overflow-hidden">
             <img
-              src={product.imageUrl}
+              src={product.imageUrl || product.image}
               alt={product.name}
               className="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
             />
             {product.tag && (
               <span className="absolute top-4 left-4 bg-slate-900 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
@@ -46,7 +49,7 @@ export const ProductQuickViewModal = ({ product, onClose }) => {
           </div>
 
           {/* Details Column */}
-          <div className="p-6 md:p-8 flex flex-col justify-between space-y-6 max-h-[85vh] overflow-y-auto custom-scrollbar">
+          <div className="p-5 sm:p-6 md:p-8 flex flex-col justify-between space-y-5">
             
             <div className="space-y-3">
               <span className="text-xs font-bold uppercase tracking-widest text-rose-600">
@@ -76,7 +79,7 @@ export const ProductQuickViewModal = ({ product, onClose }) => {
               </div>
 
               {/* Price */}
-              <div className="flex items-baseline gap-3 pt-2">
+              <div className="flex items-baseline flex-wrap gap-2 sm:gap-3 pt-2">
                 <span className="text-3xl font-extrabold text-slate-900">
                   ₹{product.price.toLocaleString('en-IN')}
                 </span>
@@ -108,7 +111,7 @@ export const ProductQuickViewModal = ({ product, onClose }) => {
                       <button
                         key={sz}
                         onClick={() => setSelectedSize(sz)}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
+                        className={`min-w-[44px] min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold border transition-all flex items-center justify-center cursor-pointer ${
                           selectedSize === sz
                             ? 'bg-slate-900 text-white border-slate-900 shadow-md'
                             : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400'
@@ -121,20 +124,22 @@ export const ProductQuickViewModal = ({ product, onClose }) => {
                 </div>
               )}
 
-              {/* Quantity Adjuster */}
-              <div className="flex items-center gap-4">
+              {/* Quantity Adjuster with 44px Touch Targets */}
+              <div className="flex items-center gap-3 sm:gap-4">
                 <span className="text-xs font-semibold text-slate-700">Quantity:</span>
-                <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1">
+                <div className="flex items-center rounded-2xl border border-slate-200 bg-slate-50 p-1">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center font-bold text-slate-700 hover:bg-slate-100"
+                    className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-white shadow-xs flex items-center justify-center font-bold text-slate-700 hover:bg-slate-100 cursor-pointer text-base"
+                    aria-label="Decrease quantity"
                   >
                     -
                   </button>
                   <span className="w-10 text-center font-bold text-sm text-slate-800">{quantity}</span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center font-bold text-slate-700 hover:bg-slate-100"
+                    className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-white shadow-xs flex items-center justify-center font-bold text-slate-700 hover:bg-slate-100 cursor-pointer text-base"
+                    aria-label="Increase quantity"
                   >
                     +
                   </button>
@@ -153,26 +158,27 @@ export const ProductQuickViewModal = ({ product, onClose }) => {
                 selectedSize={selectedSize}
                 quantity={quantity}
                 fullWidth
-                label={`Add to Shopping Cart — ₹${(product.price * quantity).toLocaleString('en-IN')}`}
-                onComplete={() => {
-                  setTimeout(() => onClose(), 400);
-                }}
+                label="Add to Bag"
+                onComplete={onClose}
               />
             </div>
 
-            {/* Trust Footer */}
-            <div className="flex items-center justify-around text-[11px] text-slate-500 pt-2 border-t border-slate-100">
-              <span className="flex items-center gap-1">
-                <Truck className="w-3.5 h-3.5 text-rose-500" /> Express Dispatch
-              </span>
-              <span className="flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-rose-500" /> Secure Checkout
-              </span>
+            {/* Trust Badges */}
+            <div className="grid grid-cols-2 gap-2 sm:gap-4 pt-3 border-t border-slate-100 text-slate-500 text-[11px] font-medium">
+              <div className="flex items-center gap-2">
+                <Truck className="w-4 h-4 text-slate-700 shrink-0" />
+                <span>Express Delivery in 48h</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-slate-700 shrink-0" />
+                <span>100% Authentic Apparel</span>
+              </div>
             </div>
 
           </div>
 
         </div>
+
       </div>
     </div>
   );
