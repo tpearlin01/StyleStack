@@ -83,7 +83,7 @@ app.use('/api/email', emailRoutes);
 app.use('/api/payment/email', emailRoutes); // backward-compatible alias
 
 // 404 handler for unknown routes
-app.use((req, res, next) => {
+app.all(/^\/api(\/.*)?$/, (req, res) => {
   res.status(404).json({
     success: false,
     error: `Cannot ${req.method} ${req.originalUrl}`,

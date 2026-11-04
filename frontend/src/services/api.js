@@ -5,7 +5,7 @@ import { saveNewOrder, getStoredOrders, restockProduct } from '../utils/orderSto
 export const API_BASE_URL =
   (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) ||
   (typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_BASE_URL) ||
-  'http://localhost:5000';
+  'https://stylestack-api.azurewebsites.net';
 
 const delay = (ms = 100) => new Promise((resolve) => setTimeout(resolve, ms));
 
