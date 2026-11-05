@@ -13,6 +13,9 @@ const errorHandler = require('../middleware/errorHandler');
 
 const app = express();
 
+// Disable X-Powered-By header exposure to prevent technology fingerprinting
+app.disable('x-powered-by');
+
 // Secure Express app with Helmet security headers
 app.use(
   helmet({
@@ -38,6 +41,11 @@ app.use(
         upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
       },
     },
+    frameguard: { action: 'deny' },
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    crossOriginOpenerPolicy: { policy: 'same-origin' },
   })
 );
 
