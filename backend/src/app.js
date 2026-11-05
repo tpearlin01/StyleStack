@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const compression = require('compression');
+const helmet = require('helmet');
 
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
@@ -11,6 +12,9 @@ const uploadRoutes = require('./routes/uploadRoutes');
 const errorHandler = require('../middleware/errorHandler');
 
 const app = express();
+
+// Secure Express app with Helmet security headers
+app.use(helmet());
 
 // Enable gzip compression for all responses
 app.use(compression());
